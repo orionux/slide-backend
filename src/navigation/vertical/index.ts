@@ -64,7 +64,7 @@ const navigation = (): VerticalNavItemsType => {
     },
     {
       title: 'Payment & Transaction Management',
-      path: '/icons',
+      path: '/payment-and-transaction-management',
       icon: GoogleCirclesExtended
     },
     {
