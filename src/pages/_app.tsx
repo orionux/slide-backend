@@ -56,7 +56,7 @@ const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
   // Variables               admin  ,  subadmin , user
-  const getLayout = Component.getLayout ?? (page => <UserLayout userType="subadmin">{page}</UserLayout>)
+  const getLayout = Component.getLayout ?? (page => <UserLayout userType="admin">{page}</UserLayout>)
 
   return (
     <CacheProvider value={emotionCache}>

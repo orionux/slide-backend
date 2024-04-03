@@ -33,7 +33,7 @@ interface Props {
 
 const Dashboard: React.FC<Props> = ({ userType }) => {
 
-  userType = 'subadmin'
+  userType = 'admin'
 
   if (userType === 'admin') {
     return <AdminComponent />;
