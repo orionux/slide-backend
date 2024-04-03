@@ -11,7 +11,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import VerticalLayout from 'src/@core/layouts/VerticalLayout'
 
 // ** Navigation Imports
-import VerticalNavItems from 'src/navigation/vertical'
+// import VerticalNavItems from 'src/navigation/vertical'
 
 // ** Component Import
 // import UpgradeToProButton from './components/UpgradeToProButton'
@@ -19,14 +19,18 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import navigation from 'src/navigation/vertical'
 
 interface Props {
-  children: ReactNode
+  children: ReactNode;
+  userType: string;
 }
 
-const UserLayout = ({ children }: Props) => {
+const UserLayout = ({ children, userType }: Props) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
+
+  const navItems = navigation(userType);
 
   /**
    *  The below variable will hide the current layout menu at given screen size.
@@ -57,7 +61,7 @@ const UserLayout = ({ children }: Props) => {
       hidden={hidden}
       settings={settings}
       saveSettings={saveSettings}
-      verticalNavItems={VerticalNavItems()} 
+      verticalNavItems={navItems} 
       verticalAppBarContent={(
         props // AppBar Content
       ) => (

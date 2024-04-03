@@ -55,8 +55,8 @@ if (themeConfig.routingLoader) {
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
-  // Variables
-  const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
+  // Variables               admin  ,  subadmin , user
+  const getLayout = Component.getLayout ?? (page => <UserLayout userType="subadmin">{page}</UserLayout>)
 
   return (
     <CacheProvider value={emotionCache}>

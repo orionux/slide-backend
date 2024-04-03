@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
@@ -22,8 +23,32 @@ import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
 
-const Dashboard = () => {
+type UserType = 'admin' | 'subadmin' | 'user';
+
+interface Props {
+  userType: UserType;
+}
+
+
+
+const Dashboard: React.FC<Props> = ({ userType }) => {
+
+  userType = 'subadmin'
+
+  if (userType === 'admin') {
+    return <AdminComponent />;
+  } else if (userType === 'subadmin') {
+    return <SubAdminComponent />;
+  } else {
+    return <RegularUserComponent />;
+  }
+}
+
+
+
+const AdminComponent: React.FC = () => {
   return (
+    <>
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={4}>
@@ -95,7 +120,48 @@ const Dashboard = () => {
         </Grid>
       </Grid>
     </ApexChartWrapper>
-  )
-}
+    </>
+  );
+};
+
+const SubAdminComponent: React.FC = () => {
+  return (
+    <>
+    <ApexChartWrapper>
+      <Grid container spacing={6}>
+        <Grid item xs={12} md={4}>
+          <Trophy />
+        </Grid>
+        <Grid item xs={12} md={4}>
+        <Trophy />
+        </Grid>
+        <Grid item xs={12} md={4} lg={4}>
+        <Trophy />
+        </Grid>
+      </Grid>
+    </ApexChartWrapper>
+    </>
+  );
+};
+
+const RegularUserComponent: React.FC = () => {
+  return (
+    <>
+    <ApexChartWrapper>
+      <Grid container spacing={6}>
+        <Grid item xs={12} >
+          <Trophy />
+        </Grid>
+        <Grid item xs={12} >
+        <Trophy />
+        </Grid>
+        <Grid item xs={12} >
+        <Trophy />
+        </Grid>
+      </Grid>
+    </ApexChartWrapper>
+    </>
+  );
+};
 
 export default Dashboard
