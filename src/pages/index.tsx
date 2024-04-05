@@ -22,6 +22,9 @@ import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { authenticateUser } from 'src/utils/authUtils'
 
 type UserType = 'admin' | 'subadmin' | 'user';
 
@@ -31,18 +34,51 @@ interface Props {
 
 
 
-const Dashboard: React.FC<Props> = ({ userType }) => {
+const Dashboard: React.FC<Props> = () => {
 
-  userType = 'admin'
+  const router = useRouter();
+  const [userType, setUserType] = useState('');
+  const [authChecked, setAuthChecked] = useState(false);
 
-  if (userType === 'admin') {
-    return <AdminComponent />;
-  } else if (userType === 'subadmin') {
-    return <SubAdminComponent />;
-  } else {
-    return <RegularUserComponent />;
+
+  useEffect(() => {
+    const userType = localStorage.getItem('userType');
+    
+    if (!userType) {
+      router.replace('/pages/login');
+    } else {
+      setUserType(userType);
+    }
+    
+    setAuthChecked(true);
+  }, []);
+  
+
+  const renderComponentByUserType = () => {
+    switch (userType) {
+      case 'admin':
+        return <AdminComponent />;
+      case 'subadmin':
+        return <SubAdminComponent />;
+      case 'user':
+        return <RegularUserComponent />;
+      default:
+        return null;
+    }
+  };
+
+
+  if (!authChecked) {
+    return null; 
   }
+
+  return (
+    <div>
+      {renderComponentByUserType()}
+    </div>
+  );
 }
+
 
 
 

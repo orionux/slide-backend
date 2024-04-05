@@ -13,13 +13,23 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 import { SvgIconTypeMap } from '@mui/material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 
+// import { useRouter } from 'next/router'
+
 const navigation = (userType: string | undefined): VerticalNavItemsType => {
+
+  // const router = useRouter();
+
+  // const handleLogout = () => {
+  //   localStorage.removeItem('userType');
+  //   router.push('/pages/login');
+  // };
+
   // Define all navigation items
   const allNavItems = [
     {
       title: 'Dashboard',
       icon: HomeOutline,
-      path: '/'
+      path: '/dashboard'
     },
     {
       title: 'Orders',
@@ -80,7 +90,8 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
     {
       title: 'Logout',
       icon: CreditCardOutline,
-      path: '/cards'
+
+      // onClick: handleLogout
     },
   ];
 

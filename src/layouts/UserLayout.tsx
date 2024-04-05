@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 // ** MUI Imports
 // import Box from '@mui/material/Box'
@@ -20,18 +20,28 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
 import navigation from 'src/navigation/vertical'
+import { VerticalNavItemsType } from 'src/@core/layouts/types'
 
 interface Props {
   children: ReactNode;
-  userType: string;
 }
 
-const UserLayout = ({ children, userType }: Props) => {
+const UserLayout = ({ children }: Props) => {
+
+  
   // ** Hooks
   const { settings, saveSettings } = useSettings()
+  const [navItems, setNavItems] = useState<VerticalNavItemsType>([]);
 
-  const navItems = navigation(userType);
+  useEffect(() => {
+    const userType = localStorage.getItem('userType') || '';
+    const items = navigation(userType); // Call navigation function to get navigation items
+    setNavItems(items); // Set the navigation items in state
+  }, []);
 
+
+  
+  
   /**
    *  The below variable will hide the current layout menu at given screen size.
    *  The menu will be accessible from the Hamburger icon only (Vertical Overlay Menu).
@@ -61,7 +71,7 @@ const UserLayout = ({ children, userType }: Props) => {
       hidden={hidden}
       settings={settings}
       saveSettings={saveSettings}
-      verticalNavItems={navItems} 
+      verticalNavItems={navItems}
       verticalAppBarContent={(
         props // AppBar Content
       ) => (
