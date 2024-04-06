@@ -20,6 +20,9 @@ import VerticalNavHeader from './VerticalNavHeader'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { Button } from '@mui/material'
+import IconLogout from 'mdi-material-ui/Logout';
+
 
 interface Props {
   hidden: boolean
@@ -34,6 +37,7 @@ interface Props {
   verticalNavMenuContent?: (props?: any) => ReactNode
   afterVerticalNavMenuContent?: (props?: any) => ReactNode
   beforeVerticalNavMenuContent?: (props?: any) => ReactNode
+  handleLogout: () => void
 }
 
 const StyledBoxForShadow = styled(Box)<BoxProps>({
@@ -54,6 +58,7 @@ const Navigation = (props: Props) => {
   // ** Props
   const {
     hidden,
+    handleLogout,
     afterVerticalNavMenuContent,
     beforeVerticalNavMenuContent,
     verticalNavMenuContent: userVerticalNavMenuContent
@@ -146,6 +151,10 @@ const Navigation = (props: Props) => {
         </ScrollWrapper>
       </Box>
       {afterVerticalNavMenuContent ? afterVerticalNavMenuContent(props) : null}
+      <Box  style={{ padding: '20px' }}>
+        <Button onClick={handleLogout} style={{ cursor: 'pointer' }}>
+        <IconLogout style={{marginRight: '10px'}}/>Logout</Button>
+      </Box> 
     </Drawer>
   )
 }

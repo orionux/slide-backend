@@ -13,16 +13,9 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 import { SvgIconTypeMap } from '@mui/material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 
-// import { useRouter } from 'next/router'
 
 const navigation = (userType: string | undefined): VerticalNavItemsType => {
 
-  // const router = useRouter();
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem('userType');
-  //   router.push('/pages/login');
-  // };
 
   // Define all navigation items
   const allNavItems = [
@@ -63,7 +56,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
     },
     {
       title: 'Services & Category Management',
-      icon: Login,
+      icon: CreditCardOutline,
       path: '/service-and-category-managemen'
     },
     {
@@ -86,13 +79,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
       title: 'Payment & Transaction Management',
       path: '/payment-and-transaction-management',
       icon: GoogleCirclesExtended
-    },
-    {
-      title: 'Logout',
-      icon: CreditCardOutline,
-
-      // onClick: handleLogout
-    },
+    }
   ];
 
   // Define navigation items based on user type
@@ -127,8 +114,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
       item.title !== 'Order Management' &&
       item.title !== 'Chat Implementation & Moderation' &&
       item.title !== 'Cost Matrix Management' &&
-      item.title !== 'Services & Category Management' &&
-      item.title !== 'Logout'
+      item.title !== 'Services & Category Management'
     );
   }
 

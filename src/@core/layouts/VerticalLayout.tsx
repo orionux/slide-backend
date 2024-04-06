@@ -24,6 +24,8 @@ import ScrollToTop from 'src/@core/components/scroll-to-top'
 
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { useRouter } from 'next/router'
+
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
@@ -63,11 +65,19 @@ const VerticalLayout = (props: LayoutProps) => {
   // ** Toggle Functions
   const toggleNavVisibility = () => setNavVisible(!navVisible)
 
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem('userType');
+    router.push('/pages/login');
+  };
+
   return (
     <>
       <VerticalLayoutWrapper className='layout-wrapper'>
         {/* Navigation Menu */}
         <Navigation
+        handleLogout={handleLogout}
           navWidth={navWidth}
           navVisible={navVisible}
           setNavVisible={setNavVisible}

@@ -39,7 +39,7 @@ const UserLayout = ({ children }: Props) => {
     setNavItems(items); // Set the navigation items in state
   }, []);
 
-
+  
   
   
   /**
