@@ -27,7 +27,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
     {
       title: 'Orders',
       icon: HomeOutline,
-      path: '/user-management'
+      path: '/orders'
     },
     {
       title: 'Account',
