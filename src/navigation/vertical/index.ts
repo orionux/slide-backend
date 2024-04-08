@@ -32,7 +32,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
     {
       title: 'Account',
       icon: HomeOutline,
-      path: '/user-management'
+      path: '/account'
     },
     {
       title: 'Chats',
