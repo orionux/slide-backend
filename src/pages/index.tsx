@@ -211,7 +211,15 @@ const RegularUserComponent: React.FC = () => {
                   </Box>
                   <Box width={'20%'}>
                     <Link passHref href={row.button_link} >
-                      <Button sx={{ backgroundColor: '#455A64' }} >{row.button_title}</Button>
+                      <Button 
+                      sx={{ 
+                        backgroundColor: '#455A64',
+                        color:'#57EBB7', 
+                        '&:hover': {
+                          color: '#57EBB7', 
+                          backgroundColor: '#455A64'
+                          }, 
+                          }} >{row.button_title}</Button>
                     </Link>
                   </Box>
                 </Grid>

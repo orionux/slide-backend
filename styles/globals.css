@@ -42,3 +42,19 @@ code[class*='language-'] {
 .css-1pyy021-MuiTabs-flexContainer{
   background-color: #455A64;
 }
+
+/* .css-1jtvqqq-MuiButtonBase-root-MuiListItemButton-root.active .MuiTypography-root, .css-1jtvqqq-MuiButtonBase-root-MuiListItemButton-root.active .MuiSvgIcon-root{
+  color: #000000 !important;
+}
+.css-1jtvqqq-MuiButtonBase-root-MuiListItemButton-root.active .MuiSvgIcon-root{
+  color: #000000 !important;
+} */
+.css-1jtvqqq-MuiButtonBase-root-MuiListItemButton-root.active, .css-1jtvqqq-MuiButtonBase-root-MuiListItemButton-root.active:hover{
+  box-shadow: 0px 4px 8px -4px rgba(58, 53, 65, 0.42);
+    background-image: linear-gradient(98deg, #57EBB7, #57EBB7 94%) !important;
+    border-radius: 12px !important;
+    margin-left: 10px;
+}
+/* .css-1jtvqqq-MuiButtonBase-root-MuiListItemButton-root.active p{
+  color: #000 !important
+} */
