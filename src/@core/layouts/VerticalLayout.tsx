@@ -74,7 +74,7 @@ const VerticalLayout = (props: LayoutProps) => {
 
   return (
     <>
-      <VerticalLayoutWrapper className='layout-wrapper'>
+      <VerticalLayoutWrapper className='layout-wrapper' >
         {/* Navigation Menu */}
         <Navigation
         handleLogout={handleLogout}

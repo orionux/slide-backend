@@ -105,7 +105,7 @@ const VerticalNavLink = ({ item, navVisible, toggleNavVisibility }: Props) => {
           <ListItemIcon
             sx={{
               mr: 2.5,
-              color: 'text.primary',
+              color: '#fff',
               transition: 'margin .25s ease-in-out'
             }}
           >
@@ -113,7 +113,7 @@ const VerticalNavLink = ({ item, navVisible, toggleNavVisibility }: Props) => {
           </ListItemIcon>
 
           <MenuItemTextMetaWrapper>
-            <Typography {...(themeConfig.menuTextTruncate && { noWrap: true })}>{item.title}</Typography>
+            <Typography {...(themeConfig.menuTextTruncate && { noWrap: true })} sx={{color: '#fff'}}>{item.title}</Typography>
             {item.badgeContent ? (
               <Chip
                 label={item.badgeContent}

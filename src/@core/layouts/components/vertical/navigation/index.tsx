@@ -107,7 +107,7 @@ const Navigation = (props: Props) => {
   const ScrollWrapper = hidden ? Box : PerfectScrollbar
 
   return (
-    <Drawer {...props}>
+    <Drawer {...props} >
       <VerticalNavHeader {...props} />
       <StyledBoxForShadow
         ref={shadowRef}
@@ -133,12 +133,12 @@ const Navigation = (props: Props) => {
               })}
         >
           {beforeVerticalNavMenuContent ? beforeVerticalNavMenuContent(props) : null}
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '10px' }}>
             {userVerticalNavMenuContent ? (
               userVerticalNavMenuContent(props)
             ) : (
-              <List className='nav-items' sx={{ transition: 'padding .25s ease', pr: 4.5 }}>
-                <VerticalNavItems
+              <List className='nav-items' sx={{ transition: 'padding .25s ease', pr: 4.5, borderRadius: '12px', color: '#fff', backgroundColor: '#212429', minHeight: '400px' }}>
+                <VerticalNavItems 
                   groupActive={groupActive}
                   setGroupActive={setGroupActive}
                   currentActiveGroup={currentActiveGroup}
@@ -152,8 +152,8 @@ const Navigation = (props: Props) => {
       </Box>
       {afterVerticalNavMenuContent ? afterVerticalNavMenuContent(props) : null}
       <Box  style={{ padding: '20px' }}>
-        <Button onClick={handleLogout} style={{ cursor: 'pointer' }}>
-        <IconLogout style={{marginRight: '10px'}}/>Logout</Button>
+        <Button onClick={handleLogout} style={{ cursor: 'pointer', color:'#212429' }}>
+        <IconLogout style={{marginRight: '10px', color:'#212429'}}/>Logout</Button>
       </Box> 
     </Drawer>
   )

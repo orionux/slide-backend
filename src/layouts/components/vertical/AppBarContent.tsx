@@ -15,8 +15,11 @@ import { Settings } from 'src/@core/context/settingsContext'
 
 // ** Components
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
-import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
+
+// import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
+import Link from 'next/link'
+import { Button } from '@mui/material'
 
 interface Props {
   hidden: boolean
@@ -44,7 +47,7 @@ const AppBarContent = (props: Props) => {
             <Menu />
           </IconButton>
         ) : null}
-        <TextField
+        {/* <TextField
           size='small'
           sx={{ '& .MuiOutlinedInput-root': { borderRadius: 4 } }}
           InputProps={{
@@ -54,7 +57,7 @@ const AppBarContent = (props: Props) => {
               </InputAdornment>
             )
           }}
-        />
+        /> */}
       </Box>
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
         {/* {hiddenSm ? null : (
@@ -72,9 +75,35 @@ const AppBarContent = (props: Props) => {
             />
           </Box>
         )} */}
-        <ModeToggler settings={settings} saveSettings={saveSettings} />
         <NotificationDropdown />
-        <UserDropdown />
+        <Link passHref href="#">
+            <Button sx={{
+              backgroundColor: '#57EBB7', 
+              color: '#455A64',
+              width: '150px',
+              marginRight: '10px', 
+              '&:hover': {
+                backgroundColor: '#455A64',
+                color: '#57EBB7',
+              }
+            }} >Start Now</Button>
+          </Link>
+          <Link passHref href="#">
+            <Button sx={{
+              backgroundColor: '#fff', 
+              width: '150px', 
+              color: '#455A64',
+              border: 'solid 1px #455A64',
+              '&:hover': {
+                backgroundColor: '#455A64',
+                color: '#fff',
+              }
+            }} >Start Now</Button>
+          </Link>
+          {/* dark light mode */}
+        <ModeToggler settings={settings} saveSettings={saveSettings} />
+        
+        {/* <UserDropdown /> */}
       </Box>
     </Box>
   )
