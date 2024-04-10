@@ -84,6 +84,7 @@ const AppBarContent = (props: Props) => {
               backgroundColor: '#57EBB7', 
               color: '#455A64',
               width: '150px',
+              textTransform: 'capitalize !important',
               marginRight: '10px', 
               '&:hover': {
                 backgroundColor: '#455A64',
@@ -96,12 +97,13 @@ const AppBarContent = (props: Props) => {
               backgroundColor: '#fff', 
               width: '150px', 
               color: '#455A64',
+              textTransform: 'capitalize !important',
               border: 'solid 1px #455A64',
               '&:hover': {
                 backgroundColor: '#455A64',
                 color: '#fff',
               }
-            }} >Start Now</Button>
+            }} >User Account</Button>
           </Link>
           {/* dark light mode */}
         {/* <ModeToggler settings={settings} saveSettings={saveSettings} /> */}
