@@ -23,7 +23,7 @@ const NormalHeader = () => {
                     </Link>
                     <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
                         <NotificationDropdown />
-                        <Link passHref href="#">
+                        <Link passHref href="#" >
                             <Button sx={{
                                 backgroundColor: '#57EBB7',
                                 color: '#455A64',
