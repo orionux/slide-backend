@@ -70,15 +70,14 @@ const Trophy = ({ title, number, icon, badge }) => {
             <Grid item xs={12} md={4} sx={{ position: 'relative' }}>
               <span
                 style={{
-                  height: 24,
-                  fontSize: '0.75rem',
+                  fontSize: '9px',
                   position: 'absolute',
                   right: '10px',
                   top: '10px',
                   color: badgeColor,
                   fontWeight: 500,
                   backgroundColor: badgeBackgroundColor,
-                  padding: '4px 20px',
+                  padding: '4px 15px',
                   borderRadius: '30px'
                 }}
               >{badge}</span>
