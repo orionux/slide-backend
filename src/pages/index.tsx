@@ -29,6 +29,8 @@ import { Box, Button, Typography } from '@mui/material'
 import Link from 'next/link'
 import { TrendingUp, CellphoneLink, AccountOutline } from 'mdi-material-ui'
 import { FaCartShopping, FaUserGroup, FaUserPlus } from 'react-icons/fa6'
+import LineChartComponent from 'src/views/dashboard/SalesOverview'
+import PieChartComponent from 'src/views/dashboard/PieChart'
 
 type UserType = 'admin' | 'subadmin' | 'user';
 
@@ -114,7 +116,8 @@ const AdminComponent: React.FC = () => {
             <StatisticsCard />
           </Grid> */}
           <Grid item xs={12} md={8} lg={8}>
-            <WeeklyOverview />
+            {/* <WeeklyOverview /> */}
+            <LineChartComponent />
           </Grid>
           {/* <Grid item xs={12} md={6} lg={4}>
             <TotalEarning />
@@ -166,7 +169,8 @@ const AdminComponent: React.FC = () => {
             </Grid>
           </Grid> */}
           <Grid item xs={12} md={4} lg={4}>
-            <SalesByCountries />
+            {/* <SalesByCountries /> */}
+            <PieChartComponent />
           </Grid>
           {/* <Grid item xs={12} md={12} lg={8}>
             <DepositWithdraw />
