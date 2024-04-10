@@ -82,7 +82,7 @@ const LineChartComponent = () => {
       </Box>
       <Box sx={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <LineChart width={680} height={380} data={data} margin={{ top: 20, right: 30, left: 0, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="3 3"  />
+            <CartesianGrid strokeDasharray="3 3" vertical={false}  />
             <XAxis dataKey="month" />
             <YAxis ticks={[0, 100, 200, 300, 400, 500]} />
             <Tooltip />
