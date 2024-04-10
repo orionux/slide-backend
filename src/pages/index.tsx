@@ -27,6 +27,8 @@ import { useEffect, useState } from 'react'
 import { authenticateUser } from 'src/utils/authUtils'
 import { Box, Button, Typography } from '@mui/material'
 import Link from 'next/link'
+import { TrendingUp, CellphoneLink, AccountOutline } from 'mdi-material-ui'
+import { FaCartShopping, FaUserGroup, FaUserPlus } from 'react-icons/fa6'
 
 type UserType = 'admin' | 'subadmin' | 'user';
 
@@ -100,18 +102,24 @@ const AdminComponent: React.FC = () => {
       <ApexChartWrapper>
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
-            <Trophy />
+            <Trophy title="Total Users" number="17256" icon={<FaUserGroup />} />
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={4}>
+            <Trophy title="Today New Users" number="452" icon={<FaUserPlus />} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Trophy title="Today Revenue" number="$25k" icon={<FaCartShopping />} />
+          </Grid>
+          {/* <Grid item xs={12} md={8}>
             <StatisticsCard />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          </Grid> */}
+          <Grid item xs={12} md={8} lg={8}>
             <WeeklyOverview />
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <TotalEarning />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          </Grid> */}
+          {/* <Grid item xs={12} md={6} lg={4}>
             <Grid container spacing={6}>
               <Grid item xs={6}>
                 <CardStatisticsVerticalComponent
@@ -156,13 +164,13 @@ const AdminComponent: React.FC = () => {
                 />
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+          </Grid> */}
+          <Grid item xs={12} md={4} lg={4}>
             <SalesByCountries />
           </Grid>
-          <Grid item xs={12} md={12} lg={8}>
+          {/* <Grid item xs={12} md={12} lg={8}>
             <DepositWithdraw />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <Table />
           </Grid>
@@ -178,13 +186,13 @@ const SubAdminComponent: React.FC = () => {
       <ApexChartWrapper>
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
-            <Trophy />
+          <Trophy title="On Going Projrcts" number="3" icon={<FaUserGroup />} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <Trophy />
+          <Trophy title="New Projects" number="2" icon={<FaUserPlus />} />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
-            <Trophy />
+          <Trophy title="Monthly Revenue" number="$25k" icon={<FaCartShopping />} />
           </Grid>
         </Grid>
       </ApexChartWrapper>

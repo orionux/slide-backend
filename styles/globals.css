@@ -69,3 +69,12 @@ border-color: #5A5A5A !important;
 .css-n4mk8z-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline .css-14lo706{
   color: #5A5A5A !important;
   } */
+
+
+  p,  input, textarea, select, option, table, td {
+    font-family: "Inter", sans-serif;
+  }
+
+  button, a{
+    font-family: "Syne", sans-serif !important;
+  }
