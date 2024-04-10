@@ -122,7 +122,7 @@ const LoginPage = () => {
           </Box>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card sx={{ zIndex: 1, display: 'flex', flexDirection: 'row' }}>
+          <Card sx={{ zIndex: 1, display: 'flex', flexDirection: 'row', borderRadius: '20px' }}>
             <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
               <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Typography
