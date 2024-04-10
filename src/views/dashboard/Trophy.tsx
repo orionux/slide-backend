@@ -9,7 +9,6 @@ import CardContent from '@mui/material/CardContent'
 import { Avatar, Grid } from '@mui/material'
 
 // import UserIcon from 'src/layouts/components/UserIcon'
-import { TrendingUp } from 'mdi-material-ui'
 
 // Styled component for the triangle shaped background image
 // const TriangleImg = styled('img')({
@@ -27,17 +26,25 @@ import { TrendingUp } from 'mdi-material-ui'
 //   position: 'absolute'
 // })
 
-const Trophy = ({ title , number, icon }) => {
-  // ** Hook
-  // const theme = useTheme()
 
-  // const imageSrc = theme.palette.mode === 'light' ? 'triangle-light.png' : 'triangle-dark.png'
+const Trophy = ({ title, number, icon, badge }) => {
 
+
+  let badgeColor, badgeBackgroundColor;
+  if (badge && badge.charAt(0) === '+') {
+    // Positive badge
+    badgeColor = '#B80202';
+    badgeBackgroundColor = '#B802023c'; // Add transparency to color
+  } else if (badge && badge.charAt(0) === '-') {
+    // Negative badge
+    badgeColor = '#0B6D4B';
+    badgeBackgroundColor = '#0B6D4B3c'; // Add transparency to color
+  }
 
   return (
-    <Card sx={{ position: 'relative' }}>
+    <Card sx={{ position: 'relative', borderRadius: '14px' }}>
       <CardContent>
-        <Grid container spacing={6} sx={{display:' flex', flexDirection: 'row', alignItems:'center'}}>
+        <Grid container spacing={6} sx={{ display: ' flex', flexDirection: 'row', alignItems: 'center' }}>
           <Grid item xs={12} md={2}>
             <Avatar
               variant='rounded'
@@ -56,14 +63,37 @@ const Trophy = ({ title , number, icon }) => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant='h6' sx={{ my: 2, color: '#000 !important', fontSize: '15px !important', fontWeight: 600 }}>
-            {title}
+              {title}
             </Typography>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <Typography variant='h5' sx={{ my: 2, color: '#000 !important', fontSize: '30px !important', fontWeight: 600 }}>
-            {number}
-            </Typography>
-          </Grid>
+          {badge && ( // Render badge only if badge is provided and not empty
+            <Grid item xs={12} md={4} sx={{ position: 'relative' }}>
+              <span
+                style={{
+                  height: 24,
+                  fontSize: '0.75rem',
+                  position: 'absolute',
+                  right: '10px',
+                  top: '10px',
+                  color: badgeColor,
+                  fontWeight: 500,
+                  backgroundColor: badgeBackgroundColor,
+                  padding: '4px 20px',
+                  borderRadius: '30px'
+                }}
+              >{badge}</span>
+              <Typography variant='h5' sx={{ my: 2, color: '#000 !important', fontSize: '30px !important', fontWeight: 600 }}>
+                {number}
+              </Typography>
+            </Grid>
+          )}
+          {!badge && ( // Render number without badge if badge is not provided or empty
+            <Grid item xs={12} md={4}>
+              <Typography variant='h5' sx={{ my: 2, color: '#000 !important', fontSize: '30px !important', fontWeight: 600 }}>
+                {number}
+              </Typography>
+            </Grid>
+          )}
         </Grid>
       </CardContent>
     </Card>

@@ -102,13 +102,13 @@ const AdminComponent: React.FC = () => {
       <ApexChartWrapper>
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
-            <Trophy title="Total Users" number="17256" icon={<FaUserGroup />} />
+            <Trophy title="Total Users" number="17256" icon={<FaUserGroup />}  badge="" />
           </Grid>
           <Grid item xs={12} md={4}>
-            <Trophy title="Today New Users" number="452" icon={<FaUserPlus />} />
+            <Trophy title="Today New Users" number="452" icon={<FaUserPlus />} badge="+25%" />
           </Grid>
           <Grid item xs={12} md={4}>
-            <Trophy title="Today Revenue" number="$25k" icon={<FaCartShopping />} />
+            <Trophy title="Today Revenue" number="$25k" icon={<FaCartShopping />} badge="-25%" />
           </Grid>
           {/* <Grid item xs={12} md={8}>
             <StatisticsCard />
@@ -186,13 +186,13 @@ const SubAdminComponent: React.FC = () => {
       <ApexChartWrapper>
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
-          <Trophy title="On Going Projrcts" number="3" icon={<FaUserGroup />} />
+          <Trophy title="On Going Projrcts" number="3" icon={<FaUserGroup />} badge="" />
           </Grid>
           <Grid item xs={12} md={4}>
-          <Trophy title="New Projects" number="2" icon={<FaUserPlus />} />
+          <Trophy title="New Projects" number="2" icon={<FaUserPlus />}  badge="" />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
-          <Trophy title="Monthly Revenue" number="$25k" icon={<FaCartShopping />} />
+          <Trophy title="Monthly Revenue" number="$25k" icon={<FaCartShopping />}  badge="" />
           </Grid>
         </Grid>
       </ApexChartWrapper>
