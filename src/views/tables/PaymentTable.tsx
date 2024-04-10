@@ -8,6 +8,8 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow, { TableRowProps } from '@mui/material/TableRow'
 import TableCell, { TableCellProps, tableCellClasses } from '@mui/material/TableCell'
 import { Checkbox } from '@mui/material';
+import Link from 'next/link'
+import {  FaDownload, FaEllipsisVertical } from 'react-icons/fa6'
 
 
 const StyledTableCell = styled(TableCell)<TableCellProps>(({ theme }) => ({
@@ -36,11 +38,11 @@ const createData = (invoiceId: string, date: string, billingName: string, amount
 }
 
 const rows = [
-  createData('1','2024-04-01', 'John Doe', '1000', 'Paid', 'Active'),
-  createData('2','2024-04-01', 'Jane Smith', '2000', 'Pending', 'Active'),
-  createData('3','2024-04-01','Alice Johnson', '3000', 'Paid', 'Inactive'),
-  createData('4','2024-04-01','Bob Brown', '4000', 'Cancelled', 'Active'),
-  createData('5','2024-04-01','Eve Adams', '5000', 'Paid', 'Inactive')
+  createData('1', '2024-04-01', 'John Doe', '1000', 'Paid', '#'),
+  createData('2', '2024-04-01', 'Jane Smith', '2000', 'Pending', '#'),
+  createData('3', '2024-04-01', 'Alice Johnson', '3000', 'Paid', '#'),
+  createData('4', '2024-04-01', 'Bob Brown', '4000', 'Cancelled', '#'),
+  createData('5', '2024-04-01', 'Eve Adams', '5000', 'Paid', '#')
 ]
 
 const PaymentTable = () => {
@@ -63,7 +65,7 @@ const PaymentTable = () => {
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <StyledTableRow key={row.invoiceId}>
+              <><StyledTableRow key={row.invoiceId}>
                 <StyledTableCell component='th' scope='row'>
                   <Checkbox readOnly /> {row.invoiceId}
                 </StyledTableCell>
@@ -71,8 +73,14 @@ const PaymentTable = () => {
                 <StyledTableCell align='left'>{row.billingName}</StyledTableCell>
                 <StyledTableCell align='left'>{row.amount}</StyledTableCell>
                 <StyledTableCell align='left'>{row.status}</StyledTableCell>
-                <StyledTableCell align='left'>{row.pdf}</StyledTableCell>
+                <StyledTableCell align='left'>
+                  <Link passHref href={row.pdf}>
+                    <span style={{backgroundColor: '#41EDB1', color: '#263238', padding: '8px 20px'}}><FaDownload /> PDF</span>
+                  </Link>
+                </StyledTableCell>
+                <StyledTableCell align='left'><FaEllipsisVertical /> </StyledTableCell>
               </StyledTableRow>
+              </>
             ))}
           </TableBody>
         </Table>
