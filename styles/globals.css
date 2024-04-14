@@ -86,3 +86,52 @@ border-color: #5A5A5A !important;
   .recharts-legend-wrapper{
     display: none;
   }
+  .timelineList{
+    font-family: "Syne", sans-serif !important;
+    color: #455A64;
+    font-size: 16px;
+    position: relative;
+  }
+  .timelineList .active{
+    color: #030211;
+    font-size: 20px;
+  }
+  .timelineList .active span{
+    background-color: #030211;
+    color: #ffffff;
+    padding: 2px 8px;
+  }
+  .dotPoint{
+    position: relative;
+  }
+  .dotPoint::before{
+    content: 'oo';
+    color: #11D993;
+    background-color: #11D993;
+    width: 10px;
+    height: 10px;
+    line-height: 0px;
+    font-size: 16px;
+    border-radius: 100%;
+    margin-right: 10px;
+    text-align: center;
+  }
+  .stepPoint::after{
+    width: 2px;
+    height: 180px;
+    position: absolute;
+    content: '';
+    background-color: #11D993;
+    left: 8px;
+    top: 8px;
+  }
+  .step1{
+    color: #030211;
+  }
+  .step2{
+    color: #455A64;
+    font-size: 12px;
+  }
+  .marginb30{
+    margin-bottom: 30px;
+  }

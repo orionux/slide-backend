@@ -52,13 +52,58 @@ const SummeryPage = () => {
       <ProjectHeader />
       <Grid container spacing={5} sx={{ padding: "30px 50px", backgroundColor: '#FFFFFF' }}>
         <Grid item xs={12} sm={6} sx={{ backgroundColor: '#FFFFFF', borderRadius: "8px", padding: '30px' }}>
-          <Typography sx={{ color: '#011627', fontSize: '30px', fontWeight: 600,  fontFamily: '"Syne", sans-serif !important;'  }} >Project Summery</Typography>
-          <Typography sx={{ color: '#263238', fontSize: '16px', fontWeight: 400,  fontFamily: '"Syne", sans-serif !important;' }} >Project delivered on 16 : 45 | 23rd June 2023</Typography>
+          <Typography sx={{ color: '#011627', fontSize: '30px', fontWeight: 600, fontFamily: '"Syne", sans-serif !important;' }} >Project Summery</Typography>
+          <Typography sx={{ color: '#263238', fontSize: '16px', fontWeight: 400, fontFamily: '"Syne", sans-serif !important;' }} >Project delivered on 16 : 45 | 23rd June 2023</Typography>
+
+          {/* list */}
+          <Box>
+            <ul className="timelineList" style={{ listStyle: 'none', paddingTop: '30px' }}>
+              <li className='active stepPoint dotPoint marginb30'>Fix <span>Up</span></li>
+              <li className='stepPoint dotPoint '>Category</li>
+              <ul style={{listStyle: 'square', marginLeft: '30px'}} className='marginb30'>
+                <li className='step1'>
+                  Business Services & Consulting
+                </li>
+              </ul>
+              <li className='stepPoint dotPoint'>Improvements</li>
+              <ul  style={{listStyle: 'square', marginLeft: '30px'}} className='marginb30'>
+                <li className='step1'>
+                  Most to be improved in the slides
+                </li>
+                <ul style={{ listStyle: 'none' }}>
+                  <li className='step2'>
+                    Adjust Colors, fonts and text size
+                  </li>
+                </ul>
+                <li className='step1'>
+                  Audience
+                </li>
+                <ul style={{ listStyle: 'none' }}>
+                  <li className='step2'>
+                    Colleagues
+                  </li>
+                </ul>
+                <li className='step1'>
+                  Goal of the presentation
+                </li>
+                <ul style={{ listStyle: 'none' }}>
+                  <li className='step2'>
+                    To persuade or convince
+                  </li>
+                </ul>
+              </ul>
+              <li className='dotPoint'>Delivery info</li>
+              <ul  style={{listStyle: 'square', marginLeft: '30px'}} className='marginb30' >
+                <li className='step1'>
+                  23 jun 2023
+                </li>
+              </ul>
+            </ul>
+          </Box>
         </Grid>
         <Grid item xs={12} sm={6} sx={{ backgroundColor: '#F2F5FF', borderRadius: "8px", padding: '30px' }}>
           <Typography sx={{ color: '#011627', fontSize: '30px', fontWeight: 600, fontFamily: '"Syne", sans-serif !important;' }} >Project Resources</Typography>
-          <Typography sx={{ color: '#263238', fontSize: '16px', fontWeight: 400, fontFamily: '"Syne", sans-serif !important;'  }} >Lorem ipsum dolor sit amet consectetur. Pharetra consequat nec nisl at tempor vel pellentesque nunc.</Typography>
-
+          <Typography sx={{ color: '#263238', fontSize: '16px', fontWeight: 400, fontFamily: '"Syne", sans-serif !important;' }} >Lorem ipsum dolor sit amet consectetur. Pharetra consequat nec nisl at tempor vel pellentesque nunc.</Typography>
           <Grid item container spacing={2} style={{ paddingBottom: '40px', paddingTop: '40px' }}>
             {
               projectImages.map((project) => (
@@ -69,22 +114,19 @@ const SummeryPage = () => {
                 </>
               ))
             }
-
           </Grid>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center' }}>
-            <Button sx={{ fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E',  fontFamily: '"Syne", sans-serif !important;' , borderRadius: '8px', textTransform: 'uppercase', paddingLeft: '20px', paddingRight: '20px' }}>
+            <Button sx={{ fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E', fontFamily: '"Syne", sans-serif !important;', borderRadius: '8px', textTransform: 'uppercase', paddingLeft: '20px', paddingRight: '20px' }}>
               request more
             </Button>
           </Box>
 
 
         </Grid>
-
-
       </Grid>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center' }}>
-        <Button sx={{ fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E', fontFamily: '"Syne", sans-serif !important;' , borderRadius: '8px', textTransform: 'uppercase', paddingLeft: '20px', paddingRight: '20px' }}>
+        <Button sx={{ fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E', fontFamily: '"Syne", sans-serif !important;', borderRadius: '8px', textTransform: 'uppercase', paddingLeft: '20px', paddingRight: '20px' }}>
           Start Now
         </Button>
       </Box>
