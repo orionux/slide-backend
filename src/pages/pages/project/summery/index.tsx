@@ -125,8 +125,8 @@ const SummeryPage = () => {
         </Grid>
       </Grid>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center' }}>
-        <Button sx={{ fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E', fontFamily: '"Syne", sans-serif !important;', borderRadius: '8px', textTransform: 'uppercase', paddingLeft: '20px', paddingRight: '20px' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', marginBottom: '50px' }}>
+        <Button sx={{ fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E', fontFamily: '"Syne", sans-serif !important;', borderRadius: '8px', textTransform: 'uppercase', paddingLeft: '100px', paddingRight: '100px' }}>
           Start Now
         </Button>
       </Box>
