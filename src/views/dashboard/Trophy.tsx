@@ -7,6 +7,7 @@ import CardContent from '@mui/material/CardContent'
 
 // import { styled, useTheme } from '@mui/material/styles'
 import { Avatar, Grid } from '@mui/material'
+import { FC } from 'react';
 
 // import UserIcon from 'src/layouts/components/UserIcon'
 
@@ -27,7 +28,15 @@ import { Avatar, Grid } from '@mui/material'
 // })
 
 
-const Trophy = ({ title, number, icon, badge }) => {
+interface TrophyProps {
+  title: string;
+  number: string;
+  icon: JSX.Element;
+  badge?: string;
+}
+
+
+const Trophy: FC<TrophyProps> = ({ title, number, icon, badge }) =>  {
 
 
   let badgeColor, badgeBackgroundColor;

@@ -35,21 +35,22 @@ const OrderManagementComponent = () => {
 
     // Function to calculate time left for each project
     const calculateTimeLeft = (endDate: string) => {
-        const difference = new Date(endDate) - new Date();
+        const difference = new Date(endDate).getTime() - new Date().getTime();
         let timeLeft = '';
-
+    
         if (difference > 0) {
             const days = Math.floor(difference / (1000 * 60 * 60 * 24));
             const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((difference / 1000 / 60) % 60);
-
+    
             timeLeft = `${days}d ${hours}h ${minutes}m`;
         } else {
             timeLeft = 'Expired';
         }
-
+    
         return timeLeft;
     };
+    
 
 
     return (
