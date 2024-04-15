@@ -7,6 +7,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import NormalHeader from 'src/layouts/components/NormalHeader'
 import ProjectHeader from 'src/views/projectComponents/projectHeader'
+import ProjectFooter from 'src/views/projectComponents/projectFooter'
 
 
 const projectImages = [
@@ -130,6 +131,8 @@ const SummeryPage = () => {
           Start Now
         </Button>
       </Box>
+
+      <ProjectFooter />
     </>
   )
 }

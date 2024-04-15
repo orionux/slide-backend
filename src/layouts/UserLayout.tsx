@@ -24,9 +24,10 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 
 interface Props {
   children: ReactNode;
+  userType: string;
 }
 
-const UserLayout = ({ children }: Props) => {
+const UserLayout = ({ userType, children }: Props) => {
 
   
   // ** Hooks
@@ -34,7 +35,7 @@ const UserLayout = ({ children }: Props) => {
   const [navItems, setNavItems] = useState<VerticalNavItemsType>([]);
 
   useEffect(() => {
-    const userType = localStorage.getItem('userType') || '';
+    // const userType = localStorage.getItem('userType') || '';
     const items = navigation(userType); // Call navigation function to get navigation items
     setNavItems(items); // Set the navigation items in state
   }, []);
