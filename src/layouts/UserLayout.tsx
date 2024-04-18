@@ -1,20 +1,9 @@
-// ** React Imports
 import { ReactNode, useEffect, useState } from 'react'
-
-// ** MUI Imports
-// import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
-// ** Layout Imports
 // !Do not remove this Layout import
 import VerticalLayout from 'src/@core/layouts/VerticalLayout'
-
-// ** Navigation Imports
-// import VerticalNavItems from 'src/navigation/vertical'
-
-// ** Component Import
-// import UpgradeToProButton from './components/UpgradeToProButton'
 import VerticalAppBarContent from './components/vertical/AppBarContent'
 
 // ** Hook Import
@@ -29,43 +18,29 @@ interface Props {
 
 const UserLayout = ({ userType, children }: Props) => {
 
-  
-  // ** Hooks
+  console.log("user type: ", userType)
+
   const { settings, saveSettings } = useSettings()
   const [navItems, setNavItems] = useState<VerticalNavItemsType>([]);
 
-  useEffect(() => {
-    // const userType = localStorage.getItem('userType') || '';
-    const items = navigation(userType); // Call navigation function to get navigation items
-    setNavItems(items); // Set the navigation items in state
-  }, []);
 
+  const [loggedUserType, setLoggedUserType] = useState('')
+  
+  // get user type for navigation filter
+  useEffect(() => {
+    // const items = navigation(userType); 
+    // setNavItems(items); 
+
+    const type = localStorage.getItem('userType') || '';
+    setLoggedUserType(type);
+    const items = navigation(loggedUserType); 
+    setNavItems(items);
+  }, [loggedUserType]); 
   
   
   
-  /**
-   *  The below variable will hide the current layout menu at given screen size.
-   *  The menu will be accessible from the Hamburger icon only (Vertical Overlay Menu).
-   *  You can change the screen size from which you want to hide the current layout menu.
-   *  Please refer useMediaQuery() hook: https://mui.com/components/use-media-query/,
-   *  to know more about what values can be passed to this hook.
-   *  ! Do not change this value unless you know what you are doing. It can break the template.
-   */
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
 
-  // const UpgradeToProImg = () => {
-  //   return (
-  //     <Box sx={{ mx: 'auto' }}>
-  //       <a
-  //         target='_blank'
-  //         rel='noreferrer'
-  //         href='https://themeselection.com/products/materio-mui-react-nextjs-admin-template/'
-  //       >
-  //         <img width={230} alt='upgrade to premium' src={`/images/misc/upgrade-banner-${settings.mode}.png`} />
-  //       </a>
-  //     </Box>
-  //   )
-  // }
 
   return (
     <VerticalLayout

@@ -29,6 +29,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import { useEffect, useState } from 'react'
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -55,8 +56,18 @@ if (themeConfig.routingLoader) {
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
+  const [loggedUserType, setLoggedUserType] = useState('')
+  
+  useEffect(() => {
+    const user_type = localStorage.getItem('userType') || '';
+    setLoggedUserType(user_type)
+    console.log('user type app : ', user_type)
+  
+  }, [])
+  
+  
   // Variables               admin  ,  subadmin , user
-  const getLayout = Component.getLayout ?? (page => <UserLayout userType="admin">{page}</UserLayout>)
+  const getLayout = Component.getLayout ?? (page => <UserLayout userType={loggedUserType} >{page}</UserLayout>)
 
   return (
     <CacheProvider value={emotionCache}>

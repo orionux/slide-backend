@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // ** Icon imports
 import Login from 'mdi-material-ui/Login'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
@@ -13,9 +14,13 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 import { SvgIconTypeMap } from '@mui/material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 
+// import { useState, useEffect } from 'react'
 
-const navigation = (userType: string | undefined): VerticalNavItemsType => {
 
+const navigation = (loggedUserType: string | undefined): VerticalNavItemsType => {
+
+    console.log('user type navmenu: ', loggedUserType)
+  
 
   // Define all navigation items
   const allNavItems = [
@@ -84,7 +89,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
 
   // Define navigation items based on user type
   let filteredNavItems: VerticalNavItemsType | ({ title: string; icon: OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string }; path: string; openInNewTab?: undefined } | { title: string; icon: OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string }; path: string; openInNewTab: boolean })[] = [];
-  if (userType === 'admin') {
+  if (loggedUserType === 'admin') {
     // Admin gets all items
     filteredNavItems = allNavItems.filter(item =>
       item.title !== 'Orders' &&
@@ -92,7 +97,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
       item.title !== 'Chats' &&
       item.title !== 'Info'
     );
-  } else if (userType === 'subadmin') {
+  } else if (loggedUserType === 'subadmin') {
     // Subadmin gets specific items
     filteredNavItems = allNavItems.filter(item =>
       item.title !== 'User Management' &&
@@ -105,7 +110,7 @@ const navigation = (userType: string | undefined): VerticalNavItemsType => {
       item.title !== 'Chats' &&
       item.title !== 'Info'
     );
-  } else if (userType === 'user') {
+  } else if (loggedUserType === 'user') {
     // Regular user gets specific items
     filteredNavItems = allNavItems.filter(item =>
       item.title !== 'User Management' &&
