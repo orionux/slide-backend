@@ -1,4 +1,5 @@
-import { Button, Grid } from '@mui/material'
+import { Box, Button, Grid } from '@mui/material'
+import { DiscPlayer } from 'mdi-material-ui'
 import React, { ReactNode, useState } from 'react'
 import { FaBars } from 'react-icons/fa6'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -88,7 +89,14 @@ const UploadProject = () => {
                                 onChange={handleFileSelect}
                                 multiple
                             />
-                            <Button component="span">Upload Files</Button>
+                            <Box sx={{display: 'flex', flexDirection: 'row', marginTop: '30px'}}>
+                                <input type="radio" name="fileUpload" />
+                                <label htmlFor="fileUpload" style={{marginRight: '50px'}}>Ready to Send for a review</label>
+
+                                <input type="radio" name="fileUpload" />
+                                <label htmlFor="fileUpload">Ready for deliver</label>
+                            </Box>
+                            <Button component="span" sx={{backgroundColor: '#2D2D2E', padding: '10px 50px', marginTop: '40px'}}>Upload Files</Button>
                         </label>
                     </div>
                     {selectedFiles && (
