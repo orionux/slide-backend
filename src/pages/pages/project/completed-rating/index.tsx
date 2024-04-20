@@ -74,7 +74,7 @@ const Completed = () => {
                                     {
                                         item.iconArray.map((rate, index) => (
                                             <Grid item xs={2} key={index} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                                                <button onClick={() => handleRatingClick(item.question, rate)}>
+                                                <button onClick={() => handleRatingClick(item.question, rate)} style={{border: 'none', width: '100px', backgroundColor: 'transparent'}}>
                                                     {
                                                         selectedRating[item.question] === rate ? <HiMiniStar style={{fontSize: '30px', color: '#FFC107'}} />: <HiOutlineStar  style={{fontSize: '30px', color: '#455A64'}} />
                                                     }
