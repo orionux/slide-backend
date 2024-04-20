@@ -4,7 +4,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import NormalHeader from 'src/layouts/components/NormalHeader'
 import ProjectFooter from 'src/views/projectComponents/projectFooter'
 import ProjectHeader from 'src/views/projectComponents/projectHeader'
-import { HiOutlineStar, HiMiniStar  } from "react-icons/hi2";
+import { HiOutlineStar, HiMiniStar } from "react-icons/hi2";
 
 
 
@@ -63,7 +63,7 @@ const Completed = () => {
                     <Typography sx={{ fontSize: '16px', fontWeight: 500, fontFamily: 'Inter, sans-serif;', marginBottom: '30px' }}>
                         Your Honest feedback will help our designers improve
                     </Typography>
-                    
+
                     {
                         ratingData.map((item) => (
                             <Box key={item.id} sx={{ display: 'flex', flexDirection: 'column', marginBottom: '30px' }}>
@@ -74,11 +74,11 @@ const Completed = () => {
                                     {
                                         item.iconArray.map((rate, index) => (
                                             <Grid item xs={2} key={index} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                                                <button onClick={() => handleRatingClick(item.question, rate)} style={{border: 'none', width: '100px', backgroundColor: 'transparent'}}>
+                                                <button onClick={() => handleRatingClick(item.question, rate)} style={{ border: 'none', width: '100px', backgroundColor: 'transparent' }}>
                                                     {
-                                                        selectedRating[item.question] === rate ? <HiMiniStar style={{fontSize: '30px', color: '#FFC107'}} />: <HiOutlineStar  style={{fontSize: '30px', color: '#455A64'}} />
+                                                        selectedRating[item.question] === rate ? <HiMiniStar style={{ fontSize: '30px', color: '#FFC107' }} /> : <HiOutlineStar style={{ fontSize: '30px', color: '#455A64' }} />
                                                     }
-                                                    
+
                                                     <Typography sx={{ fontFamily: 'Inter, sans-serif;', fontSize: '10px', fontWeight: 600, color: selectedRating[item.question] === rate ? '#FFC107' : '#455A64' }}>
                                                         {rate}
                                                     </Typography>
@@ -90,6 +90,22 @@ const Completed = () => {
                             </Box>
                         ))
                     }
+                </Box>
+                <Box sx={{backgroundColor: '#fff', borderRadius: '20px', padding: '30px'}}>
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500, fontFamily: 'Inter, sans-serif;', marginBottom: '10px' }}>
+                        Presentation feedback
+                    </Typography>
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500, fontFamily: 'Inter, sans-serif;', marginBottom: '30px' }}>
+                        Did the Quality of design meet your expectations?
+                    </Typography>
+                    <textarea 
+                    name="rating_feedback" 
+                    id="rating_feedback" 
+                    cols="50" 
+                    rows="10" 
+                    placeholder='What did we do well?'
+                    style={{border: 'none',fontSize: '14px', fontWeight: 300, fontFamily: 'Inter, sans-serif;', color: '#C0C0C0', outline: 'none'}}
+                    ></textarea>
                 </Box>
             </Box>
             <ProjectFooter />
