@@ -100,7 +100,7 @@ const Completed = () => {
                     </Typography>
                     <textarea 
                     name="rating_feedback" 
-                    id="rating_feedback" cols="50" rows="10" 
+                    id="rating_feedback" cols={50} rows={10} 
                     placeholder='What did we do well?'
                     style={{border: 'none',fontSize: '14px', fontWeight: 300, fontFamily: 'Inter, sans-serif;', color: '#C0C0C0', outline: 'none'}}
                     ></textarea>
