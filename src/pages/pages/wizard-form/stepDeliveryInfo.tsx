@@ -272,67 +272,95 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
                     minWidth: 275,
                     width: 330,
                     maxWidth: 350,
+                    minHeight: 590,
                     padding: '20px',
                     textAlign: 'center',
+                    position: 'relative',
                     borderRadius: '20px',
                     boxShadow: '0px 5px 20px 0px rgba(58, 53, 65, 0.21)'
                   }}
                 >
-                  <Typography sx={{ color: '#000', fontSize: '20px', fontFamily: '"Syne", sans-serif !important;' }}>
-                    {packageData.type}
-                  </Typography>
-                  <Typography sx={{ color: '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
-                    {packageData.price}
-                  </Typography>
-                  <Typography sx={{ color: '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}>
-                    {packageData.slideCount}
-                  </Typography>
-                  <Typography sx={{ color: '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}>
-                    SR /Slide
-                  </Typography>
-                  <Typography
-                    sx={{ mt: 2, color: '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
-                  >
-                    {packageData.description}
-                  </Typography>
-                  <Box
-                    sx={{
-                      mt: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'start',
-                      alignItems: 'start'
-                    }}
-                  >
-                    {packageData.features.map(feature => (
-                      <>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            mt: 2,
-                            textAlign: 'start'
-                          }}
-                        >
-                          <Box style={{ width: '20px' }}>
-                            <FaCircleCheck style={{ fontSize: '14px' }} />
-                          </Box>
-                          <Typography
-                            key={feature.id}
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Typography sx={{ color: '#000', fontSize: '20px', fontFamily: '"Syne", sans-serif !important;' }}>
+                      {packageData.type}
+                    </Typography>
+                    <Typography sx={{ color: '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
+                      {packageData.price}
+                    </Typography>
+                    <Typography
+                      sx={{ color: '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}
+                    >
+                      {packageData.slideCount}
+                    </Typography>
+                    <Typography
+                      sx={{ color: '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}
+                    >
+                      SR /Slide
+                    </Typography>
+                    <Typography
+                      sx={{ mt: 2, color: '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
+                    >
+                      {packageData.description}
+                    </Typography>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'start',
+                        alignItems: 'start'
+                      }}
+                    >
+                      {packageData.features.map(feature => (
+                        <>
+                          <Box
                             sx={{
-                              color: '#585858',
-                              fontSize: '12px',
-                              fontFamily: '"Syne", sans-serif !important;',
-                              marginLeft: '6px'
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              mt: 2,
+                              textAlign: 'start'
                             }}
                           >
-                            {feature.text}
-                          </Typography>
-                        </Box>
-                      </>
-                    ))}
+                            <Box style={{ width: '20px' }}>
+                              <FaCircleCheck style={{ fontSize: '14px' }} />
+                            </Box>
+                            <Typography
+                              key={feature.id}
+                              sx={{
+                                color: '#585858',
+                                fontSize: '12px',
+                                fontFamily: '"Syne", sans-serif !important;',
+                                marginLeft: '6px'
+                              }}
+                            >
+                              {feature.text}
+                            </Typography>
+                          </Box>
+                        </>
+                      ))}
+                    </Box>
                   </Box>
+                  <Button
+                    sx={{
+                      backgroundColor: '#2D2D2E',
+                      color: '#fff',
+                      fontFamily: '"Syne", sans-serif !important;',
+                      fontSize: '16px',
+                      fontWeight: 400,
+                      marginTop: '30px',
+                      position: 'absolute',
+                      bottom: '20px',
+                      left: '20px',
+                      width: '88%',
+                      '&:hover': {
+                        backgroundColor: '#2D2D2E',
+                        color: '#fff'
+                      }
+                    }}
+                  >
+                    Choose Plan
+                  </Button>
                 </Card>
               ))}
             </Box>
