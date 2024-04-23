@@ -142,3 +142,21 @@ border-color: #5A5A5A !important;
     font-family: "Syne", sans-serif !important;
     font-size: 15px !important
   }
+
+  .deliveryInfoTabs button{
+    color: #fff !important;
+    margin: 0;
+  }
+  .deliveryInfoTabs .Mui-selected{
+    background-color: #11D993 !important;
+    border-radius: 50px;
+    border-bottom: none !important;
+    margin: 0px !important;
+  }
+
+  .deliveryInfoTabs .MuiTabs-indicator{
+    display: none;
+  }
+  .deliveryInfoTabs .MuiTabs-flexContainer{
+    padding: 4px;
+  }

@@ -1,5 +1,6 @@
-import { Box, Button, Typography } from '@mui/material'
-import React from 'react'
+import { Box, Button, Card, Tab, Tabs, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { FaCircleCheck } from 'react-icons/fa6'
 
 interface StepDeliveryInfoProps {
   formData: any
@@ -10,9 +11,190 @@ interface StepDeliveryInfoProps {
 }
 
 const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
-  //     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     onChange({ ...formData, [e.target.name]: e.target.value })
-  //   }
+  const [selectedTab, setSelectedTab] = useState(0)
+
+  const timeData = [
+    {
+      id: 1,
+      title: 'Urgent within 48 hours',
+      packages: [
+        {
+          id: 'packageUrgent1',
+          type: 'Basic',
+          price: '$150',
+          slideCount: '10',
+          description:
+            'Designed for smaller businesses or those with simpler presentation needs. This package offers essential slide design services.',
+          features: [
+            {
+              id: 'basic1',
+              text: 'Basic formatting'
+            },
+            {
+              id: 'basic2',
+              text: 'Stock images and icons'
+            },
+            {
+              id: 'basic3',
+              text: 'Simple charts and graphs'
+            }
+          ]
+        },
+        {
+          id: 'packageUrgent1',
+          type: 'Professional',
+          price: '$190',
+          slideCount: '14',
+          description:
+            'Targets medium-sized businesses or those requiring more advanced design elements and a higher level of customization.',
+          features: [
+            {
+              id: 'professional1',
+              text: 'Advanced formatting and custom design'
+            },
+            {
+              id: 'professional2',
+              text: 'Custom charts, graphs, and infographics'
+            },
+            {
+              id: 'professional3',
+              text: 'Basic animations and transitions'
+            },
+            {
+              id: 'professional4',
+              text: 'Up to 2 rounds of revisions'
+            }
+          ]
+        },
+        {
+          id: 'packageUrgent1',
+          type: 'Premium',
+          price: '$300',
+          slideCount: '18',
+          description:
+            'Designed for larger businesses, high-stakes presentations, or those requiring a full suite of design services.',
+          features: [
+            {
+              id: 'premium1',
+              text: 'Premium formatting and custom design'
+            },
+            {
+              id: 'premium2',
+              text: 'Exclusive high-quality images, icons, and illustrations'
+            },
+            {
+              id: 'premium3',
+              text: 'Custom charts, graphs, and infographics with advanced data visualization'
+            },
+            {
+              id: 'premium4',
+              text: 'Complex animations and transitions'
+            },
+            {
+              id: 'premium5',
+              text: 'Up to 3 rounds of revisions'
+            },
+            {
+              id: 'premium6',
+              text: 'Dedicated project manager for communication and collaboration'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: ' 96 Hours',
+      packages: [
+        {
+          id: 'packageUrgent1',
+          type: 'Basic 1',
+          price: '$150',
+          slideCount: '10',
+          description:
+            'Designed for smaller businesses or those with simpler presentation needs. This package offers essential slide design services.',
+          features: [
+            {
+              id: 'basic1',
+              text: 'Basic formatting'
+            },
+            {
+              id: 'basic2',
+              text: 'Stock images and icons'
+            },
+            {
+              id: 'basic3',
+              text: 'Simple charts and graphs'
+            }
+          ]
+        },
+        {
+          id: 'packageUrgent1',
+          type: 'Professional 1',
+          price: '$190',
+          slideCount: '14',
+          description:
+            'Targets medium-sized businesses or those requiring more advanced design elements and a higher level of customization.',
+          features: [
+            {
+              id: 'professional1',
+              text: 'Advanced formatting and custom design'
+            },
+            {
+              id: 'professional2',
+              text: 'Custom charts, graphs, and infographics'
+            },
+            {
+              id: 'professional3',
+              text: 'Basic animations and transitions'
+            },
+            {
+              id: 'professional4',
+              text: 'Up to 2 rounds of revisions'
+            }
+          ]
+        },
+        {
+          id: 'packageUrgent1',
+          type: 'Premium 1',
+          price: '$300',
+          slideCount: '18',
+          description:
+            'Designed for larger businesses, high-stakes presentations, or those requiring a full suite of design services.',
+          features: [
+            {
+              id: 'premium1',
+              text: 'Premium formatting and custom design'
+            },
+            {
+              id: 'premium2',
+              text: 'Exclusive high-quality images, icons, and illustrations'
+            },
+            {
+              id: 'premium3',
+              text: 'Custom charts, graphs, and infographics with advanced data visualization'
+            },
+            {
+              id: 'premium4',
+              text: 'Complex animations and transitions'
+            },
+            {
+              id: 'premium5',
+              text: 'Up to 3 rounds of revisions'
+            },
+            {
+              id: 'premium6',
+              text: 'Dedicated project manager for communication and collaboration'
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue)
+  }
 
   console.log(formData)
 
@@ -29,7 +211,17 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
           textAlign: 'center'
         }}
       >
-        <Box sx={{ marginBottom: '80px', width: '100%' }}>
+        <Box
+          sx={{
+            marginBottom: '80px',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center'
+          }}
+        >
           <Typography
             sx={{
               color: '#122675',
@@ -46,12 +238,105 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
               fontFamily: '"Syne", sans-serif !important;',
               fontSize: '16px',
               fontWeight: 400,
-              marginBottom: '30px'
+              marginBottom: '30px',
+              width: '75%'
             }}
           >
             Lorem ipsum dolor sit amet consectetur. Platea ac sit quam dolor enim nibh adipiscing est. Amet malesuada
             sed in mauris urna arcu nibh tellus vitae. Lacus.
           </Typography>{' '}
+          <Box sx={{}}>
+            <Tabs
+              value={selectedTab}
+              onChange={handleTabChange}
+              indicatorColor='primary'
+              textColor='primary'
+              variant='fullWidth'
+              className='deliveryInfoTabs'
+              sx={{
+                borderRadius: '50px'
+              }}
+            >
+              {timeData.map(time => (
+                <Tab key={time.id} label={time.title} />
+              ))}
+            </Tabs>
+
+            <Box
+              sx={{ display: 'flex', justifyContent: 'center', alignItems: 'start', gap: '20px', marginTop: '30px' }}
+            >
+              {timeData[selectedTab].packages.map(packageData => (
+                <Card
+                  key={packageData.id}
+                  sx={{
+                    minWidth: 275,
+                    width: 330,
+                    maxWidth: 350,
+                    padding: '20px',
+                    textAlign: 'center',
+                    borderRadius: '20px',
+                    boxShadow: '0px 5px 20px 0px rgba(58, 53, 65, 0.21)'
+                  }}
+                >
+                  <Typography sx={{ color: '#000', fontSize: '20px', fontFamily: '"Syne", sans-serif !important;' }}>
+                    {packageData.type}
+                  </Typography>
+                  <Typography sx={{ color: '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
+                    {packageData.price}
+                  </Typography>
+                  <Typography sx={{ color: '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}>
+                    {packageData.slideCount}
+                  </Typography>
+                  <Typography sx={{ color: '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}>
+                    SR /Slide
+                  </Typography>
+                  <Typography
+                    sx={{ mt: 2, color: '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
+                  >
+                    {packageData.description}
+                  </Typography>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'start',
+                      alignItems: 'start'
+                    }}
+                  >
+                    {packageData.features.map(feature => (
+                      <>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            mt: 2,
+                            textAlign: 'start'
+                          }}
+                        >
+                          <Box style={{ width: '20px' }}>
+                            <FaCircleCheck style={{ fontSize: '14px' }} />
+                          </Box>
+                          <Typography
+                            key={feature.id}
+                            sx={{
+                              color: '#585858',
+                              fontSize: '12px',
+                              fontFamily: '"Syne", sans-serif !important;',
+                              marginLeft: '6px'
+                            }}
+                          >
+                            {feature.text}
+                          </Typography>
+                        </Box>
+                      </>
+                    ))}
+                  </Box>
+                </Card>
+              ))}
+            </Box>
+          </Box>
         </Box>
         <Button
           sx={{
