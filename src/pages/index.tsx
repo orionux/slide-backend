@@ -246,7 +246,7 @@ const RegularUserComponent: React.FC = () => {
             “Welcome {localStorage.getItem('userType')}! <br></br> Let's create
             stunning presentations together”
           </Typography>
-          <Link passHref href="#">
+          <Link passHref href="/pages/wizard-form/">
             <Button sx={{
               backgroundColor: '#455A64', 
               width: '150px', 

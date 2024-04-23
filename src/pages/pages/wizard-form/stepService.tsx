@@ -101,7 +101,7 @@ const handleNext = () => {
           }}
         >
           Select Your
-          <span style={{ color: '#fff', backgroundColor: '#000' }}>{title}</span>
+           <span style={{ color: '#fff', backgroundColor: '#000', marginLeft: '10px' }}>{title}</span>
         </Typography>
 
         {/* cards */}
