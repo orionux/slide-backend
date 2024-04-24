@@ -8,10 +8,12 @@ interface StepDeliveryInfoProps {
   onNext: () => void
   onBack: () => void
   title: string
+  onPackageSelect: (packageId: string) => void
 }
 
-const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
+const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData, onPackageSelect, onNext, onChange }) => {
   const [selectedTab, setSelectedTab] = useState(0)
+  const [selectedPackageId, setSelectedPackageId] = useState('')
 
   const timeData = [
     {
@@ -19,7 +21,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
       title: 'Urgent within 48 hours',
       packages: [
         {
-          id: 'packageUrgent1',
+          id: 'packageUrgentBasic',
           type: 'Basic',
           price: '$150',
           slideCount: '10',
@@ -41,7 +43,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
           ]
         },
         {
-          id: 'packageUrgent1',
+          id: 'packageUrgentProfessional',
           type: 'Professional',
           price: '$190',
           slideCount: '14',
@@ -67,7 +69,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
           ]
         },
         {
-          id: 'packageUrgent1',
+          id: 'packageUrgentPremium',
           type: 'Premium',
           price: '$300',
           slideCount: '18',
@@ -107,7 +109,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
       title: ' 96 Hours',
       packages: [
         {
-          id: 'packageUrgent1',
+          id: 'packageNormalBasic',
           type: 'Basic 1',
           price: '$150',
           slideCount: '10',
@@ -129,7 +131,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
           ]
         },
         {
-          id: 'packageUrgent1',
+          id: 'packageNormalProfessional',
           type: 'Professional 1',
           price: '$190',
           slideCount: '14',
@@ -155,7 +157,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
           ]
         },
         {
-          id: 'packageUrgent1',
+          id: 'packageNormalPremium',
           type: 'Premium 1',
           price: '$300',
           slideCount: '18',
@@ -194,6 +196,14 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue)
+  }
+
+  const handlePackageSelect = (packageId: string) => {
+    setSelectedPackageId(packageId)
+    onPackageSelect(packageId)
+
+    // Update form data with selected package ID
+    onChange({ ...formData, selectedPackageId: packageId })
   }
 
   console.log(formData)
@@ -277,28 +287,33 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
                     textAlign: 'center',
                     position: 'relative',
                     borderRadius: '20px',
-                    boxShadow: '0px 5px 20px 0px rgba(58, 53, 65, 0.21)'
+                    boxShadow: '0px 5px 20px 0px rgba(58, 53, 65, 0.21)',
+                    backgroundColor: selectedPackageId === packageData.id ? '#2D2D2E' : '#fff'
                   }}
                 >
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography sx={{ color: '#000', fontSize: '20px', fontFamily: '"Syne", sans-serif !important;' }}>
+                    <Typography sx={{ 
+                      color: selectedPackageId === packageData.id ? '#fff' : '#000', 
+                      fontSize: '20px', 
+                      fontFamily: '"Syne", sans-serif !important;' 
+                      }}>
                       {packageData.type}
                     </Typography>
-                    <Typography sx={{ color: '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
+                    <Typography sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
                       {packageData.price}
                     </Typography>
                     <Typography
-                      sx={{ color: '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}
+                      sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}
                     >
                       {packageData.slideCount}
                     </Typography>
                     <Typography
-                      sx={{ color: '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}
+                      sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}
                     >
                       SR /Slide
                     </Typography>
                     <Typography
-                      sx={{ mt: 2, color: '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
+                      sx={{ mt: 2, color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
                     >
                       {packageData.description}
                     </Typography>
@@ -319,7 +334,8 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
                               flexDirection: 'row',
                               alignItems: 'center',
                               mt: 2,
-                              textAlign: 'start'
+                              textAlign: 'start',
+                              color: selectedPackageId === packageData.id ? '#fff' : '#585858',
                             }}
                           >
                             <Box style={{ width: '20px' }}>
@@ -328,7 +344,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
                             <Typography
                               key={feature.id}
                               sx={{
-                                color: '#585858',
+                                color: selectedPackageId === packageData.id ? '#fff' : '#585858',
                                 fontSize: '12px',
                                 fontFamily: '"Syne", sans-serif !important;',
                                 marginLeft: '6px'
@@ -358,8 +374,9 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
                         color: '#fff'
                       }
                     }}
+                    onClick={() => handlePackageSelect(packageData.id)}
                   >
-                    Choose Plan
+                    {selectedPackageId === packageData.id ? <FaCircleCheck /> : 'Choose Plan'}
                   </Button>
                 </Card>
               ))}
@@ -379,6 +396,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData }) => {
               color: '#fff'
             }
           }}
+          onClick={onNext}
         >
           Continue
         </Button>

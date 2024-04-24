@@ -35,6 +35,11 @@ const StartProject= () => {
         setFormData({ ...formData, ...data });
     };
 
+    const handlePackageSelect = () => {
+        // Your function implementation
+    };
+    
+
     return (
         <>
         <NormalHeader />
@@ -74,6 +79,7 @@ const StartProject= () => {
                         onNext={handleNext}
                         onBack={handleBack}
                         title={'Delivery Info'}
+                        onPackageSelect={handlePackageSelect}
                     />
                 )}
                 {step === 5 && (

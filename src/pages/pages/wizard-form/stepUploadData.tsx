@@ -16,6 +16,7 @@ const StepUploadData: React.FC<StepUploadDataProps> = ({ formData, onChange, onN
         onChange({ ...formData, [e.target.name]: e.target.value });
     };
 
+    console.log(formData)
 
     return (
         <>
