@@ -137,12 +137,12 @@ const StepImprovements: React.FC<StepImprovementsProps> = ({ formData, onChange,
         value={selectedAnswers[item.id] || ''}
         onChange={e => handleChange(item.id, e.target.value)}
       >
-        {item.answers.map((answer: { answerId: React.Key | null | undefined; answerText: unknown }) => (
+        {item.answers.map((answer: { answerId: React.Key | null | undefined; answerText: string }) => (
           <FormControlLabel
             key={answer.answerId}
             value={answer.answerText}
             control={<Radio />}
-            label={answer.answerText}
+            label={answer.answerText as string} // Specify the type of answerText as string
             className='radioServiceAnswer'
           />
         ))}
