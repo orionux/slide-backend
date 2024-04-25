@@ -376,7 +376,7 @@ const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData, onPackage
                     }}
                     onClick={() => handlePackageSelect(packageData.id)}
                   >
-                    {selectedPackageId === packageData.id ? <FaCircleCheck /> : 'Choose Plan'}
+                    {selectedPackageId === packageData.id ? <FaCircleCheck style={{fontSize: '40px'}} /> : 'Choose Plan'}
                   </Button>
                 </Card>
               ))}
