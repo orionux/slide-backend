@@ -153,7 +153,9 @@ border-color: #5A5A5A !important;
     border-bottom: none !important;
     margin: 0px !important;
   }
-
+  .deliveryInfoTabs .MuiTabs-flexContainer{
+    background-color: #455A64 !important;
+  }
   .deliveryInfoTabs .MuiTabs-indicator{
     display: none;
   }
