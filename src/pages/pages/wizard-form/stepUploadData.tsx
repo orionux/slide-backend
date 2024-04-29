@@ -86,7 +86,7 @@ const StepUploadData: React.FC<StepUploadDataProps> = ({ formData, onNext }) => 
           >
             Lorem ipsum dolor sit amet consectetur. Pharetra consequat nec nisl at tempor vel pellentesque nunc. Sagittis sapien pretium libero aliquet sit. Id vulputate et venenatis dui leo a urna adipiscing elit. Amet eu eget. t venenatis dui leo a urna adipiscing elit. Amet eu eget.
           </Typography>{' '}
-          <Grid container spacing={10} sx={{ minHeight: '500px', padding: '100px' }}>
+          <Grid container spacing={10} sx={{ minHeight: '250px', padding: '50px' }}>
                 <Grid item xs={11}>
                     <div
                         onDragOver={handleDragOver}
@@ -95,7 +95,7 @@ const StepUploadData: React.FC<StepUploadDataProps> = ({ formData, onNext }) => 
                             border: '2px dashed #ccc',
                             borderRadius: '10px',
                             padding: '20px',
-                            height: '450px',
+                            height: '250px',
                             textAlign: 'center',
                             display: 'flex',
                             flexDirection: 'column',
