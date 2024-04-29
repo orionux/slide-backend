@@ -96,6 +96,7 @@ const StartProject= () => {
                         formData={formData}
                         onChange={handleFormDataChange}
                         title={'Payment'}
+                        onNext={handleNext}
                     />
                 )}
             </div>
