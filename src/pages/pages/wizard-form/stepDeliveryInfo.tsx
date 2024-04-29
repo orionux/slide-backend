@@ -13,7 +13,7 @@ interface StepDeliveryInfoProps {
 
 const StepDeliveryInfo: React.FC<StepDeliveryInfoProps> = ({ formData, onPackageSelect, onNext, onChange }) => {
   const [selectedTab, setSelectedTab] = useState(0)
-  const [selectedPackageId, setSelectedPackageId] = useState('')
+  const [selectedPackageId, setSelectedPackageId] = useState('packageUrgentProfessional')
 
   const timeData = [
     {
