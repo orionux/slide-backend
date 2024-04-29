@@ -67,8 +67,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     {
       title: 'Cost Matrix Management',
       icon: AccountPlusOutline,
-      path: '/pages/register',
-      openInNewTab: true
+      path: '/cost-metrix',
     },
     {
       title: 'Order Management',
