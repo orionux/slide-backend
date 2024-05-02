@@ -42,7 +42,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     {
       title: 'Chats',
       icon: HomeOutline,
-      path: '/user-management'
+      path: '/chat-view'
     },
     {
       title: 'Info',
