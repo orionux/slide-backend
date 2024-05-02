@@ -9,7 +9,7 @@ interface StepPaymentsProps {
     onNext: () => void;
 }
 
-const StepPayment: React.FC<StepPaymentsProps> = ({ formData, onChange, onNext }) => {
+const StepPayment: React.FC<StepPaymentsProps> = ({ formData = {}, onChange, onNext }) => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange({ ...formData, [e.target.name]: e.target.value });
@@ -18,6 +18,7 @@ const StepPayment: React.FC<StepPaymentsProps> = ({ formData, onChange, onNext }
     const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange({ ...formData, keepDataInProfile: e.target.value === 'true' });
     };
+
 
     console.log(formData)
 
