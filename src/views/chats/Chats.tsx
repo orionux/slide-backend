@@ -98,16 +98,19 @@ const Chats = () => {
       <Grid container component={StyledPaper} className="chatSection">
         <Grid item xs={3} component={StyledBorderRight}>
           
-          <Grid item container  xs={12} style={{ padding: '5px', display: 'flex', justifyContent: 'space-between', alignItems:'center'}}>
+          <Grid item container  xs={12} style={{ padding: '5px', display: 'flex', justifyContent: 'space-between', alignItems:'center',marginTop: "20px",marginBottom: "20px"}}>
             <GiHamburgerMenu />
             <TextField 
             id="outlined-basic-email" 
             label="Search" 
             variant="outlined"
             size="small" 
-            style={{ height: 'auto', width: '90%' }}/>
+            InputProps={{ sx: { borderRadius: 10 } }}
+            style={{ 
+              height: 'auto', 
+              width: '90%',
+              }}/>
           </Grid>
-          <Divider />
           <List>
             {/*<ListItem button key="RemySharp">
               <ListItemIcon>
