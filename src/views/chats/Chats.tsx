@@ -198,11 +198,11 @@ const Chats = () => {
       <StyledTextField
         label="Type Something"
         variant="outlined"
-
+        InputProps={{ sx: { backgroundColor: '#fff' } }}
           />
       
       <IconButton color="primary" style={{ marginRight: '50px',width: '48px', }}>
-        <IoMdSend/>
+        <IoMdSend color='#8BABD8'/>
       </IconButton>
       
     </div>
