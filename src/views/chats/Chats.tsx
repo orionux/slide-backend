@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -17,6 +17,7 @@ import Button from '@mui/material/Button';
 import { IoMdSend } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import IconButton from '@mui/material/IconButton';
+import { CiFaceSmile } from "react-icons/ci";
 
 
 const StyledPaper = styled(Paper)({
@@ -88,6 +89,26 @@ const Chats = () => {
     { name: 'Project_Name_Here7', key: 'Project_Name_Here7' },
   ];
 
+  const [messages, setMessages] = useState([
+    { content: 'Happy to hear you. We got your request. Can you explain a bit more about your project?', time: '09:30' },
+    { content: 'Hey, I am good! What about you?', time: '09:31' },
+    { content: 'Cool. I am good, let\'s catch up!', time: '10:30' },
+  ]);
+  const [newMessage, setNewMessage] = useState('');
+
+  const handleSendMessage = () => {
+    if (newMessage.trim() !== '') {
+      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const updatedMessages = [...messages, { content: newMessage, time: currentTime }];
+      setMessages(updatedMessages);
+      setNewMessage('');
+    }
+  };
+
+  const handleChangeMessage = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setNewMessage(event.target.value);
+  };
+  
   return (
     <div>
       <Grid container >
@@ -98,7 +119,7 @@ const Chats = () => {
       <Grid container component={StyledPaper} className="chatSection">
         <Grid item xs={3} component={StyledBorderRight}>
           
-          <Grid item container  xs={12} style={{ padding: '5px', display: 'flex', justifyContent: 'space-between', alignItems:'center',marginTop: "20px",marginBottom: "20px"}}>
+          <Grid item container  xs={12} style={{ padding: '5px', display: 'flex', justifyContent: 'space-between', alignItems:'center',marginTop: "20px",marginBottom: "20px", paddingLeft: '20px', paddingRight: '20px'}}>
             <GiHamburgerMenu />
             <TextField 
             id="outlined-basic-email" 
@@ -111,7 +132,7 @@ const Chats = () => {
               width: '90%',
               }}/>
           </Grid>
-          <List>
+          <List style={{ paddingRight:''}}>
             {/*<ListItem button key="RemySharp">
               <ListItemIcon>
                 <Avatar alt="Remy Sharp" src="/images/chat1.png" />
@@ -163,7 +184,13 @@ const Chats = () => {
             
           </Grid>
           <MessageAreaContainer className="messageArea">
-            <ListItem key="1">
+          {messages.map((message, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={message.content} />
+                <ListItemText secondary={message.time} />
+              </ListItem>
+            ))}
+           {/*} <ListItem key="1">
               <ListItemText primary="Happy to here you. We got your request. can you explain
               bit more about your project" />
               <ListItemText secondary="09:30" />
@@ -175,7 +202,7 @@ const Chats = () => {
             <ListItem key="3">
               <ListItemText primary="Cool. I am good, let's catch up!" />
               <ListItemText secondary="10:30" />
-            </ListItem>
+            </ListItem>*/}
           </MessageAreaContainer>
           
           {/*<SendMessageContainer>
@@ -184,6 +211,7 @@ const Chats = () => {
               <IoMdSend />
             </Fab>
     </SendMessageContainer>*/}
+     
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -195,13 +223,19 @@ const Chats = () => {
         backgroundColor:"#F2F5FF",
         color:"#fff"}}>
       
+      <IconButton color="primary" style={{ width: '48px', zIndex:'1'}}>
+        <CiFaceSmile  color='#8BABD8' style={{zIndex:'1'}}/>
+      </IconButton>
+
       <StyledTextField
-        label="Type Something"
+        label="Message"
         variant="outlined"
-        InputProps={{ sx: { backgroundColor: '#fff' } }}
+        InputProps={{ sx: { backgroundColor: '#fff', paddingLeft:'-100px' } }}
+        value={newMessage}
+        onChange={handleChangeMessage}
           />
       
-      <IconButton color="primary" style={{ marginRight: '50px',width: '48px', }}>
+      <IconButton color="primary" style={{ marginRight: '10px',width: '48px', }} onClick={handleSendMessage}>
         <IoMdSend color='#8BABD8'/>
       </IconButton>
       
