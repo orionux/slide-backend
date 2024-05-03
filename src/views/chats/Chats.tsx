@@ -62,8 +62,17 @@ const StyledTextField = styled(TextField, {
 })
 
 interface ChatImage {
-  [key: string]: string; // Key can be any string, value is a string
+  [key: string]: string;
 }
+
+const StyledMessageBubble = styled('div')({
+  backgroundColor: '#57EBB7',
+  borderRadius: '10px',
+  padding: '10px',
+  marginBottom: '5px',
+  
+
+});
 
 const chatImages: ChatImage = {
   Ad: '/images/chat/chat1.png',
@@ -79,14 +88,14 @@ const chatImages: ChatImage = {
 const Chats = () => {
 
   const contacts = [
-    { name: 'Ad', key: 'Ad' },
-    { name: 'Project_Name_Here1', key: 'Project_Name_Here1' },
-    { name: 'Project_Name_Here2', key: 'Project_Name_Here2' },
-    { name: 'Project_Name_Here3', key: 'Project_Name_Here3' },
-    { name: 'Project_Name_Here4', key: 'Project_Name_Here4' },
-    { name: 'Project_Name_Here5', key: 'Project_Name_Here5' },
-    { name: 'Project_Name_Here6', key: 'Project_Name_Here6' },
-    { name: 'Project_Name_Here7', key: 'Project_Name_Here7' },
+    { name: 'Ad', key: 'Ad', msg: 'Chatgram Web was updated.' },
+    { name: 'Project_Name_Here1', key: 'Project_Name_Here1', msg: 'Ok, see you later' },
+    { name: 'Project_Name_Here2', key: 'Project_Name_Here2', msg: 'You: i don`t remember anything 😄 ' },
+    { name: 'Project_Name_Here3', key: 'Project_Name_Here3', msg: 'I got a job at SpaceX 🎉 🚀' },
+    { name: 'Project_Name_Here4', key: 'Project_Name_Here4', msg: 'Table for four, 5PM. Be there.' },
+    { name: 'Project_Name_Here5', key: 'Project_Name_Here5', msg: 'Lewis: All done mate 😆 ' },
+    { name: 'Project_Name_Here6', key: 'Project_Name_Here6', msg: 'Channel created' },
+    { name: 'Project_Name_Here7', key: 'Project_Name_Here7', msg: 'Tell mom i will be home for tea 💜  ' },
   ];
 
   const [messages, setMessages] = useState([
@@ -157,8 +166,12 @@ const Chats = () => {
                   <Avatar alt={contact.name} src={chatImages[contact.key]} />
                 </ListItemIcon>
                 <div>
-                  <ListItemText primary={contact.name} />
-                  <ListItemText secondary={contact.name} />
+                  <ListItemText 
+                    primary={contact.name}
+                    primaryTypographyProps={{fontSize: '15px',fontWeight:'bold'}} />
+                  <ListItemText 
+                  secondary={contact.msg} 
+                  secondaryTypographyProps={{fontSize: '13px',fontWeight:'500'}} />
                 </div>
               </ListItem>
       ))}
@@ -185,9 +198,15 @@ const Chats = () => {
           </Grid>
           <MessageAreaContainer className="messageArea">
           {messages.map((message, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={message.content} />
-                <ListItemText secondary={message.time} />
+              <ListItem key={index} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <StyledMessageBubble>
+                  <ListItemText primary={message.content} />
+                  <ListItemText 
+                  secondary={message.time}
+                  secondaryTypographyProps={{color:"#fff", fontSize:'12px'}}
+                  
+                   />
+                </StyledMessageBubble> 
               </ListItem>
             ))}
            {/*} <ListItem key="1">
