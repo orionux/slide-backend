@@ -77,7 +77,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     {
       title: 'Chat Implementation & Moderation',
       icon: FormatLetterCase,
-      path: '/typography'
+      path: '/chat-view'
     },
     {
       title: 'Payment & Transaction Management',

@@ -11,7 +11,7 @@ interface StepUploadDataProps {
 }
 
 
-const StepUploadData: React.FC<StepUploadDataProps> = ({ formData, onNext }) => {
+const StepUploadData: React.FC<StepUploadDataProps> = ({ formData, onNext, onChange }) => {
 
     // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //     onChange({ ...formData, [e.target.name]: e.target.value });
@@ -25,6 +25,7 @@ const StepUploadData: React.FC<StepUploadDataProps> = ({ formData, onNext }) => 
         const files = event.target.files;
         if (files) {
             setSelectedFiles(files);
+            onChange({ ...formData, files });
         }
     };
 
@@ -37,6 +38,7 @@ const StepUploadData: React.FC<StepUploadDataProps> = ({ formData, onNext }) => 
         const files = event.dataTransfer.files;
         if (files) {
             setSelectedFiles(files);
+            onChange({ ...formData, files });
         }
     };
 
