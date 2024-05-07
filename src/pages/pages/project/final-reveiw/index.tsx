@@ -1,5 +1,4 @@
 import { Box, Button, Grid } from '@mui/material'
-import Link from 'next/link'
 
 /*import { DiscPlayer } from 'mdi-material-ui'*/
 
@@ -11,7 +10,7 @@ import ProjectFooter from 'src/views/projectComponents/projectFooter'
 import ProjectHeader from 'src/views/projectComponents/projectHeader'
 
 
-const UploadProject = () => {
+const FinalReview = () => {
     const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
     const [rotated, setRotated] = useState(true);
 
@@ -99,7 +98,7 @@ const UploadProject = () => {
                                 <input type="radio" name="fileUpload" />
                                 <label htmlFor="fileUpload">Ready for deliver</label>
                             </Box>
-                            <Button component="span" sx={{backgroundColor: '#2D2D2E', padding: '10px 50px', marginTop: '40px'}}>Upload Files</Button>
+                            <Button component="span" sx={{backgroundColor: '#2D2D2E', padding: '10px 50px', marginTop: '40px'}}>Upload Project</Button>
                         </label>
                     </div>
                     {selectedFiles && (
@@ -111,22 +110,11 @@ const UploadProject = () => {
                     )}
                 </Grid>
             </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', marginBottom: '50px' }}>
-                <Link passHref href={'/pages/project/final-reveiw'}>
-                    <Button sx={{
-                        fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E', '&:hover': {
-                            backgroundColor: '#2D2D2E'
-                        }, fontFamily: '"Syne", sans-serif !important;', borderRadius: '8px', textTransform: 'uppercase', paddingLeft: '100px', paddingRight: '100px'
-                    }}>
-                        Next
-                    </Button>
-                </Link>
-            </Box>
             <ProjectFooter />
         </>
 
     )
 }
 
-UploadProject.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
-export default UploadProject
+FinalReview.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+export default FinalReview
