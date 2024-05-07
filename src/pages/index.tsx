@@ -94,8 +94,8 @@ const createData = (project_name: string, button_title: string, button_link: str
 }
 
 const rows = [
-  createData('Project 1', 'Start Review', '#'),
-  createData('Project 2', 'Project Done', '#'),
+  createData('Project 1', 'Start Review', '/pages/project/user-feedback-view'),
+  createData('Project 2', 'Project Done', '/pages/project/project-deliverd'),
 ]
 
 
