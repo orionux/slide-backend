@@ -31,6 +31,9 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 import '../../styles/globals.css'
 import { useEffect, useState } from 'react'
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
   Component: NextPage

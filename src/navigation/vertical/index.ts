@@ -47,7 +47,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     {
       title: 'Info',
       icon: HomeOutline,
-      path: '/pages/project/summery/'
+      path: '/pages/project/project-deliverd'  //summery/
     },
     {
       title: 'User Management',

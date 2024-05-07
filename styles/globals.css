@@ -162,3 +162,87 @@ border-color: #5A5A5A !important;
   .deliveryInfoTabs .MuiTabs-flexContainer{
     padding: 4px;
   }
+
+
+
+  /* slider */
+  .carouselContainer {
+    display: flex;
+    overflow-x: auto;
+}
+
+.carouselSlide {
+    flex: 0 0 auto;
+    width: 800px; /* Adjust as needed */
+    height: 400px; /* Adjust as needed */
+    margin-right: 10px; /* Adjust as needed */
+    transition: transform 0.5s ease;
+}
+
+.carouselSlide.active {
+    transform: scale(1.1);
+}
+
+.slideNumbers {
+    margin-top: 10px;
+    text-align: center;
+}
+
+
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slides {
+  display: flex;
+}
+
+.slides img {
+  width: 100%;
+  height: auto;
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  outline: none;
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
+}
+
+.sliderImgStyles{
+  width: auto; 
+  height: 450px; 
+  margin-bottom: 50px; 
+  border-radius: 20px; 
+  box-shadow: 0 0 5px 1px #cccccc !important
+}
+.slideNumbers button{
+  background-color: transparent;
+  border: none;
+  color: '#455A64';
+    font-family: "Syne", sans-serif !important;
+    font-size: 15px !important;
+    min-width: 200px;
+}
+.slideNumbers span{
+  color: '#455A64';
+    font-family: "Syne", sans-serif !important;
+    font-size: 15px !important;
+    min-width: 200px;
+}
