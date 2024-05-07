@@ -46,7 +46,7 @@ const ProjectDeliverdView = () => {
 
                 </Grid>
                 <Box sx={{ mt: '50px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                    <Link passHref href={'/pages/project/upload-project'}>
+                    <Link passHref href={'/pages/project/summery'}>
                         <Button sx={{
                             fontSize: '16px', color: '#fff', backgroundColor: '#455A64', '&:hover': {
                                 backgroundColor: '#455A64'
@@ -55,7 +55,7 @@ const ProjectDeliverdView = () => {
                             Order Summary
                         </Button>
                     </Link>
-                    <Link passHref href={'/pages/project/upload-project'}>
+                    <Link passHref href={'/pages/project/user-feedback-view'}>
                         <Button sx={{
                             fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2EA9', '&:hover': {
                                 backgroundColor: '#2D2D2E'
