@@ -252,3 +252,57 @@ border-color: #5A5A5A !important;
 .css-z6rbhl-MuiList-root{
   padding-top: 60px !important;
 }
+
+.drag_button{
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+.drag_button_wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 100%;
+  position: absolute;
+  top: 30px;
+}
+.feedback-container{
+  position: absolute;
+  z-index: 99999;
+  background-color: #fff;
+  border: solid 2px #57EBB7;
+  border-radius: 8px;
+  padding: 12px;
+  /* top: 0;
+  left: 0; */
+}
+.pinWrapper{
+  position: relative;
+}
+.feedback-container img{
+  position: absolute;
+  top: -25px;
+  left: -20px;
+}
+.inputWrapper{
+  
+}
+.inputWrapper input{
+  border: none;
+  color: #000;
+  font-family: "Syne", sans-serif !important;
+}
+.inputWrapper input:focus{
+  border: none;
+  outline: none;
+  width: 200px;
+}
+
+.feedback-container-wrap{
+  position: absolute;
+  width: 800px;
+  height: 400px;
+  top: 0;
+}
