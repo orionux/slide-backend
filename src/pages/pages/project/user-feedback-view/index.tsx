@@ -57,6 +57,7 @@ const DragContainer: React.FC<{ buttons: ButtonProps[], setButtons: React.Dispat
             if (button.id === buttonId) {
                 return { ...button, left, top };
             }
+            
             return button;
         });
         console.log(`Button ${buttonId} dropped at position: ${left}, ${top}`);
