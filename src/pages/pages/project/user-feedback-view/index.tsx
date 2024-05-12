@@ -18,7 +18,7 @@ type ButtonProps = {
     type: string;
 };
 
-const PinComponent: React.FC<ButtonProps & { setPosition: (id: string, left: number, top: number) => void }> = ({ id, left, top, type, setPosition }) => {
+const PinComponent: React.FC<ButtonProps & { setPosition: (id: string, left: number, top: number) => void }> = ({ id, left, top }) => {
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
         e.dataTransfer.setData('buttonId', id);
         e.dataTransfer.setData('left', left.toString());
@@ -85,7 +85,7 @@ const DragContainer: React.FC<{ buttons: ButtonProps[], setButtons: React.Dispat
 const UserFeedbackView = ({ }) => {
 
     const [buttons, setButtons] = useState<ButtonProps[]>([]);
-    const [showComponent, setShowComponent] = useState(false);
+    const [, setShowComponent] = useState(false);
 
     
 
