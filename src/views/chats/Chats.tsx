@@ -25,13 +25,13 @@ const StyledBorderRight = styled('div')({
 
 const MessageAreaContainer = styled(List)({
   backgroundColor: '#F2F5FF',
-  height: 'calc(100vh - 200px)', 
+  height: 'calc(100% - 200px)', 
   overflowY: 'auto',
 });
 
 const StyledTextField = styled(TextField)({
   "& .MuiInputBase-root": {
-    width: 600
+    width: '100%'
   }
 });
 
@@ -188,6 +188,7 @@ const Chats = () => {
               </ListItem>
             ))}
           </MessageAreaContainer>
+
           <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -203,7 +204,9 @@ const Chats = () => {
                   label="Message"
                   variant="outlined"
                   InputProps={{
-                    sx: { backgroundColor: '#fff' },
+                    sx: { backgroundColor: '#fff',
+                        cursor:'pointer'
+                     },
                     startAdornment: (
                       <InputAdornment position="start">
                         <CiFaceSmile color='#8BABD8' />
