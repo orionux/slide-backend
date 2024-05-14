@@ -9,11 +9,15 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import { GiHamburgerMenu } from "react-icons/gi";
 import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+
 import { CiFaceSmile } from "react-icons/ci";
 import { IoMdSend } from "react-icons/io";
-import InputAdornment from '@mui/material/InputAdornment';
+import { GiHamburgerMenu } from "react-icons/gi";
+
+import { v4 as uuidv4 } from 'uuid';
+
 
 const StyledPaper = styled(Paper)({
   minWidth: 650,
@@ -71,11 +75,12 @@ const Chats = () => {
   ];
   
 
-  const [messages, setMessages] = useState([
-    { content: 'Happy to hear you. We got your request. Can you explain a bit more about your project?', time: '09:30' },
-    { content: 'Hey, I am good! What about you?', time: '09:31' },
-    { content: 'Cool. I am good, let\'s catch up!', time: '10:30' },
+  const [messages, setMessages] = useState<{ id: string; content: JSX.Element | string; time: string }[]>([
+    { id: uuidv4(), content: <img src="/images/chat/53.png" alt="53" />, time: '09:30' }, // Render an img tag for the image
+    { id: uuidv4(), content: 'Happy to hear you. We got your request. Can you explain a bit more about your project?', time: '09:30' },
   ]);
+  
+  
   const [newMessage, setNewMessage] = useState('');
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
 
@@ -86,14 +91,27 @@ const Chats = () => {
     }
   }, [contacts, selectedContact]);
   
-  const handleSendMessage = () => {
+ {/*} const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
       const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const updatedMessages = [...messages, { content: newMessage, time: currentTime }];
       setMessages(updatedMessages);
       setNewMessage('');
     }
+  };*/}
+  const handleSendMessage = () => {
+    if (newMessage.trim() !== '') {
+      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const messageId = uuidv4(); // Generate UUID for the message
+      const updatedMessages = [
+        ...messages,
+        { id: messageId, content: newMessage, time: currentTime }
+      ];
+      setMessages(updatedMessages);
+      setNewMessage('');
+    }
   };
+  
 
   const handleChangeMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value);
@@ -182,9 +200,24 @@ const Chats = () => {
               </ListItem>
             )}
           </Grid>
+          {/*
           <MessageAreaContainer className="messageArea">
             {messages.map((message, index) => (
               <ListItem key={index} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <StyledMessageBubble>
+                  <ListItemText primary={message.content} />
+                  <ListItemText 
+                    secondary={message.time}
+                    secondaryTypographyProps={{color:"#fff", fontSize:'12px'}}
+                  />
+                </StyledMessageBubble> 
+              </ListItem>
+            ))}
+          </MessageAreaContainer>
+          */}
+          <MessageAreaContainer className="messageArea">
+            {messages.map((message) => (
+              <ListItem key={message.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <StyledMessageBubble>
                   <ListItemText primary={message.content} />
                   <ListItemText 
@@ -203,7 +236,7 @@ const Chats = () => {
               paddingLeft: '50px', 
               paddingRight: '50px', 
               paddingTop: '20px', 
-              paddingBottom: '20px',
+              paddingBottom: '50px',
               backgroundColor: '#F2F5FF',
               color: '#fff',
             }}>
