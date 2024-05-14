@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -79,6 +79,13 @@ const Chats = () => {
   const [newMessage, setNewMessage] = useState('');
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
 
+  useEffect(() => {
+    // Set the selected contact to the key of the first contact in the list
+    if (contacts.length > 0 && !selectedContact) {
+      setSelectedContact(contacts[1].key);
+    }
+  }, [contacts, selectedContact]);
+  
   const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
       const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
