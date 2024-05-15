@@ -40,11 +40,12 @@ const StyledTextField = styled(TextField)({
 });
 
 const StyledMessageBubble = styled('div')({
-  backgroundColor: '#57EBB7',
+  backgroundColor: '#fff',
   borderRadius: '10px',
   padding: '10px',
   marginBottom: '5px',
 });
+
 
 interface ChatImage {
   [key: string]: string;
@@ -73,45 +74,33 @@ const Chats = () => {
     { name: 'Project_Name_Here6', key: 'Project_Name_Here6', msg: 'Channel created', lastSeen: '2024-05-07T14:00:00' },
     { name: 'Project_Name_Here7', key: 'Project_Name_Here7', msg: 'Tell mom i will be home for tea 💜  ', lastSeen: '2024-05-07T14:15:00' },
   ];
-  
 
-  const [messages, setMessages] = useState<{ id: string; content: JSX.Element | string; time: string }[]>([
-    { id: uuidv4(), content: <img src="/images/chat/53.png" alt="53" />, time: '09:30' }, // Render an img tag for the image
-    { id: uuidv4(), content: 'Happy to hear you. We got your request. Can you explain a bit more about your project?', time: '09:30' },
-  ]);
-  
-  
+  const [chatMessages, setChatMessages] = useState<{ [key: string]: { id: string; content: JSX.Element | string; time: string }[] }>({});
+
   const [newMessage, setNewMessage] = useState('');
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
 
   useEffect(() => {
     // Set the selected contact to the key of the first contact in the list
     if (contacts.length > 0 && !selectedContact) {
-      setSelectedContact(contacts[1].key);
+      setSelectedContact(contacts[0].key);
+      const initialMessages: { [key: string]: { id: string; content: JSX.Element | string; time: string }[] } = {};
+      contacts.forEach(contact => {
+        initialMessages[contact.key] = [{ id: uuidv4(), content: contact.msg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }];
+      });
+      setChatMessages(initialMessages);
     }
   }, [contacts, selectedContact]);
   
- {/*} const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
-      const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const updatedMessages = [...messages, { content: newMessage, time: currentTime }];
-      setMessages(updatedMessages);
-      setNewMessage('');
-    }
-  };*/}
   const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
+    if (newMessage.trim() !== '' && selectedContact) {
       const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const messageId = uuidv4(); // Generate UUID for the message
-      const updatedMessages = [
-        ...messages,
-        { id: messageId, content: newMessage, time: currentTime }
-      ];
-      setMessages(updatedMessages);
+      const updatedMessages = [...(chatMessages[selectedContact] || []), { id: messageId, content: newMessage, time: currentTime }];
+      setChatMessages({ ...chatMessages, [selectedContact]: updatedMessages });
       setNewMessage('');
     }
   };
-  
 
   const handleChangeMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value);
@@ -141,7 +130,7 @@ const Chats = () => {
       return `${days} day${days > 1 ? 's' : ''} ago`;
     }
   };
-  
+
   return (
     <div>
       <Grid container>
@@ -157,7 +146,7 @@ const Chats = () => {
               variant="outlined"
               size="small" 
               InputProps={{ sx: { borderRadius: 10 } }}
-              style={{ height: 'auto', width: '90%' }}
+              style={{ height: 'auto', width: '90%', paddingLeft:'5px' }}
             />
           </Grid>
           <List style={{ paddingRight:''}}>
@@ -200,29 +189,16 @@ const Chats = () => {
               </ListItem>
             )}
           </Grid>
-          {/*
           <MessageAreaContainer className="messageArea">
-            {messages.map((message, index) => (
-              <ListItem key={index} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {selectedContact && chatMessages[selectedContact]?.map((message) => (
+              <ListItem key={message.id} style={{ display: 'flex', justifyContent: 'flex-start' }}>
                 <StyledMessageBubble>
-                  <ListItemText primary={message.content} />
+                  <ListItemText 
+                    primary={message.content}
+                    primaryTypographyProps = {{color:'#000'}} />
                   <ListItemText 
                     secondary={message.time}
-                    secondaryTypographyProps={{color:"#fff", fontSize:'12px'}}
-                  />
-                </StyledMessageBubble> 
-              </ListItem>
-            ))}
-          </MessageAreaContainer>
-          */}
-          <MessageAreaContainer className="messageArea">
-            {messages.map((message) => (
-              <ListItem key={message.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <StyledMessageBubble>
-                  <ListItemText primary={message.content} />
-                  <ListItemText 
-                    secondary={message.time}
-                    secondaryTypographyProps={{color:"#fff", fontSize:'12px'}}
+                    secondaryTypographyProps={{color:"#000", fontSize:'12px', textAlign:'end'}}
                   />
                 </StyledMessageBubble> 
               </ListItem>
