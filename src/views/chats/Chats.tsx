@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material';
+
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -15,9 +17,21 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { CiFaceSmile } from "react-icons/ci";
 import { IoMdSend } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { AiOutlineCheckCircle } from 'react-icons/ai';
+import { FaCheck } from 'react-icons/fa';
 
 import { v4 as uuidv4 } from 'uuid';
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+});
 
 const StyledPaper = styled(Paper)({
   minWidth: 650,
@@ -39,13 +53,25 @@ const StyledTextField = styled(TextField)({
   }
 });
 
-const StyledMessageBubble = styled('div')({
-  backgroundColor: '#fff',
+const StyledMessageBubble = styled('div')(({ sent }: { sent: boolean }) => ({
+  backgroundColor: sent ? '#57EBB7' : '#fff', // Green for sent messages, white for received messages
   borderRadius: '10px',
   padding: '10px',
   marginBottom: '5px',
+  position: 'relative', // Position relative for adding icons
+}));
+
+const DeliveredIcon = styled(AiOutlineCheckCircle)({
+  position: 'absolute',
+  bottom: '2px',
+  right: '4px',
 });
 
+const ReadIcon = styled(FaCheck)({
+  position: 'absolute',
+  bottom: '2px',
+  right: '4px',
+});
 
 interface ChatImage {
   [key: string]: string;
@@ -62,43 +88,67 @@ const chatImages: ChatImage = {
   Project_Name_Here7: '/images/chat/chat8.png',
 } as const;
 
-
 const Chats = () => {
+  const apiUrl = ''; // Add your API URL here
+
   const contacts = [
-    { name: 'Ad', key: 'Ad', msg: 'Chatgram Web was updated.', lastSeen: '2024-05-07T12:30:00' },
-    { name: 'Project_Name_Here1', key: 'Project_Name_Here1', msg: 'Ok, see you later', lastSeen: '2024-05-07T12:45:00' },
-    { name: 'Project_Name_Here2', key: 'Project_Name_Here2', msg: 'You: i don`t remember anything 😄 ', lastSeen: '2024-05-07T13:00:00' },
-    { name: 'Project_Name_Here3', key: 'Project_Name_Here3', msg: 'I got a job at SpaceX 🎉 🚀', lastSeen: '2024-05-07T13:15:00' },
-    { name: 'Project_Name_Here4', key: 'Project_Name_Here4', msg: 'Table for four, 5PM. Be there.', lastSeen: '2024-05-07T13:30:00' },
-    { name: 'Project_Name_Here5', key: 'Project_Name_Here5', msg: 'Lewis: All done mate 😆 ', lastSeen: '2024-05-07T13:45:00' },
-    { name: 'Project_Name_Here6', key: 'Project_Name_Here6', msg: 'Channel created', lastSeen: '2024-05-07T14:00:00' },
-    { name: 'Project_Name_Here7', key: 'Project_Name_Here7', msg: 'Tell mom i will be home for tea 💜  ', lastSeen: '2024-05-07T14:15:00' },
+    { name: 'Ad', key: 'Ad', msg: '', lastSeen: '2024-05-07T12:30:00' },
+    { name: 'Project_Name_Here1', key: 'Project_Name_Here1', msg: '', lastSeen: '2024-05-07T12:45:00' },
+    { name: 'Project_Name_Here2', key: 'Project_Name_Here2', msg: '', lastSeen: '2024-05-07T13:00:00' },
+    { name: 'Project_Name_Here3', key: 'Project_Name_Here3', msg: '', lastSeen: '2024-05-07T13:15:00' },
+    { name: 'Project_Name_Here4', key: 'Project_Name_Here4', msg: '', lastSeen: '2024-05-07T13:30:00' },
+    { name: 'Project_Name_Here5', key: 'Project_Name_Here5', msg: '', lastSeen: '2024-05-07T13:45:00' },
+    { name: 'Project_Name_Here6', key: 'Project_Name_Here6', msg: '', lastSeen: '2024-05-07T14:00:00' },
+    { name: 'Project_Name_Here7', key: 'Project_Name_Here7', msg: '', lastSeen: '2024-05-07T14:15:00' },
   ];
 
-  const [chatMessages, setChatMessages] = useState<{ [key: string]: { id: string; content: JSX.Element | string; time: string }[] }>({});
+  const [chatMessages, setChatMessages] = useState<{ [key: string]: { id: string; content: JSX.Element | string; time: string; sent: boolean; delivered?: boolean; read?: boolean }[] }>({});
 
   const [newMessage, setNewMessage] = useState('');
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
 
   useEffect(() => {
+    // Fetch data from API using apiUrl
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        // Process the data and set the state
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+
     // Set the selected contact to the key of the first contact in the list
     if (contacts.length > 0 && !selectedContact) {
       setSelectedContact(contacts[0].key);
-      const initialMessages: { [key: string]: { id: string; content: JSX.Element | string; time: string }[] } = {};
+      const initialMessages: { [key: string]: { id: string; content: JSX.Element | string; time: string; sent: boolean; delivered?: boolean; read?: boolean }[] } = {};
       contacts.forEach(contact => {
-        initialMessages[contact.key] = [{ id: uuidv4(), content: contact.msg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }];
+        initialMessages[contact.key] = [{ id: uuidv4(), content: contact.msg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), sent: false }];
       });
       setChatMessages(initialMessages);
     }
-  }, [contacts, selectedContact]);
+  }, [contacts, selectedContact, apiUrl]);
   
   const handleSendMessage = () => {
     if (newMessage.trim() !== '' && selectedContact) {
       const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const messageId = uuidv4(); // Generate UUID for the message
-      const updatedMessages = [...(chatMessages[selectedContact] || []), { id: messageId, content: newMessage, time: currentTime }];
+      const updatedMessages = [...(chatMessages[selectedContact] || []), { id: messageId, content: newMessage, time: currentTime, sent: true, delivered: false, read: false }];
       setChatMessages({ ...chatMessages, [selectedContact]: updatedMessages });
       setNewMessage('');
+    }
+  };
+
+  const markAsRead = (contactKey: string) => {
+    if (selectedContact === contactKey && chatMessages[selectedContact]) {
+      const updatedMessages = chatMessages[selectedContact].map(message => {
+        if (!message.read) {
+          return { ...message, read: true };
+        }
+        return message;
+      });
+      setChatMessages({ ...chatMessages, [selectedContact]: updatedMessages });
     }
   };
 
@@ -108,6 +158,7 @@ const Chats = () => {
   
   const handleContactClick = (key: string) => {
     setSelectedContact(key);
+    markAsRead(key);
   };
 
   // Calculate the time difference in minutes
@@ -137,7 +188,7 @@ const Chats = () => {
         <Grid item xs={12}></Grid>
       </Grid>
       <Grid container component={StyledPaper} className="chatSection">
-        <Grid item xs={3} component={StyledBorderRight}>
+        <Grid item xs={4} component={StyledBorderRight}>
           <Grid item container xs={12} style={{ padding: '5px', display: 'flex', justifyContent: 'space-between', alignItems:'center', marginTop: "20px", marginBottom: "20px", paddingLeft: '20px', paddingRight: '20px'}}>
             <GiHamburgerMenu />
             <TextField 
@@ -161,7 +212,7 @@ const Chats = () => {
                     primaryTypographyProps={{fontSize: '15px',fontWeight:'bold'}} 
                   />
                   <ListItemText 
-                    secondary={contact.msg} 
+                    secondary={chatMessages[contact.key] && chatMessages[contact.key].length > 0 ? chatMessages[contact.key][chatMessages[contact.key].length - 1].content : ''} 
                     secondaryTypographyProps={{fontSize: '13px',fontWeight:'500'}} 
                   />
                 </div>
@@ -169,7 +220,7 @@ const Chats = () => {
             ))}
           </List>
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={8}>
           <Grid item md={12}>
             {selectedContact && (
               <ListItem button key="RemySharp"  style={{justifyContent:'space-between'}}>
@@ -182,7 +233,6 @@ const Chats = () => {
                     <ListItemText
                       secondary={selectedContact ? calculateTimeDifference(contacts.find(contact => contact.key === selectedContact)?.lastSeen || '') : ''}
                     />
-
                   </div>
                 </div>
                 <Button variant="contained" style={{backgroundColor:'#000'}}>Visit Workplace</Button>
@@ -191,16 +241,16 @@ const Chats = () => {
           </Grid>
           <MessageAreaContainer className="messageArea">
             {selectedContact && chatMessages[selectedContact]?.map((message) => (
-              <ListItem key={message.id} style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <StyledMessageBubble>
-                  <ListItemText 
-                    primary={message.content}
-                    primaryTypographyProps = {{color:'#000'}} />
-                  <ListItemText 
+              <ListItem key={message.id} style={{ display: 'flex', justifyContent: message.sent ? 'flex-end' : 'flex-start' }}>
+                <StyledMessageBubble sent={message.sent}>
+                  <ListItemText primary={message.content} primaryTypographyProps={{ color: '#000' }} />
+                  <ListItemText
                     secondary={message.time}
-                    secondaryTypographyProps={{color:"#000", fontSize:'12px', textAlign:'end'}}
+                    secondaryTypographyProps={{ color: message.sent ? '#fff' : '#000', fontSize: '12px', textAlign: 'end', marginRight: '0' }}
                   />
-                </StyledMessageBubble> 
+                  {message.sent && message.delivered && <DeliveredIcon fontSize="0.7em" />}
+                  {message.sent && message.read && <ReadIcon fontSize="0.7em" color='#fff'/>}
+                </StyledMessageBubble>
               </ListItem>
             ))}
           </MessageAreaContainer>
@@ -220,9 +270,7 @@ const Chats = () => {
                   label="Message"
                   variant="outlined"
                   InputProps={{
-                    sx: { backgroundColor: '#fff',
-                        cursor:'pointer'
-                     },
+                    sx: { backgroundColor: '#fff', cursor:'pointer' },
                     startAdornment: (
                       <InputAdornment position="start">
                         <CiFaceSmile color='#8BABD8' />
@@ -241,7 +289,7 @@ const Chats = () => {
                   style={{ flex: 1 }}
                 />
 
-        </div>
+          </div>
 
         </Grid>
       </Grid>
