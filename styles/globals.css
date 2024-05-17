@@ -306,3 +306,18 @@ border-color: #5A5A5A !important;
   height: 400px;
   top: 0;
 }
+.slideImage{
+  border-radius: 20px !important;
+  height: 450px !important;
+  width: auto !important;
+}
+
+.sliderButtonWrapper button{
+  border: none;
+  background-color: transparent;
+  margin-top: 30px;
+}
+.sliderButtonWrapper span{
+  padding-left: 30px;
+  padding-right: 30px;
+}
