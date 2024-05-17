@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material';
-
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -13,14 +12,13 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-
 import { CiFaceSmile } from "react-icons/ci";
 import { IoMdSend } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { FaCheck } from 'react-icons/fa';
-
 import { v4 as uuidv4 } from 'uuid';
+import Picker from '@emoji-mart/react';
 
 const theme = createTheme({
   palette: {
@@ -35,6 +33,7 @@ const theme = createTheme({
 
 const StyledPaper = styled(Paper)({
   minWidth: 650,
+  minHeight: '70vh'
 });
 
 const StyledBorderRight = styled('div')({
@@ -54,11 +53,11 @@ const StyledTextField = styled(TextField)({
 });
 
 const StyledMessageBubble = styled('div')(({ sent }: { sent: boolean }) => ({
-  backgroundColor: sent ? '#57EBB7' : '#fff', // Green for sent messages, white for received messages
+  backgroundColor: sent ? '#57EBB7' : '#fff',
   borderRadius: '10px',
   padding: '10px',
   marginBottom: '5px',
-  position: 'relative', // Position relative for adding icons
+  position: 'relative',
 }));
 
 const DeliveredIcon = styled(AiOutlineCheckCircle)({
@@ -71,6 +70,12 @@ const ReadIcon = styled(FaCheck)({
   position: 'absolute',
   bottom: '2px',
   right: '4px',
+});
+
+const EmojiPickerWrapper = styled('div')({
+  position: 'absolute',
+  bottom: '70px', // Adjust according to your layout
+  left: '50px', // Align with your padding
 });
 
 interface ChatImage {
@@ -103,23 +108,21 @@ const Chats = () => {
   ];
 
   const [chatMessages, setChatMessages] = useState<{ [key: string]: { id: string; content: JSX.Element | string; time: string; sent: boolean; delivered?: boolean; read?: boolean }[] }>({});
-
   const [newMessage, setNewMessage] = useState('');
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   useEffect(() => {
-    // Fetch data from API using apiUrl
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
-        // Process the data and set the state
         console.log(data);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
 
-    // Set the selected contact to the key of the first contact in the list
     if (contacts.length > 0 && !selectedContact) {
       setSelectedContact(contacts[0].key);
       const initialMessages: { [key: string]: { id: string; content: JSX.Element | string; time: string; sent: boolean; delivered?: boolean; read?: boolean }[] } = {};
@@ -161,7 +164,15 @@ const Chats = () => {
     markAsRead(key);
   };
 
-  // Calculate the time difference in minutes
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSelectEmoji = (emoji: any) => {
+    setNewMessage(newMessage + emoji.native);
+    setShowEmojiPicker(false);
+  };
+
   const calculateTimeDifference = (lastSeen?: string): string => {
     if (!lastSeen) return '';
   
@@ -182,118 +193,133 @@ const Chats = () => {
     }
   };
 
+  const filteredContacts = contacts.filter(contact => 
+    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div>
-      <Grid container>
-        <Grid item xs={12}></Grid>
-      </Grid>
-      <Grid container component={StyledPaper} className="chatSection">
-        <Grid item xs={4} component={StyledBorderRight}>
-          <Grid item container xs={12} style={{ padding: '5px', display: 'flex', justifyContent: 'space-between', alignItems:'center', marginTop: "20px", marginBottom: "20px", paddingLeft: '20px', paddingRight: '20px'}}>
-            <GiHamburgerMenu />
-            <TextField 
-              id="outlined-basic-email" 
-              label="Search" 
-              variant="outlined"
-              size="small" 
-              InputProps={{ sx: { borderRadius: 10 } }}
-              style={{ height: 'auto', width: '90%', paddingLeft:'5px' }}
-            />
-          </Grid>
-          <List style={{ paddingRight:''}}>
-            {contacts.map((contact) => (
-              <ListItem button key={contact.key} onClick={() => handleContactClick(contact.key)}>
-                <ListItemIcon>
-                  <Avatar alt={contact.name} src={chatImages[contact.key]} />
-                </ListItemIcon>
-                <div>
-                  <ListItemText 
-                    primary={contact.name}
-                    primaryTypographyProps={{fontSize: '15px',fontWeight:'bold'}} 
-                  />
-                  <ListItemText 
-                    secondary={chatMessages[contact.key] && chatMessages[contact.key].length > 0 ? chatMessages[contact.key][chatMessages[contact.key].length - 1].content : ''} 
-                    secondaryTypographyProps={{fontSize: '13px',fontWeight:'500'}} 
-                  />
-                </div>
-              </ListItem>
-            ))}
-          </List>
+    <ThemeProvider theme={theme}>
+      <div>
+        <Grid container>
+          <Grid item xs={12}></Grid>
         </Grid>
-        <Grid item xs={8}>
-          <Grid item md={12}>
-            {selectedContact && (
-              <ListItem button key="RemySharp"  style={{justifyContent:'space-between'}}>
-                <div style={{display:'flex', alignItems:'center'}}>
+        <Grid container component={StyledPaper} className="chatSection">
+          <Grid item xs={4} component={StyledBorderRight}>
+            <Grid item container xs={12} style={{ padding: '5px', display: 'flex', justifyContent: 'space-between', alignItems:'center', marginTop: "20px", marginBottom: "20px", paddingLeft: '20px', paddingRight: '20px'}}>
+              <GiHamburgerMenu />
+              <TextField 
+                id="outlined-basic-email" 
+                label="Search" 
+                variant="outlined"
+                size="small" 
+                InputProps={{ sx: { borderRadius: 10 } }}
+                style={{ height: 'auto', width: '90%', paddingLeft:'5px' }}
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </Grid>
+            <List style={{ paddingRight:''}}>
+              {filteredContacts.map((contact) => (
+                <ListItem button key={contact.key} onClick={() => handleContactClick(contact.key)}>
                   <ListItemIcon>
-                    <Avatar alt={contacts.find(contact => contact.key === selectedContact)?.name || ""} src={chatImages[selectedContact]} />
+                    <Avatar alt={contact.name} src={chatImages[contact.key]} />
                   </ListItemIcon>
                   <div>
-                    <ListItemText primary={contacts.find(contact => contact.key === selectedContact)?.name || ""} />
-                    <ListItemText
-                      secondary={selectedContact ? calculateTimeDifference(contacts.find(contact => contact.key === selectedContact)?.lastSeen || '') : ''}
+                    <ListItemText 
+                      primary={contact.name}
+                      primaryTypographyProps={{fontSize: '15px',fontWeight:'bold'}} 
+                    />
+                    <ListItemText 
+                      secondary={chatMessages[contact.key] && chatMessages[contact.key].length > 0 ? chatMessages[contact.key][chatMessages[contact.key].length - 1].content : ''} 
+                      secondaryTypographyProps={{fontSize: '13px',fontWeight:'500'}} 
                     />
                   </div>
-                </div>
-                <Button variant="contained" style={{backgroundColor:'#000'}}>Visit Workplace</Button>
-              </ListItem>
-            )}
+                </ListItem>
+              ))}
+            </List>
           </Grid>
-          <MessageAreaContainer className="messageArea">
-            {selectedContact && chatMessages[selectedContact]?.map((message) => (
-              <ListItem key={message.id} style={{ display: 'flex', justifyContent: message.sent ? 'flex-end' : 'flex-start' }}>
-                <StyledMessageBubble sent={message.sent}>
-                  <ListItemText primary={message.content} primaryTypographyProps={{ color: '#000' }} />
-                  <ListItemText
-                    secondary={message.time}
-                    secondaryTypographyProps={{ color: message.sent ? '#fff' : '#000', fontSize: '12px', textAlign: 'end', marginRight: '0' }}
+          <Grid item xs={8}>
+            <Grid item md={12}>
+              {selectedContact && (
+                <ListItem button key="RemySharp"  style={{justifyContent:'space-between'}}>
+                  <div style={{display:'flex', alignItems:'center'}}>
+                    <ListItemIcon>
+                      <Avatar alt={contacts.find(contact => contact.key === selectedContact)?.name || ""} src={chatImages[selectedContact]} />
+                    </ListItemIcon>
+                    <div>
+                      <ListItemText primary={contacts.find(contact => contact.key === selectedContact)?.name || ""} />
+                      <ListItemText
+                        secondary={selectedContact ? calculateTimeDifference(contacts.find(contact => contact.key === selectedContact)?.lastSeen || '') : ''}
+                      />
+                    </div>
+                  </div>
+                  <Button variant="contained" style={{backgroundColor:'#000'}}>Visit Workplace</Button>
+                </ListItem>
+              )}
+            </Grid>
+            <MessageAreaContainer className="messageArea">
+              {selectedContact && chatMessages[selectedContact]?.map((message) => (
+                <ListItem key={message.id} style={{ display: 'flex', justifyContent: message.sent ? 'flex-end' : 'flex-start' }}>
+                  <StyledMessageBubble sent={message.sent}>
+                    <ListItemText primary={message.content} primaryTypographyProps={{ color: '#000' }} />
+                    <ListItemText
+                      secondary={message.time}
+                      secondaryTypographyProps={{ color: message.sent ? '#fff' : '#000', fontSize: '12px', textAlign: 'end', marginRight: '0' }}
+                    />
+                    {message.sent && message.delivered && <DeliveredIcon fontSize="0.7em" />}
+                    {message.sent && message.read && <ReadIcon fontSize="0.7em" color='#fff'/>}
+                  </StyledMessageBubble>
+                </ListItem>
+              ))}
+            </MessageAreaContainer>
+
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                width: '100%',
+                paddingLeft: '50px', 
+                paddingRight: '50px', 
+                paddingTop: '20px', 
+                paddingBottom: '50px',
+                backgroundColor: '#F2F5FF',
+                color: '#fff',
+                position: 'relative', // Added for positioning the emoji picker
+              }}>
+                <StyledTextField
+                    label="Message"
+                    variant="outlined"
+                    InputProps={{
+                      sx: { backgroundColor: '#fff', cursor:'pointer' },
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                            <CiFaceSmile color='#8BABD8' />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton color="primary" onClick={handleSendMessage}>
+                            <IoMdSend color='#8BABD8'/>
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    value={newMessage}
+                    onChange={handleChangeMessage}
+                    style={{ flex: 1 }}
                   />
-                  {message.sent && message.delivered && <DeliveredIcon fontSize="0.7em" />}
-                  {message.sent && message.read && <ReadIcon fontSize="0.7em" color='#fff'/>}
-                </StyledMessageBubble>
-              </ListItem>
-            ))}
-          </MessageAreaContainer>
+                  {showEmojiPicker && (
+                    <EmojiPickerWrapper>
+                      <Picker onEmojiSelect={handleSelectEmoji} />
+                    </EmojiPickerWrapper>
+                  )}
+            </div>
 
-          <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              width: '100%',
-              paddingLeft: '50px', 
-              paddingRight: '50px', 
-              paddingTop: '20px', 
-              paddingBottom: '50px',
-              backgroundColor: '#F2F5FF',
-              color: '#fff',
-            }}>
-              <StyledTextField
-                  label="Message"
-                  variant="outlined"
-                  InputProps={{
-                    sx: { backgroundColor: '#fff', cursor:'pointer' },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <CiFaceSmile color='#8BABD8' />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton color="primary" onClick={handleSendMessage}>
-                          <IoMdSend color='#8BABD8'/>
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  value={newMessage}
-                  onChange={handleChangeMessage}
-                  style={{ flex: 1 }}
-                />
-
-          </div>
-
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 };
 
