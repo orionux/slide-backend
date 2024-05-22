@@ -13,6 +13,29 @@ const Successfull: React.FC<StepPaymentsProps> = ({ formData = {} }) => {
 
     console.log(formData)
 
+    // In your Next.js page or component
+const postData = async () => {
+    try {
+      const response = await fetch('http://20.55.55.225:8080/api/consult-packages', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({ formData}),
+      });
+  
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  // Usage
+  postData();
+  
+
+
     return (
         <>
             <Box
