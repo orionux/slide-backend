@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React, { memo } from 'react';
 
 
-export default memo(({ id }) => {
+export default memo(( ) => {
 
     //   const { setNodes } = useReactFlow();
 

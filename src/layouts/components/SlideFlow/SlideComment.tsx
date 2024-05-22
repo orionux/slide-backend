@@ -4,7 +4,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 
 
 
-export default memo(({ id }) => {
+export default memo(() => {
     //   const { setNodes } = useReactFlow();
 
     return (
