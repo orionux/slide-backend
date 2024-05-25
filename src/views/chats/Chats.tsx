@@ -74,8 +74,8 @@ const ReadIcon = styled(FaCheck)({
 
 const EmojiPickerWrapper = styled('div')({
   position: 'absolute',
-  bottom: '70px', // Adjust according to your layout
-  left: '50px', // Align with your padding
+  bottom: '110px', 
+  left: '50px', 
 });
 
 interface ChatImage {
@@ -94,7 +94,7 @@ const chatImages: ChatImage = {
 } as const;
 
 const Chats = () => {
-  const apiUrl = ''; // Add your API URL here
+  const apiUrl = ''; //API URL here
 
   const contacts = [
     { name: 'Ad', key: 'Ad', msg: '', lastSeen: '2024-05-07T12:30:00' },
@@ -283,7 +283,7 @@ const Chats = () => {
                 paddingBottom: '50px',
                 backgroundColor: '#F2F5FF',
                 color: '#fff',
-                position: 'relative', // Added for positioning the emoji picker
+                position: 'relative', 
               }}>
                 <StyledTextField
                     label="Message"
