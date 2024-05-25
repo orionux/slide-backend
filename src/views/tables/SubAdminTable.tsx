@@ -629,7 +629,10 @@ const SubAdminTable = () => {
                 </Grid>
                 <Grid container spacing={5} style={{ marginBottom: 20 }}>
                   <Grid item xs={12} sm={6}>
-                    <Button variant='contained' sx={{ backgroundColor: '#F1F1F1', color: '#455A64' }}>Delete</Button>
+                    <Button variant='contained' sx={{ backgroundColor: '#F1F1F1', color: '#455A64', 
+                    '&:hover': {
+                      backgroundColor: 'red',
+                      color: '#fff'}, }}>Delete</Button>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Button onClick={handleCloseDeleteDialog} variant='contained' sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}>Cancel</Button>
