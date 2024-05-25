@@ -97,6 +97,7 @@ const SubAdminTable = () => {
   const [selectedRow, setSelectedRow] = useState<RowData | null>(null)
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
   const [value, setValue] = useState<string>('1')
+  const [openSubAdmin, setOpenSubAdmin] = useState(false)
 
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
@@ -139,11 +140,177 @@ const SubAdminTable = () => {
     setSelectedRowIndex(null)
   }
 
+  //Add Sub Admin
+
+  const handleSubAdmin = () => {
+    setOpenSubAdmin(true)
+  }
+  const handleCloseSubAdmin = () => {
+    setOpenSubAdmin(false)
+  }
+
   return (
     <>
       <CardContent>
-        <Button variant='contained' sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}>Add Sub Adimn</Button>
+        <Button onClick = {handleSubAdmin} variant='contained' sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}>Add Sub Admin</Button>
       </CardContent>
+
+      <Dialog open={openSubAdmin} onClose={handleCloseSubAdmin} maxWidth='xl' >
+        <DialogActions style={{ paddingTop: '20px', paddingBottom: '10px' }}>
+          <Button onClick={handleCloseSubAdmin}>
+            <AiOutlineCloseCircle style={{ fontSize: '25px' }} />
+          </Button>
+        </DialogActions>
+        <DialogContent style={{ maxWidth: '1000px' }}>
+          <form onSubmit={e => e.preventDefault()}>
+            <CardContent>
+              <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                <Grid item xs={12} sm={4}>
+                  <Card sx={{ backgroundColor: '#263238' }}>
+                    <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} />
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+                      <Typography variant='body2' sx={{ color: '#ffffff' }}>
+                        EMP : {selectedRow && selectedRow.id}
+                      </Typography>
+                      <Typography variant='h6' sx={{ marginBottom: 2, color: '#ffffff' }}>
+                        {selectedRow && selectedRow.fullname}
+                      </Typography>
+                      <Rating readOnly value={5} name='read-only' sx={{ marginRight: 2 }} />
+                      <Typography variant='body2' sx={{ color: '#ffffff' }}>
+                        {selectedRow && selectedRow.orderStatus.length} Projects
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <Typography variant='h6' sx={{ marginBottom: 2, color: '#455A64' }}>
+                    Basic Info
+                  </Typography>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Full Name' placeholder='' value={selectedRow && selectedRow.fullname} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Gender' placeholder='' value={selectedRow && selectedRow.gender} />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Email' placeholder='' value={selectedRow && selectedRow.email} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Phone Number' placeholder='' value={selectedRow && selectedRow.phoneNumber} />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='State' placeholder='' value={selectedRow && selectedRow.state} />
+                    </Grid>
+                  </Grid>
+
+                  <Card>
+                    <Typography variant='h6' sx={{ marginBottom: 2, color: '#455A64' }}>
+                      Projects
+                    </Typography>
+                    <TabContext value={value}>
+                      <TabList onChange={handleChange} aria-label='card navigation example'>
+                        <Tab value='1' label='Ongoing' />
+                        <Tab value='2' label='History' />
+                      </TabList>
+                      <CardContent>
+                        <TabPanel value='1' sx={{ p: 0 }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            {selectedRow &&
+                              selectedRow.orderStatus
+                                .filter(status => status.status !== 'Terminated' && status.status !== 'Completed')
+                                .map((status, statusIndex) => (
+                                  <div key={statusIndex} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.projectName}</div>
+                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.duration}</div>
+                                    <div style={{ width: '40%', padding: '5px' }}>
+                                      <span
+                                        style={{
+                                          backgroundColor:
+                                            status.status === 'Review'
+                                              ? '#57EBB7'
+                                              : status.status === 'Preparing'
+                                                ? '#FFE66A'
+                                                : status.status === 'Terminated'
+                                                  ? '#B80000'
+                                                  : 'inherit',
+                                          color:
+                                            status.status === 'Review'
+                                              ? '#455A64'
+                                              : status.status === 'Preparing'
+                                                ? '#455A64'
+                                                : status.status === 'Terminated'
+                                                  ? '#FFFFFF'
+                                                  : 'inherit',
+                                          fontSize: '11px',
+                                          padding: '5px 10px',
+                                          borderRadius: '6px',
+                                        }}
+                                      >
+                                        {status.status}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                          </div>
+                        </TabPanel>
+                        <TabPanel value='2' sx={{ p: 0 }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            {selectedRow &&
+                              selectedRow.orderStatus
+                                .filter(status => status.status === 'Terminated' || status.status === 'Completed')
+                                .map((status, statusIndex) => (
+                                  <div key={statusIndex} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.projectName}</div>
+                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.duration}</div>
+                                    <div style={{ width: '40%', padding: '5px' }}>
+                                      <span
+                                        style={{
+                                          backgroundColor:
+                                            status.status === 'Review'
+                                              ? '#57EBB7'
+                                              : status.status === 'Preparing'
+                                                ? '#FFE66A'
+                                                : status.status === 'Completed'
+                                                  ? '#5836B6'
+                                                  : status.status === 'Terminated'
+                                                    ? '#B80000'
+                                                    : 'inherit',
+                                          color:
+                                            status.status === 'Review'
+                                              ? '#455A64'
+                                              : status.status === 'Preparing'
+                                                ? '#455A64'
+                                                : status.status === 'Completed'
+                                                  ? '#FFFFFF'
+                                                  : status.status === 'Terminated'
+                                                    ? '#FFFFFF'
+                                                    : 'inherit',
+                                          fontSize: '11px',
+                                          padding: '5px 10px',
+                                          borderRadius: '6px',
+                                        }}
+                                      >
+                                        {status.status}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                          </div>
+                        </TabPanel>
+                      </CardContent>
+                    </TabContext>
+                  </Card>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
