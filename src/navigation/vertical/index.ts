@@ -8,6 +8,11 @@ import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
+import ViewDashboardOutline from 'mdi-material-ui/ViewDashboardOutline';
+import OrderBoolAscending from 'mdi-material-ui/OrderBoolAscending';
+import AccountOutline from 'mdi-material-ui/AccountOutline';
+import MessageOutline from 'mdi-material-ui/MessageOutline';
+import InformationOutline from 'mdi-material-ui/InformationOutline';
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -26,27 +31,27 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
   const allNavItems = [
     {
       title: 'Dashboard',
-      icon: HomeOutline,
+      icon: ViewDashboardOutline,
       path: '/'
     },
     {
       title: 'Orders',
-      icon: HomeOutline,
+      icon: OrderBoolAscending,
       path: '/orders'
     },
     {
       title: 'Account',
-      icon: HomeOutline,
+      icon: AccountOutline,
       path: '/account'
     },
     {
       title: 'Chats',
-      icon: HomeOutline,
+      icon: MessageOutline,
       path: '/chat-view'
     },
     {
       title: 'Info',
-      icon: HomeOutline,
+      icon: InformationOutline,
       path: '/pages/project/project-deliverd'  //summery/
     },
     {
