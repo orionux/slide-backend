@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 // ** Icon imports
 import Login from 'mdi-material-ui/Login'
-import HomeOutline from 'mdi-material-ui/HomeOutline'
 import FormatLetterCase from 'mdi-material-ui/FormatLetterCase'
 import AccountCogOutline from 'mdi-material-ui/AccountCogOutline'
 import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
@@ -12,7 +11,9 @@ import ViewDashboardOutline from 'mdi-material-ui/ViewDashboardOutline';
 import OrderBoolAscending from 'mdi-material-ui/OrderBoolAscending';
 import AccountOutline from 'mdi-material-ui/AccountOutline';
 import MessageOutline from 'mdi-material-ui/MessageOutline';
-import InformationOutline from 'mdi-material-ui/InformationOutline';
+
+// import InformationOutline from 'mdi-material-ui/InformationOutline';
+// import HomeOutline from 'mdi-material-ui/HomeOutline'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -49,11 +50,12 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
       icon: MessageOutline,
       path: '/chat-view'
     },
-    {
-      title: 'Info',
-      icon: InformationOutline,
-      path: '/pages/project/project-deliverd'  //summery/
-    },
+    
+    // {
+    //   title: 'Info',
+    //   icon: InformationOutline,
+    //   path: '/pages/project/project-deliverd'  //summery/
+    // },
     {
       title: 'User Management',
       icon: AccountCogOutline,
@@ -98,8 +100,10 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     filteredNavItems = allNavItems.filter(item =>
       item.title !== 'Orders' &&
       item.title !== 'Account' &&
-      item.title !== 'Chats' &&
-      item.title !== 'Info'
+      item.title !== 'Chats' 
+
+      // &&
+      // item.title !== 'Info'
     );
   } else if (loggedUserType === 'subadmin') {
     // Subadmin gets specific items
@@ -111,8 +115,10 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
       item.title !== 'Services & Category Management' &&
       item.title !== 'Orders' &&
       item.title !== 'Account' &&
-      item.title !== 'Chats' &&
-      item.title !== 'Info'
+      item.title !== 'Chats' 
+      
+      // &&s
+      // item.title !== 'Info'
     );
   } else if (loggedUserType === 'user') {
     // Regular user gets specific items
