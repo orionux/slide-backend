@@ -22,7 +22,7 @@ const postData = async () => {
         headers: {
           'Content-type': 'application/json',
         },
-        body: JSON.stringify({ formData}),
+        body: JSON.stringify(formData),
       });
   
       const data = await response.json();

@@ -1,27 +1,33 @@
-export default async function handler(req: { method: string; body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { message?: string; data?: any; error?: string; }): void; new(): any; }; }; }) {
-    if (req.method === 'POST') {
+export default async function handler(req: { method: string; body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { error?: string; details?: any; message?: string; data?: any; }): void; new(): any; }; }; }) {
+  if (req.method === 'POST') {
       try {
-        const formData = req.body;
-        
-        // const response = await fetch('http://20.55.55.225:8080/api/consult-packages', {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-type': 'application/json',
-        //     },
-        //     body: JSON.stringify({ formData}),
-        //   });
-      
-        //   const data = await response.json();
-        //   console.log(data);
+          const formData = req.body;
 
-        // Send a response back to the client
-        res.status(200).json({ message: 'Package created successfully', data: formData });
+          const response = await fetch('http://localhost:3001/services-packages', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error('Error from server:', errorData);
+              
+              return res.status(response.status).json({ error: 'Error from server', details: errorData });
+          }
+
+          const data = await response.json();
+          console.log('Form data:', data);
+
+          // Send a response back to the client
+          res.status(200).json({ message: 'Package created successfully', data: data });
       } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+          console.error('Fetch error:', error);
+          res.status(500).json({ error: 'Internal Server Error', details: error });
       }
-    } else {
+  } else {
       res.status(405).json({ error: 'Method Not Allowed' });
-    }
   }
-  
+}

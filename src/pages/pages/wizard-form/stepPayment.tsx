@@ -78,8 +78,8 @@ const StepPayment: React.FC<StepPaymentsProps> = ({ formData = {}, onChange, onN
                     >
                         Billing Information
                     </Typography>
-                    <TextField name='selected_cuntry' placeholder='Select Country' onChange={handleChange} sx={{ mb: '15px', width: '100%' }}></TextField>
-                    <TextField name='bulling_address' placeholder='Billing Address' onChange={handleChange} sx={{ mb: '15px', width: '100%' }} ></TextField>
+                    <TextField name='selected_country' placeholder='Select Country' onChange={handleChange} sx={{ mb: '15px', width: '100%' }}></TextField>
+                    <TextField name='billing_address' placeholder='Billing Address' onChange={handleChange} sx={{ mb: '15px', width: '100%' }} ></TextField>
                     <TextField name='city' placeholder='City' onChange={handleChange} sx={{ mb: '15px', width: '100%' }} ></TextField>
                     <TextField name='state' placeholder='State' onChange={handleChange} sx={{ mb: '15px', width: '100%' }} ></TextField>
                     <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'}}>
