@@ -12,6 +12,7 @@ import Link from 'next/link'
 import Image from 'next/image';
 import { Box, Button, Grid, Typography } from '@mui/material'
 import { BorderRadius } from 'mdi-material-ui'
+import OverviewFlow from 'src/layouts/components/SlideFlow'
 
 
 
@@ -19,7 +20,7 @@ const UserFeedbackView = () => {
 
 
     const [image, setImage] = useState("/presentations/Presentation 1 images/Presentation 1_page-0001.jpg")
-    
+
     // const [comment, setComment] = useState('')
 
 
@@ -39,8 +40,11 @@ const UserFeedbackView = () => {
                 <Grid item xs={12} sm={12} sx={{ backgroundColor: '#F2F5FF', borderRadius: "8px", padding: '30px 50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: "relative" }}>
                     <Typography sx={{ color: '#011627', fontSize: '30px', fontWeight: 600, fontFamily: '"Syne", sans-serif !important;', mt: '50px' }} >Feedback Area</Typography>
                     <Typography sx={{ color: '#263238', fontSize: '16px', fontWeight: 400, fontFamily: '"Syne", sans-serif !important;', mb: '50px' }} >Drag the pin or click on area which you need to add comment</Typography>
-                    <div style={{ position: 'relative' }}>
+                    {/* <div style={{ position: 'relative' }}>
                         <Image src={image} alt="Slide" width={800} height={450} className='slideImage' />
+                    </div> */}
+                    <div style={{ width: '80vw', height: '500px' }}>
+                        <OverviewFlow />
                     </div>
                     <div className='sliderButtonWrapper'>
                         <button onClick={handlePrevSlide}>&#10094; Previous Slide</button>

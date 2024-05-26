@@ -11,10 +11,11 @@ const Successfull: React.FC<StepPaymentsProps> = ({ formData = {} }) => {
     
 
 
-    console.log(formData)
+    
 
     // In your Next.js page or component
 const postData = async () => {
+    console.log("added form data : ",formData)
     try {
       const response = await fetch('/api/createNewPackage', {
         method: 'POST',
