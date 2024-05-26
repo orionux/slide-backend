@@ -79,7 +79,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     {
       title: 'Order Management',
       icon: AlertCircleOutline,
-      path: 'order-management',
+      path: '/order-management',
     },
     {
       title: 'Chat Implementation & Moderation',
