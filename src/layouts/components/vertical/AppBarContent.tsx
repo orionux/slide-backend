@@ -79,7 +79,7 @@ const AppBarContent = (props: Props) => {
           </Box>
         )} */}
         <NotificationDropdown />
-        <Link passHref href="/pages/wizard-form/">
+        {/* <Link passHref href="/pages/wizard-form/">
             <Button sx={{
               backgroundColor: '#57EBB7', 
               color: '#455A64',
@@ -91,7 +91,7 @@ const AppBarContent = (props: Props) => {
                 color: '#57EBB7',
               }
             }} >Start Now</Button>
-          </Link>
+          </Link> */}
           <Link passHref href="/account">
             <Button sx={{
               backgroundColor: '#fff', 
