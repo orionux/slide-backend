@@ -62,10 +62,15 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 
 const RegisterPage = () => {
   // ** States
-  const [values, setValues] = useState<State>({
+  const [values, setValues] = useState({
+    fullname: '',
+    mobile_number: '',
+    email: '',
     password: '',
-    showPassword: false
-  })
+    showPassword: false,
+    confirmPassword: false,
+    agreeToTerms: false,
+  });
 
   // ** Hook
 
@@ -78,6 +83,35 @@ const RegisterPage = () => {
   const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
   }
+
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    const formData = {
+      fullname: values.fullname,
+      mobile_number: values.mobile_number,
+      email: values.email,
+      password: values.password,
+      agreeToTerms: values.agreeToTerms,
+    };
+
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Registration successful:', data);
+    } else {
+      const errorData = await response.json();
+      console.error('Registration error:', errorData);
+    }
+  };
 
   return (
     <Box className='content-center' sx={{
@@ -174,7 +208,7 @@ const RegisterPage = () => {
                     </Fragment>
                   }
                 />
-                <Button fullWidth size='large' type='submit' variant='contained' sx={{
+                <Button fullWidth size='large' type='submit' variant='contained' onClick={handleSubmit} sx={{
                   marginBottom: 7,
                   backgroundColor: '#404040',
                   color: '#fff',

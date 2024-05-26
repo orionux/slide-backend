@@ -8,7 +8,8 @@ import { Box, Button, Grid, Typography } from '@mui/material'
 import NormalHeader from 'src/layouts/components/NormalHeader'
 import ProjectHeader from 'src/views/projectComponents/projectHeader'
 import ProjectFooter from 'src/views/projectComponents/projectFooter'
-import Link from 'next/link'
+
+// import Link from 'next/link'
 
 
 const projectImages = [
@@ -127,7 +128,7 @@ const SummeryPage = () => {
         </Grid>
       </Grid>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', marginBottom: '50px' }}>
+      {/* <Box sx={{ display: 'flex', justifyContent: 'center', alignItem: 'center', marginBottom: '50px' }}>
         <Link passHref href={'/pages/project/upload-project'}>
           <Button sx={{ fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2E','&:hover': {
               backgroundColor: '#2D2D2E'
@@ -135,7 +136,7 @@ const SummeryPage = () => {
           Start Now
         </Button>
         </Link>
-      </Box>
+      </Box> */}
 
       <ProjectFooter />
     </>

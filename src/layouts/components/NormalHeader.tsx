@@ -23,7 +23,7 @@ const NormalHeader = () => {
                     </Link>
                     <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
                         <NotificationDropdown />
-                        <Link passHref href="/pages/wizard-form/" >
+                        {/* <Link passHref href="/pages/wizard-form/" >
                             <Button sx={{
                                 backgroundColor: '#57EBB7',
                                 color: '#455A64',
@@ -35,7 +35,7 @@ const NormalHeader = () => {
                                     color: '#57EBB7',
                                 }
                             }} >Start Now</Button>
-                        </Link>
+                        </Link> */}
                         <Link passHref href="/account">
                             <Button sx={{
                                 backgroundColor: '#fff',

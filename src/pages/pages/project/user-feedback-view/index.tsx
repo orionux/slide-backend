@@ -53,7 +53,7 @@ const UserFeedbackView = () => {
                     </div>
                 </Grid>
                 <Box sx={{ mt: '50px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                    <Link passHref href={'/pages/project/upload-project'}>
+                    <Link passHref href={'/pages/project/project-deliverd'}>
                         <Button sx={{
                             fontSize: '16px', color: '#fff', backgroundColor: '#2D2D2EA9', '&:hover': {
                                 backgroundColor: '#2D2D2E'
