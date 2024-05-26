@@ -77,7 +77,7 @@ const OverviewFlow = () => {
       edgeTypes={edgeTypes}
       className="overview"
     >
-      <MiniMap zoomable pannable nodeClassName={nodeClassName} />
+      <MiniMap zoomable pannable />
       <Controls />
       <Background />
     </ReactFlow>

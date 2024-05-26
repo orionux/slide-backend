@@ -12,13 +12,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import { CiFaceSmile } from "react-icons/ci";
+
+// import { CiFaceSmile } from "react-icons/ci";
 import { IoMdSend } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { FaCheck } from 'react-icons/fa';
 import { v4 as uuidv4 } from 'uuid';
-import Picker from '@emoji-mart/react';
+
+// import Picker from '@emoji-mart/react';
 
 const theme = createTheme({
   palette: {
@@ -72,11 +74,11 @@ const ReadIcon = styled(FaCheck)({
   right: '4px',
 });
 
-const EmojiPickerWrapper = styled('div')({
-  position: 'absolute',
-  bottom: '110px', 
-  left: '50px', 
-});
+// const EmojiPickerWrapper = styled('div')({
+//   position: 'absolute',
+//   bottom: '110px', 
+//   left: '50px', 
+// });
 
 interface ChatImage {
   [key: string]: string;
@@ -111,7 +113,8 @@ const Chats = () => {
   const [newMessage, setNewMessage] = useState('');
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  
+  // const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   useEffect(() => {
     fetch(apiUrl)
@@ -147,8 +150,10 @@ const Chats = () => {
     if (selectedContact === contactKey && chatMessages[selectedContact]) {
       const updatedMessages = chatMessages[selectedContact].map(message => {
         if (!message.read) {
+
           return { ...message, read: true };
         }
+
         return message;
       });
       setChatMessages({ ...chatMessages, [selectedContact]: updatedMessages });
@@ -168,10 +173,10 @@ const Chats = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleSelectEmoji = (emoji: any) => {
-    setNewMessage(newMessage + emoji.native);
-    setShowEmojiPicker(false);
-  };
+  // const handleSelectEmoji = (emoji: any) => {
+  //   setNewMessage(newMessage + emoji.native);
+  //   setShowEmojiPicker(false);
+  // };
 
   const calculateTimeDifference = (lastSeen?: string): string => {
     if (!lastSeen) return '';
@@ -186,9 +191,11 @@ const Chats = () => {
       return `${timeDifferenceInMinutes} minutes ago`;
     } else if (timeDifferenceInMinutes < 1440) { // 1440 minutes in a day
       const hours = Math.floor(timeDifferenceInMinutes / 60);
+
       return `${hours} hour${hours > 1 ? 's' : ''} ago`;
     } else {
       const days = Math.floor(timeDifferenceInMinutes / 1440);
+      
       return `${days} day${days > 1 ? 's' : ''} ago`;
     }
   };
@@ -292,9 +299,10 @@ const Chats = () => {
                       sx: { backgroundColor: '#fff', cursor:'pointer' },
                       startAdornment: (
                         <InputAdornment position="start">
-                          <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+
+                          {/* <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
                             <CiFaceSmile color='#8BABD8' />
-                          </IconButton>
+                          </IconButton> */}
                         </InputAdornment>
                       ),
                       endAdornment: (
@@ -309,11 +317,12 @@ const Chats = () => {
                     onChange={handleChangeMessage}
                     style={{ flex: 1 }}
                   />
-                  {showEmojiPicker && (
+
+                  {/* {showEmojiPicker && (
                     <EmojiPickerWrapper>
                       <Picker onEmojiSelect={handleSelectEmoji} />
                     </EmojiPickerWrapper>
-                  )}
+                  )} */}
             </div>
 
           </Grid>
