@@ -13,7 +13,7 @@ const AccountSettings = () => {
  
 
   return (
-    <Card>
+    <Card style={{borderTopLeftRadius:'25px', borderTopRightRadius:'25px'}}>
       <OrderManagementComponent />
     </Card>
   )

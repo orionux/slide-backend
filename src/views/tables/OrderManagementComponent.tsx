@@ -55,14 +55,24 @@ const OrderManagementComponent = () => {
 
     return (
         <>
-            <TabContext value={value}>
-                <TabList onChange={handleChange} aria-label='card navigation example'>
-                    <Tab value='1' label='Todo' />
-                    <Tab value='2' label='Ongoing' />
-                    <Tab value='3' label='Review' />
-                    <Tab value='4' label='Corrections' />
-                    <Tab value='5' label='Delivered' />
+            <TabContext value={value} >
+                <TabList onChange={handleChange} aria-label='card navigation example' 
+                style={{ 
+                borderRadius:'25px', 
+                display:'flex',
+                justifyContent:'space-between',
+                width:'100%',
+                }}
+                TabIndicatorProps={{
+                    style: { display: 'none' }
+                  }}>
+                    <Tab value='1' label='Todo' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='2' label='Ongoing' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='3' label='Review' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='4' label='Corrections' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='5' label='Delivered' style={{ flex: 1, textAlign: 'center' }} />
                 </TabList>
+
                 <CardContent>
                     <TabPanel value='1' sx={{ p: 0 }}>
                         {rows.map((row) => (
