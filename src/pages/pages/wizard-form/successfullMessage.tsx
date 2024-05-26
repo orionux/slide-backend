@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import Link from 'next/link';
 import React from 'react'
 
 
@@ -8,33 +9,33 @@ interface StepPaymentsProps {
 
 const Successfull: React.FC<StepPaymentsProps> = ({ formData = {} }) => {
 
-    
 
 
-    
+
+
 
     // In your Next.js page or component
-const postData = async () => {
-    console.log("added form data : ",formData)
-    try {
-      const response = await fetch('/api/createNewPackage', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-  // Usage
-  postData();
-  
+    const postData = async () => {
+        console.log("added form data : ", formData)
+        try {
+            const response = await fetch('/api/createNewPackage', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // Usage
+    postData();
+
 
 
     return (
@@ -71,8 +72,21 @@ const postData = async () => {
                             mb: '15px'
                         }}
                     >
-                        Payment Successful.! 
+                        Payment Successful.!
                     </Typography>
+                    <Link passHref href="/orders">
+                        <Button sx={{
+                            backgroundColor: '#57EBB7',
+                            color: '#455A64',
+                            width: '150px',
+                            textTransform: 'capitalize !important',
+                            marginRight: '10px',
+                            '&:hover': {
+                                backgroundColor: '#455A64',
+                                color: '#57EBB7',
+                            }
+                        }} >See your order</Button>
+                    </Link>
                 </Box>
 
             </Box>
