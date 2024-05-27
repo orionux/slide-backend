@@ -57,11 +57,20 @@ const OrderManagementComponent = () => {
         <>
             <TabContext value={value} >
                 <TabList onChange={handleChange} aria-label='card navigation example' 
+                indicatorColor='primary'
+                textColor='primary'
+                variant='fullWidth'
+                className='deliveryInfoTabs'
+                sx={{
+                  borderRadius: '50px'
+                }}
                 style={{ 
                 borderRadius:'25px', 
                 display:'flex',
                 justifyContent:'space-between',
                 width:'100%',
+                color:'red'
+                
                 }}
                 TabIndicatorProps={{
                     style: { display: 'none' }
@@ -248,4 +257,3 @@ const OrderManagementComponent = () => {
 
 export default OrderManagementComponent
 
-export const dynamic = 'force-dynamic'
