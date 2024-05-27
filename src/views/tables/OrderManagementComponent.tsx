@@ -247,3 +247,5 @@ const OrderManagementComponent = () => {
 }
 
 export default OrderManagementComponent
+
+export const dynamic = 'force-dynamic'
