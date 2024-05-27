@@ -4,8 +4,11 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { useReactFlow } from 'reactflow';
 
 
+interface CommentProps {
+    id: string;
+  }
 
-export default memo(({id}) => {
+export default memo(({ id }: CommentProps) => {
     //   const { setNodes } = useReactFlow();
     const { setNodes } = useReactFlow();
 
