@@ -22,8 +22,7 @@ export const addNode = async (type: string, setNodes: { (value: SetStateAction<N
       id: newNodeId,
       data: { label: `Comment ${newNodeId}` },
       position: {
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: 100, y: 100 
       },
       type,
       style: processNode,

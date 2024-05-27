@@ -1,11 +1,17 @@
 import Image from 'next/image';
 import React, { memo } from 'react';
 import { IoIosCloseCircle } from "react-icons/io";
+import { useReactFlow } from 'reactflow';
 
 
 
-export default memo(() => {
+export default memo(({id}) => {
     //   const { setNodes } = useReactFlow();
+    const { setNodes } = useReactFlow();
+
+    const onCommentDelete = () => {
+        setNodes((nodes) => nodes.filter((node) => node.id !== id));
+      };
 
     return (
         <>
@@ -17,15 +23,15 @@ export default memo(() => {
                            <Image src={'/images/pin.png'} alt="Slide" width={25} height={30} className='' />
                            </div>
                            <div className='commentClose'>
-                           <button>
+                           <button onClick={onCommentDelete}>
                                 <IoIosCloseCircle />
                             </button>
                            </div>
-                           <input
-                                type="text"
+                           <textarea
                                 className="nodrag"
                                 placeholder='Add Your Comment'
-                            />
+                                style={{fontSize: '8px'}}
+                            ></textarea>
                         </div>
                     </>
                 </div>

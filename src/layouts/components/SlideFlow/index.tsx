@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import React from 'react'
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -42,6 +42,8 @@ const OverviewFlow = () => {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
+
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -50,37 +52,42 @@ const OverviewFlow = () => {
 
 
   console.log("nodes : ", nodes)
-  
+
 
   const addTextNode = () => {
     addNode('comment', setNodes);
     console.log("added comment")
   };
-
+  
 
 
   return (
     <>
-      <button onClick={addTextNode} style={{zIndex: '9999'}} className='d-flex flex-column border-0 bg-dark text-white rounded justify-content-center align-items-center p-2 mt-3 ms-3 position-absolute'>
+      <button onClick={addTextNode} style={{ zIndex: '9999' }} className='d-flex flex-column border-0 bg-dark text-white rounded justify-content-center align-items-center p-2 mt-3 ms-3 position-absolute'>
         <Image src={'/images/pin.png'} alt="Slide" width={25} height={30} className='' />
         Add Comment
       </button>
-      <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
-      fitView
-      attributionPosition="top-right"
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      className="overview"
-    >
-      <MiniMap zoomable pannable />
-      <Controls />
-      <Background />
-    </ReactFlow>
+      <div ref={reactFlowWrapper} style={{ width: '80vw', height: '500px' }}>
+
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          fitView
+          attributionPosition="top-right"
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          className="overview"
+          zoomOnScroll={false}
+          panOnDrag={false}
+        >
+          {/* <MiniMap  zoomable pannable /> */}
+          {/* <Controls /> */}
+          <Background />
+        </ReactFlow>
+      </div>
     </>
   );
 };

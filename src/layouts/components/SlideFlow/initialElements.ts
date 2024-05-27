@@ -4,20 +4,6 @@ import { MarkerType } from 'reactflow';
 
 export const nodes = [
   {
-    id: '1',
-    type: 'group',
-    position: { x: 0, y: 0 },
-    style: {
-      width: '400px',
-      height: '235px',
-      BorderRadius: '20px',
-      backgroundColor: 'rgba(208, 192, 247, 0.2)',
-    },
-    data: {
-      label: 'parent group',
-    },
-  },
-  {
     id: '2',
     type: 'slideImage',
     position: { x: 10, y: 10 },
