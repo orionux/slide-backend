@@ -1,4 +1,3 @@
-// ** MUI Imports
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import { styled } from '@mui/material/styles'
@@ -69,6 +68,23 @@ const ServiceTable = () => {
     setSelectedRowIndex(null);
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (selectedRow) {
+      setSelectedRow(prevState => ({
+        ...prevState!,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleSubmit = () => {
+    if (selectedRow && selectedRowIndex !== null) {
+      rows[selectedRowIndex] = selectedRow;
+      console.log("Updated rows:", rows);
+    }
+    handleCloseDialog();
+  };
 
   return (
     <>
@@ -100,12 +116,10 @@ const ServiceTable = () => {
         </Table>
       </TableContainer>
 
-
-
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="xl">
-      <DialogActions>
+        <DialogActions>
           <Button onClick={handleCloseDialog}>
-          <AiOutlineCloseCircle style={{ fontSize: '25px' }} />
+            <AiOutlineCloseCircle style={{ fontSize: '25px' }} />
           </Button>
         </DialogActions>
         <DialogContent style={{ maxWidth: '1000px' }}>
@@ -113,8 +127,8 @@ const ServiceTable = () => {
             <form onSubmit={e => e.preventDefault()}>
               <Grid container spacing={5} style={{ marginBottom: 20 }}>
                 <Grid item xs={12} sm={3} style={{ display: "flex", flexDirection: 'column' }}>
-                  <img src={`${selectedRow && selectedRow.service_image}`} alt="" style={{width: '100%', height:'auto', marginBottom:'10px'}}></img>
-                  <Button type='submit' variant='contained' size='large' style={{ backgroundColor: '#455A64', color: '#ffffff'}} >
+                  <img src={`${selectedRow && selectedRow.service_image}`} alt="" style={{ width: '100%', height: 'auto', marginBottom: '10px' }}></img>
+                  <Button type='submit' variant='contained' size='large' style={{ backgroundColor: '#455A64', color: '#ffffff' }} >
                     Add Image
                   </Button>
                 </Grid>
@@ -122,26 +136,26 @@ const ServiceTable = () => {
                   <Typography variant='h6' sx={{ marginBottom: '20px', color: '#455A64' }}>
                     Service Info
                   </Typography>
-                  <TextField fullWidth label='Service ID' placeholder='' value={selectedRow && selectedRow.service_id} style={{marginBottom: '25px'}} />
-                  <TextField fullWidth label='Service Name' placeholder='' value={selectedRow && selectedRow.service_name} style={{marginBottom: '25px'}} />
-                  <TextField fullWidth label='Service Description' placeholder='' value={selectedRow && selectedRow.service_desc} style={{marginBottom: '25px'}} />
+                  <TextField fullWidth label='Service ID' name='service_id' value={selectedRow && selectedRow.service_id} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service Name' name='service_name' value={selectedRow && selectedRow.service_name} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service Description' name='service_desc' value={selectedRow && selectedRow.service_desc} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
                 </Grid>
               </Grid>
               <Grid container spacing={5} style={{ marginBottom: 20, display: "flex", flexDirection: 'row', justifyContent: 'end' }}>
-                <Button type='submit' variant='contained' size='large' onClick={handleCloseDialog} style={{marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64'}}>
-                  Cancel
-                </Button>
-                <Button type='submit' variant='contained' size='large' style={{ backgroundColor: '#57EBB7', color: '#455A64'}}>
-                  Submit
-                </Button>
-              </Grid>
-
-            </form>
-          </CardContent>
-        </DialogContent>
-      </Dialog>
-    </>
-  )
+                <Button type='button' variant='contained' size='large' onClick={handleCloseDialog
+} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
+Cancel
+</Button>
+<Button type='button' variant='contained' size='large' onClick={handleSubmit} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+Submit
+</Button>
+</Grid>
+</form>
+</CardContent>
+</DialogContent>
+</Dialog>
+</>
+)
 }
 
-export default ServiceTable
+export default ServiceTable;
