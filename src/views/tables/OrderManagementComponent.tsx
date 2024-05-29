@@ -37,53 +37,117 @@ const OrderManagementComponent = () => {
     const calculateTimeLeft = (endDate: string) => {
         const difference = new Date(endDate).getTime() - new Date().getTime();
         let timeLeft = '';
-    
+
         if (difference > 0) {
             const days = Math.floor(difference / (1000 * 60 * 60 * 24));
             const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((difference / 1000 / 60) % 60);
-    
+
             timeLeft = `${days}d ${hours}h ${minutes}m`;
         } else {
             timeLeft = 'Expired';
         }
-    
+
         return timeLeft;
     };
-    
+
+
+    const getProgressBar = (status: string, progress: number) => {
+        let className = '';
+        switch (status) {
+            case 'Todo':
+                className = 'TodoProgress';
+                break;
+            case 'Ongoing':
+                className = 'OngoingProgress';
+                break;
+            case 'Review':
+                className = 'ReviewProgress';
+                break;
+            case 'Corrections':
+                className = 'CorrectionsProgress';
+                break;
+            case 'Delivered':
+                className = 'DeliveredProgress';
+                break;
+            default:
+                className = 'DefaultProgress';
+                break;
+        }
+
+        return (
+            <div className={className}>
+                <LinearProgress variant="determinate" value={progress} />
+            </div>
+        );
+    };
+
 
 
     return (
         <>
             <TabContext value={value} >
-                <TabList onChange={handleChange} aria-label='card navigation example' 
-                indicatorColor='primary'
-                textColor='primary'
-                variant='fullWidth'
-                className='deliveryInfoTabs'
-                sx={{
-                  borderRadius: '50px'
-                }}
-                style={{ 
-                borderRadius:'25px', 
-                display:'flex',
-                justifyContent:'space-between',
-                width:'100%',
-                color:'red'
-                
-                }}
-                TabIndicatorProps={{
-                    style: { display: 'none' }
-                  }}>
-                    <Tab value='1' label='Todo' style={{ flex: 1, textAlign: 'center' }} />
-                    <Tab value='2' label='Ongoing' style={{ flex: 1, textAlign: 'center' }} />
-                    <Tab value='3' label='Review' style={{ flex: 1, textAlign: 'center' }} />
-                    <Tab value='4' label='Corrections' style={{ flex: 1, textAlign: 'center' }} />
-                    <Tab value='5' label='Delivered' style={{ flex: 1, textAlign: 'center' }} />
+                <TabList onChange={handleChange} aria-label='card navigation example'
+                    indicatorColor='primary'
+                    textColor='primary'
+                    variant='fullWidth'
+                    className='deliveryInfoTabs'
+                    sx={{
+                        borderRadius: '50px'
+                    }}
+                    style={{
+                        borderRadius: '25px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        color: 'red'
+
+                    }}
+                    TabIndicatorProps={{
+                        style: { display: 'none' }
+                    }}>
+                    <Tab value='1' label='ALL' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='2' label='Todo' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='3' label='Ongoing' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='4' label='Review' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='5' label='Corrections' style={{ flex: 1, textAlign: 'center' }} />
+                    <Tab value='6' label='Delivered' style={{ flex: 1, textAlign: 'center' }} />
                 </TabList>
 
                 <CardContent>
-                    <TabPanel value='1' sx={{ p: 0 }}>
+                <TabPanel value='1' sx={{ p: 0 }}>
+                        {rows.map((row) => (
+                                <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'row', padding: '10px', boxShadow: '0px 2px 4px rgba(2, 3, 5, 0.15)', borderRadius: '20px', margin: '10px' }}>
+                                        <div style={{ width: '75%', marginRight: '10px' }}>
+                                            <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
+                                                <Typography>
+                                                    {row.project_name} | Order{row.order_id} |
+                                                    {row.project_responsibility}
+                                                </Typography>
+                                            </div>
+                                            {/* progressbar */}
+                                            <div style={{ width: "300px" }}>
+                                                {/* <LinearProgress variant="determinate" value={calculateProgress(row.progress)} /> */}
+                                                {getProgressBar(row.project_status, calculateProgress(row.progress))}
+                                            </div>
+                                            <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
+                                                <Typography>
+                                                    {row.price} | Start Date : {row.start_date} | Delivery Date : {row.end_date} | Subadmin ID : {row.sub_admin_id}
+                                                </Typography>
+                                            </div>
+                                        </div>
+                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection: 'row', justifyContent: 'end', alignItems: 'center' }}>
+                                            <Typography>
+                                                Time Left: {calculateTimeLeft(row.end_date)}
+                                            </Typography>
+                                            <img src={`${row.project_image}`} alt="" style={{ width: '150px', height: 'auto', marginBottom: '10px' }}></img>
+                                        </div>
+                                    </div>
+                                </div>
+                        ))}
+                    </TabPanel>
+                    <TabPanel value='2' sx={{ p: 0 }}>
                         {rows.map((row) => (
                             row.project_status === 'Todo' && (
                                 <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -96,8 +160,9 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                             {/* progressbar */}
-                                            <div style={{width: "300px"}}>
-                                                <LinearProgress variant="determinate" value={calculateProgress(row.progress)} />
+                                            <div style={{ width: "300px" }}>
+                                                {/* <LinearProgress variant="determinate" value={calculateProgress(row.progress)} /> */}
+                                                {getProgressBar(row.project_status, calculateProgress(row.progress))}
                                             </div>
                                             <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
                                                 <Typography>
@@ -105,10 +170,10 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                         </div>
-                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection:'row', justifyContent: 'end', alignItems: 'center' }}>
-                                        <Typography>
-                                            Time Left: {calculateTimeLeft(row.end_date)}
-                                        </Typography>
+                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection: 'row', justifyContent: 'end', alignItems: 'center' }}>
+                                            <Typography>
+                                                Time Left: {calculateTimeLeft(row.end_date)}
+                                            </Typography>
                                             <img src={`${row.project_image}`} alt="" style={{ width: '150px', height: 'auto', marginBottom: '10px' }}></img>
                                         </div>
                                     </div>
@@ -116,8 +181,7 @@ const OrderManagementComponent = () => {
                             )
                         ))}
                     </TabPanel>
-
-                    <TabPanel value='2' sx={{ p: 0 }}>
+                    <TabPanel value='3' sx={{ p: 0 }}>
                         {rows.map((row) => (
                             row.project_status === 'Ongoing' && (
                                 <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -130,8 +194,9 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                             {/* progressbar */}
-                                            <div style={{width: "300px"}}>
-                                                <LinearProgress variant="determinate" value={calculateProgress(row.progress)} />
+                                            <div style={{ width: "300px" }}>
+                                                {/* <LinearProgress variant="determinate" value={calculateProgress(row.progress)} /> */}
+                                                {getProgressBar(row.project_status, calculateProgress(row.progress))}
                                             </div>
                                             <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
                                                 <Typography>
@@ -139,10 +204,10 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                         </div>
-                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection:'row', justifyContent: 'end', alignItems: 'center' }}>
-                                        <Typography>
-                                            Time Left: {calculateTimeLeft(row.end_date)}
-                                        </Typography>
+                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection: 'row', justifyContent: 'end', alignItems: 'center' }}>
+                                            <Typography>
+                                                Time Left: {calculateTimeLeft(row.end_date)}
+                                            </Typography>
                                             <img src={`${row.project_image}`} alt="" style={{ width: '150px', height: 'auto', marginBottom: '10px' }}></img>
                                         </div>
                                     </div>
@@ -150,7 +215,7 @@ const OrderManagementComponent = () => {
                             )
                         ))}
                     </TabPanel>
-                    <TabPanel value='3' sx={{ p: 0 }}>
+                    <TabPanel value='4' sx={{ p: 0 }}>
                         {rows.map((row) => (
                             row.project_status === 'Review' && (
                                 <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -163,8 +228,9 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                             {/* progressbar */}
-                                            <div style={{width: "300px"}}>
-                                                <LinearProgress variant="determinate" value={calculateProgress(row.progress)} />
+                                            <div style={{ width: "300px" }}>
+                                                {/* <LinearProgress variant="determinate" value={calculateProgress(row.progress)} /> */}
+                                                {getProgressBar(row.project_status, calculateProgress(row.progress))}
                                             </div>
                                             <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
                                                 <Typography>
@@ -172,10 +238,10 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                         </div>
-                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection:'row', justifyContent: 'end', alignItems: 'center' }}>
-                                        <Typography>
-                                            Time Left: {calculateTimeLeft(row.end_date)}
-                                        </Typography>
+                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection: 'row', justifyContent: 'end', alignItems: 'center' }}>
+                                            <Typography>
+                                                Time Left: {calculateTimeLeft(row.end_date)}
+                                            </Typography>
                                             <img src={`${row.project_image}`} alt="" style={{ width: '150px', height: 'auto', marginBottom: '10px' }}></img>
                                         </div>
                                     </div>
@@ -183,7 +249,7 @@ const OrderManagementComponent = () => {
                             )
                         ))}
                     </TabPanel>
-                    <TabPanel value='4' sx={{ p: 0 }}>
+                    <TabPanel value='5' sx={{ p: 0 }}>
                         {rows.map((row) => (
                             row.project_status === 'Corrections' && (
                                 <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -196,8 +262,9 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                             {/* progressbar */}
-                                            <div style={{width: "300px"}}>
-                                                <LinearProgress variant="determinate" value={calculateProgress(row.progress)} />
+                                            <div style={{ width: "300px" }}>
+                                                {/* <LinearProgress variant="determinate" value={calculateProgress(row.progress)} /> */}
+                                                {getProgressBar(row.project_status, calculateProgress(row.progress))}
                                             </div>
                                             <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
                                                 <Typography>
@@ -205,10 +272,10 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                         </div>
-                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection:'row', justifyContent: 'end', alignItems: 'center' }}>
-                                        <Typography>
-                                            Time Left: {calculateTimeLeft(row.end_date)}
-                                        </Typography>
+                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection: 'row', justifyContent: 'end', alignItems: 'center' }}>
+                                            <Typography>
+                                                Time Left: {calculateTimeLeft(row.end_date)}
+                                            </Typography>
                                             <img src={`${row.project_image}`} alt="" style={{ width: '150px', height: 'auto', marginBottom: '10px' }}></img>
                                         </div>
                                     </div>
@@ -216,10 +283,10 @@ const OrderManagementComponent = () => {
                             )
                         ))}
                     </TabPanel>
-                    <TabPanel value='5' sx={{ p: 0 }}>
+                    <TabPanel value='6' sx={{ p: 0 }}>
                         {rows.map((row) => (
                             row.project_status === 'Delivered' && (
-<div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', justifyContent: 'row', padding: '10px', boxShadow: '0px 2px 4px rgba(2, 3, 5, 0.15)', borderRadius: '20px', margin: '10px' }}>
                                         <div style={{ width: '75%', marginRight: '10px' }}>
                                             <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
@@ -229,8 +296,9 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                             {/* progressbar */}
-                                            <div style={{width: "300px"}}>
-                                                <LinearProgress variant="determinate" value={calculateProgress(row.progress)} />
+                                            <div style={{ width: "300px" }}>
+                                                {/* <LinearProgress variant="determinate" value={calculateProgress(row.progress)} /> */}
+                                                {getProgressBar(row.project_status, calculateProgress(row.progress))}
                                             </div>
                                             <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '20px' }}>
                                                 <Typography>
@@ -238,10 +306,10 @@ const OrderManagementComponent = () => {
                                                 </Typography>
                                             </div>
                                         </div>
-                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection:'row', justifyContent: 'end', alignItems: 'center' }}>
-                                        <Typography>
-                                            Time Left: {calculateTimeLeft(row.end_date)}
-                                        </Typography>
+                                        <div style={{ width: '25%', marginRight: '10px', display: 'flex', flexDirection: 'row', justifyContent: 'end', alignItems: 'center' }}>
+                                            <Typography>
+                                                Time Left: {calculateTimeLeft(row.end_date)}
+                                            </Typography>
                                             <img src={`${row.project_image}`} alt="" style={{ width: '150px', height: 'auto', marginBottom: '10px' }}></img>
                                         </div>
                                     </div>

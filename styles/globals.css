@@ -32,7 +32,7 @@ code[class*='language-'] {
   background-color: #E4E4E4 !important;
 }
 .css-1tzjfr3-MuiLinearProgress-bar1{
-  background-color: #E9E358 !important;
+  background-color: #E9E358;
 }
 
 .css-1l3kzfa-MuiButtonBase-root-MuiTab-root{
@@ -373,4 +373,25 @@ border-color: #5A5A5A !important;
 }
 .commentWrapper textarea:focus{
   outline: none;
+}
+
+
+.TodoProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #E9E358 !important;
+}
+
+.OngoingProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #57EBB7 !important;
+}
+
+.ReviewProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: rgb(243, 163, 15) !important;
+}
+
+.CorrectionsProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: rgb(243, 22, 22) !important;
+}
+
+.DeliveredProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: rgb(0, 170, 0) !important;
 }
