@@ -381,17 +381,31 @@ border-color: #5A5A5A !important;
 }
 
 .OngoingProgress .css-1tzjfr3-MuiLinearProgress-bar1{
-  background-color: #57EBB7 !important;
+  background-color: #DF6FE9 !important;
 }
 
 .ReviewProgress .css-1tzjfr3-MuiLinearProgress-bar1{
-  background-color: rgb(243, 163, 15) !important;
+  background-color: #F6AF45 !important;
 }
 
 .CorrectionsProgress .css-1tzjfr3-MuiLinearProgress-bar1{
-  background-color: rgb(243, 22, 22) !important;
+  background-color: #57EBB7 !important;
 }
 
 .DeliveredProgress .css-1tzjfr3-MuiLinearProgress-bar1{
-  background-color: rgb(0, 170, 0) !important;
+  background-color: #81E303 !important;
+}
+
+.chatLinkPurple{
+  background-color: #98AFFF;
+  padding: 5px 60px 5px 30px;
+  border-top-left-radius: 30px;
+  margin-right: -30px;
+  cursor: pointer;
+}
+.chatLinkColored{
+  background-color: #E9E358;
+  padding: 5px 30px;
+  border-top-left-radius: 30px;
+  cursor: pointer;
 }
