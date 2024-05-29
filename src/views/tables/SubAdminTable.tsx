@@ -128,6 +128,17 @@ const SubAdminTable = () => {
     setSelectedRowIndex(null)
   }
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (selectedRow) {
+      setSelectedRow(prevState => ({
+        ...prevState!,
+        [name]: value
+        
+      }));
+    }
+  };
+
   const handleSave = () => {
     if (selectedRow && selectedRowIndex !== null) {
       rows[selectedRowIndex] = selectedRow;
@@ -157,15 +168,8 @@ const SubAdminTable = () => {
     setOpenSubAdmin(false)
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    if (selectedRow) {
-      setSelectedRow(prevState => ({
-        ...prevState!,
-        [name]: value
-      }));
-    }
-  };
+
+
 
   return (
     <>
@@ -206,23 +210,23 @@ const SubAdminTable = () => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' placeholder='' value={selectedRow && selectedRow.fullname} />
+                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.fullname} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Gender' placeholder='' value={selectedRow && selectedRow.gender} />
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Email' placeholder='' value={selectedRow && selectedRow.email} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' placeholder='' value={selectedRow && selectedRow.phoneNumber} />
+                      <TextField fullWidth label='Gender' name='gender' value={selectedRow && selectedRow.gender}/>
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='State' placeholder='' value={selectedRow && selectedRow.state} />
+                      <TextField fullWidth label='Email' name='email' value={selectedRow && selectedRow.email} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phoneNumber} />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='State' name='state' value={selectedRow && selectedRow.state}/>
                     </Grid>
                   </Grid>
 
@@ -326,6 +330,14 @@ const SubAdminTable = () => {
                 </Grid>
               </Grid>
             </CardContent>
+            <Grid container spacing={5} style={{ marginBottom: 20, display: "flex", flexDirection: 'row', justifyContent: 'end' }}>
+                <Button type='button' variant='contained' size='large' onClick={handleCloseSubAdmin} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
+                Cancel
+                </Button>
+                <Button type='button' variant='contained' size='large' onClick={handleCloseSubAdmin} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+                Add
+                </Button>
+            </Grid>
           </form>
         </DialogContent>
       </Dialog>
@@ -334,7 +346,7 @@ const SubAdminTable = () => {
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
             <TableRow>
-              <StyledTableCell>ID</StyledTableCell>
+              <StyledTableCell width={100}>ID</StyledTableCell>
               <StyledTableCell align='left'>Full Name</StyledTableCell>
               <StyledTableCell align='left'>Email Add</StyledTableCell>
               <StyledTableCell align='left'>Phone Number</StyledTableCell>
