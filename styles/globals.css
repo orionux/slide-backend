@@ -32,7 +32,7 @@ code[class*='language-'] {
   background-color: #E4E4E4 !important;
 }
 .css-1tzjfr3-MuiLinearProgress-bar1{
-  background-color: #E9E358 !important;
+  background-color: #E9E358;
 }
 
 .css-1l3kzfa-MuiButtonBase-root-MuiTab-root{
@@ -373,4 +373,39 @@ border-color: #5A5A5A !important;
 }
 .commentWrapper textarea:focus{
   outline: none;
+}
+
+
+.TodoProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #E9E358 !important;
+}
+
+.OngoingProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #DF6FE9 !important;
+}
+
+.ReviewProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #F6AF45 !important;
+}
+
+.CorrectionsProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #57EBB7 !important;
+}
+
+.DeliveredProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #81E303 !important;
+}
+
+.chatLinkPurple{
+  background-color: #98AFFF;
+  padding: 5px 60px 5px 30px;
+  border-top-left-radius: 30px;
+  margin-right: -30px;
+  cursor: pointer;
+}
+.chatLinkColored{
+  background-color: #E9E358;
+  padding: 5px 30px;
+  border-top-left-radius: 30px;
+  cursor: pointer;
 }
