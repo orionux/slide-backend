@@ -128,6 +128,14 @@ const SubAdminTable = () => {
     setSelectedRowIndex(null)
   }
 
+  const handleSave = () => {
+    if (selectedRow && selectedRowIndex !== null) {
+      rows[selectedRowIndex] = selectedRow;
+      console.log("Updated rows:", rows);
+    }
+    handleCloseEditDialog();
+  };
+
   //delete model
   const handleDeleteUser = (row: RowData, index: number) => {
     setOpenDialogDeleteUser(true)
@@ -148,6 +156,16 @@ const SubAdminTable = () => {
   const handleCloseSubAdmin = () => {
     setOpenSubAdmin(false)
   }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (selectedRow) {
+      setSelectedRow(prevState => ({
+        ...prevState!,
+        [name]: value
+      }));
+    }
+  };
 
   return (
     <>
@@ -616,23 +634,23 @@ const SubAdminTable = () => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' placeholder='' value={selectedRow && selectedRow.fullname} />
+                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.fullname} onChange={handleInputChange}/>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Gender' placeholder='' value={selectedRow && selectedRow.gender} />
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Email' placeholder='' value={selectedRow && selectedRow.email} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' placeholder='' value={selectedRow && selectedRow.phoneNumber} />
+                      <TextField fullWidth label='Gender' name='gender' value={selectedRow && selectedRow.gender} onChange={handleInputChange} />
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='State' placeholder='' value={selectedRow && selectedRow.state} />
+                      <TextField fullWidth label='Email' name='email' value={selectedRow && selectedRow.email} onChange={handleInputChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phoneNumber}  onChange={handleInputChange}/>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='State' name='state' value={selectedRow && selectedRow.state}  onChange={handleInputChange}/>
                     </Grid>
                   </Grid>
 
@@ -736,6 +754,14 @@ const SubAdminTable = () => {
                 </Grid>
               </Grid>
             </CardContent>
+            <Grid container spacing={5} style={{ marginBottom: 20, display: "flex", flexDirection: 'row', justifyContent: 'end' }}>
+                <Button type='button' variant='contained' size='large' onClick={handleCloseEditDialog} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
+                Cancel
+                </Button>
+                <Button type='button' variant='contained' size='large' onClick={handleSave} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+                Save
+                </Button>
+              </Grid>
           </form>
         </DialogContent>
       </Dialog>

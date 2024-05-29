@@ -143,18 +143,18 @@ const ServiceTable = () => {
               </Grid>
               <Grid container spacing={5} style={{ marginBottom: 20, display: "flex", flexDirection: 'row', justifyContent: 'end' }}>
                 <Button type='button' variant='contained' size='large' onClick={handleCloseDialog
-} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
-Cancel
-</Button>
-<Button type='button' variant='contained' size='large' onClick={handleSubmit} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
-Submit
-</Button>
-</Grid>
-</form>
-</CardContent>
-</DialogContent>
-</Dialog>
-</>
+                } style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
+                Cancel
+                </Button>
+                <Button type='button' variant='contained' size='large' onClick={handleSubmit} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+                Submit
+                </Button>
+              </Grid>
+            </form>
+          </CardContent>
+        </DialogContent>
+      </Dialog>
+    </>
 )
 }
 
