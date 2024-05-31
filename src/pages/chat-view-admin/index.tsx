@@ -5,17 +5,17 @@ import Card from '@mui/material/Card'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
-import Chats from 'src/views/chats/Chats'
+import ChatAdmin from 'src/views/chatAdmin/ChatAdmin'
 
 
-const ChatView = () => {
+const ChatViewAdmin = () => {
  
 
   return (
     <Card>
-      <Chats />
+      <ChatAdmin />
     </Card>
   )
 }
 
-export default ChatView
+export default ChatViewAdmin

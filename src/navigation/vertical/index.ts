@@ -84,7 +84,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     {
       title: 'Chat Implementation & Moderation',
       icon: FormatLetterCase,
-      path: '/chat-view'
+      path: '/chat-view-admin'
     },
     {
       title: 'Payment & Transaction Management',
