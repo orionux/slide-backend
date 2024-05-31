@@ -118,15 +118,34 @@ const ServiceTable = () => {
 
   return (
     <>
-      <CardContent>
-        <Button 
-          variant='contained' 
-          sx={{ backgroundColor: '#57EBB7', 
-          color: '#455A64' }}
-          onClick={handleAddNewService}>
-            Add New Service
-        </Button>
-      </CardContent>
+      <Grid container alignItems="center">
+        <Grid item sm={3}>
+          <CardContent>
+            <Button 
+              variant='contained' 
+              sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}
+              onClick={handleAddNewService}>
+                Add New Service
+            </Button>
+          </CardContent>
+        </Grid>
+        <Grid item sm={6} container justifyContent="center">
+          <CardContent>
+            <Typography
+              sx={{
+                color: '#000',
+                fontFamily: '"Syne", sans-serif !important;',
+                fontSize: '20px',
+                fontWeight: 700
+              }}
+            >
+              Service Page
+            </Typography>
+          </CardContent>
+        </Grid>
+      </Grid>
+
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
