@@ -100,8 +100,33 @@ const ServiceTable = () => {
     handleCloseDialog();
   };
 
+  const handleAddNewService = () => {
+    const lastServiceId = rows[rows.length - 1].service_id;
+    const newServiceIdNumber = parseInt(lastServiceId.replace('#S', '')) + 1;
+    const newServiceId = `#S${newServiceIdNumber.toString().padStart(3, '0')}`;
+
+    const newService = createData(
+      newServiceId,
+      'New Service',
+      'Description of new service',
+      '/images/services/Pattern.png'
+    );
+
+    setRows([...rows, newService]);
+  };
+
+
   return (
     <>
+      <CardContent>
+        <Button 
+          variant='contained' 
+          sx={{ backgroundColor: '#57EBB7', 
+          color: '#455A64' }}
+          onClick={handleAddNewService}>
+            Add New Service
+        </Button>
+      </CardContent>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
