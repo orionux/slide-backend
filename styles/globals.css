@@ -396,6 +396,21 @@ border-color: #5A5A5A !important;
   background-color: #81E303 !important;
 }
 
+.PreparingProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #E9E358 !important;
+}
+
+.InitialReviewProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #DF6FE9 !important;
+}
+
+.MoreReviewProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #F6AF45 !important;
+}
+.DeliveredProgress .css-1tzjfr3-MuiLinearProgress-bar1{
+  background-color: #81E303 !important;
+}
+
 .chatLinkPurple{
   background-color: #98AFFF;
   padding: 5px 60px 5px 30px;
