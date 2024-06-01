@@ -411,6 +411,46 @@ border-color: #5A5A5A !important;
   background-color: #81E303 !important;
 }
 
+
+
+
+
+.TodoProgress .css-1sb9pcj{
+  background-color: #E9E358 !important;
+}
+
+.OngoingProgress .css-1sb9pcj{
+  background-color: #DF6FE9 !important;
+}
+
+.ReviewProgress .css-1sb9pcj{
+  background-color: #F6AF45 !important;
+}
+
+.CorrectionsProgress .css-1sb9pcj{
+  background-color: #57EBB7 !important;
+}
+
+.DeliveredProgress .css-1sb9pcj{
+  background-color: #81E303 !important;
+}
+
+.PreparingProgress .css-1sb9pcj{
+  background-color: #E9E358 !important;
+}
+
+.InitialReviewProgress .css-1sb9pcj{
+  background-color: #DF6FE9 !important;
+}
+
+.MoreReviewProgress .css-1sb9pcj{
+  background-color: #F6AF45 !important;
+}
+.DeliveredProgress .css-1sb9pcj{
+  background-color: #81E303 !important;
+}
+
+
 .chatLinkPurple{
   background-color: #98AFFF;
   padding: 5px 60px 5px 30px;
