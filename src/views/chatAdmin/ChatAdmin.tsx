@@ -286,7 +286,7 @@ const Chats = () => {
                       />
                     </div>
                   </div>
-                  <Button variant="contained" style={{ backgroundColor: '#000' }}>Visit Workplace</Button>
+                  <Button variant="contained" style={{ backgroundColor: '#000' }}>Visit to Order Page</Button>
                 </ListItem>
               )}
             </Grid>
