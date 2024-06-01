@@ -14,12 +14,12 @@ const createData = (order_id: string, project_name: string, project_responsibili
 const rows = [
     createData('#S001', 'Project 1', 'John Doe', '25$', '10%', '2024/04/06', '2024/04/08', 'sub admin 001', '/images/services/53.png', 'Preparing'),
     createData('#S002', 'Project 2', 'John Doe', '25$', '50%', '2024/04/06', '2024/04/10', 'sub admin 002', '/images/services/17.png', 'Preparing'),
-    createData('#S003', 'Project 3', 'John Doe', '25$', '80%', '2024/04/06', '2024/04/08', 'sub admin 003', '/images/services/53.png', 'Initial review'),
-    createData('#S004', 'Project 4', 'John Doe', '25$', '40%', '2024/04/06', '2024/04/07', 'sub admin 004', '/images/services/53.png', 'Initial review'),
-    createData('#S005', 'Project 5', 'John Doe', '25$', '100%', '2024/04/06', '2024/04/01', 'sub admin 005', '/images/services/17.png', 'More Review'),
-    createData('#S006', 'Project 6', 'John Doe', '25$', '60%', '2024/04/06', '2024/04/10', 'sub admin 006', '/images/services/17.png', 'More Review'),
+    createData('#S003', 'Project 3', 'John Doe', '25$', '80%', '2024/04/06', '2024/04/08', 'sub admin 003', '/images/services/53.png', 'InitialReview'),
+    createData('#S004', 'Project 4', 'John Doe', '25$', '40%', '2024/04/06', '2024/04/07', 'sub admin 004', '/images/services/53.png', 'InitialReview'),
+    createData('#S005', 'Project 5', 'John Doe', '25$', '100%', '2024/04/06', '2024/04/01', 'sub admin 005', '/images/services/17.png', 'MoreReview'),
+    createData('#S006', 'Project 6', 'John Doe', '25$', '60%', '2024/04/06', '2024/04/10', 'sub admin 006', '/images/services/17.png', 'MoreReview'),
     createData('#S007', 'Project 7', 'John Doe', '25$', '100%', '2024/04/06', '2024/04/08', 'sub admin 007', '/images/services/53.png', 'Delivered'),
-    createData('#S008', 'Project 8', 'John Doe', '25$', '80%', '2024/04/06', '2024/04/05', 'sub admin 008', '/images/services/53.png', 'Initial review'),
+    createData('#S008', 'Project 8', 'John Doe', '25$', '80%', '2024/04/06', '2024/04/05', 'sub admin 008', '/images/services/53.png', 'InitialReview'),
 ]
 
 const OrdersComponent = () => {
@@ -60,10 +60,10 @@ const OrdersComponent = () => {
             case 'Preparing':
                 className = 'PreparingProgress';
                 break;
-            case 'Initial review':
+            case 'InitialReview':
                 className = 'InitialReviewProgress';
                 break;
-            case 'More Review':
+            case 'MoreReview':
                 className = 'MoreReviewProgress';
                 break;
             case 'Delivered':
@@ -82,10 +82,9 @@ const OrdersComponent = () => {
     };
 
     const statusColors = {
-        Todo: '#E9E358',
-        Ongoing: '#DF6FE9',
-        Review: '#F6AF45',
-        Corrections: '#57EBB7',
+        Preparing: '#E9E358',
+        InitialReview: '#DF6FE9',
+        MoreReview: '#F6AF45',
         Delivered: '#81E303',
     };
 
@@ -231,7 +230,7 @@ const OrdersComponent = () => {
                         {rows.map((row) => {
                             const backgroundColor = isValidStatus(row.project_status) ? statusColors[row.project_status] : 'defaultColor';
 
-                            return row.project_status === 'Initial review' && (
+                            return row.project_status === 'InitialReview' && (
                                 <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div className="d-flex flex-row w-100 justify-content-end p-0 m-0 align-items-center">
                                         <Link passHref href="/chat-view">
@@ -282,7 +281,7 @@ const OrdersComponent = () => {
                         {rows.map((row) => {
                             const backgroundColor = isValidStatus(row.project_status) ? statusColors[row.project_status] : 'defaultColor';
 
-                            return row.project_status === 'More Review' && (
+                            return row.project_status === 'MoreReview' && (
                                 <div key={row.order_id} style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div className="d-flex flex-row w-100 justify-content-end p-0 m-0 align-items-center">
                                         <Link passHref href="/chat-view">
