@@ -12,6 +12,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import Divider from '@mui/material/Divider';
+
 
 import { IoMdSend } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -231,42 +233,42 @@ const Chats = () => {
             </Grid>
             */}
             <List>
-  {Object.values(groupedContacts).map(group => (
-    <div key={group.user}>
-      <ListItem button onClick={() => handleUserClick(group.user)} style={{ display: 'flex', justifyContent: 'space-between', position:'relative', backgroundColor: expandedUsers[group.user] ? '#57EBB7' : 'transparent' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <ListItemIcon>
-            {/* Profile Picture */}
-            <Avatar alt={group.user} src={'images/chat/chat1.png'} />
-          </ListItemIcon>
-          <ListItemText primary={group.user} primaryTypographyProps={{ fontSize: '16px', fontWeight: 'bold' }} />
-        </div>
-        {/* Chat Count */}
-        <Typography component="div" variant="body2" style={{ fontSize: '12px', position: 'absolute', right: 20, top: '25%', paddingTop: "5px", paddingRight:10 }}>
-          Inside <b>{group.contacts.length} chats</b>
-      </Typography>
-      {/* Expand/Collapse Icon */}
-        {expandedUsers[group.user] ? <IoIosArrowForward style={{ position: 'absolute', right: 5, top: 20 }} /> : <IoIosArrowDown style={{ position: 'absolute', right: 5, top: 20 }} />}    
-      </ListItem>
-      {expandedUsers[group.user] && group.contacts.map(contact => (
-        <ListItem button key={contact.key} onClick={() => handleContactClick(contact.key)} style={{ paddingLeft: '40px' }}>
-          <ListItemIcon>
-            <Avatar alt={contact.name} src={chatImages[contact.key]} />
-          </ListItemIcon>
-          <div>
-            <ListItemText 
-              primary={contact.name}
-              primaryTypographyProps={{ fontSize: '15px', fontWeight: 'bold' }} 
-            />
-            <ListItemText 
-              secondary={chatMessages[contact.key] && chatMessages[contact.key].length > 0 ? chatMessages[contact.key][chatMessages[contact.key].length - 1].content : ''} 
-              secondaryTypographyProps={{ fontSize: '13px', fontWeight: '500' }} 
-            />
-          </div>
-        </ListItem>
-      ))}
-    </div>
-  ))}
+            {Object.values(groupedContacts).map(group => (
+              <div key={group.user}>
+                <ListItem button onClick={() => handleUserClick(group.user)} style={{ display: 'flex', justifyContent: 'space-between', position:'relative', backgroundColor: expandedUsers[group.user] ? '#57EBB7' : 'transparent' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <ListItemIcon>
+                      {/* Profile Picture */}
+                      <Avatar alt={group.user} src={'images/chat/chat1.png'} />
+                    </ListItemIcon>
+                    <ListItemText primary={group.user} primaryTypographyProps={{ fontSize: '16px', fontWeight: 'bold' }} />
+                  </div>
+                  {/* Chat Count */}
+                  <Typography component="div" variant="body2" style={{ fontSize: '12px', position: 'absolute', right: 20, top: '25%', paddingTop: "5px", paddingRight:10 }}>
+                    Inside <b>{group.contacts.length} chats</b>
+                </Typography>
+                {/* Expand/Collapse Icon */}
+                  {expandedUsers[group.user] ? <IoIosArrowForward style={{ position: 'absolute', right: 5, top: 20 }} /> : <IoIosArrowDown style={{ position: 'absolute', right: 5, top: 20 }} />}    
+                </ListItem>
+                {expandedUsers[group.user] && group.contacts.map(contact => (
+                  <ListItem button key={contact.key} onClick={() => handleContactClick(contact.key)} style={{ paddingLeft: '40px' }}>
+                    <ListItemIcon>
+                      <Avatar alt={contact.name} src={chatImages[contact.key]} />
+                    </ListItemIcon>
+                    <div>
+                      <ListItemText 
+                        primary={contact.name}
+                        primaryTypographyProps={{ fontSize: '15px', fontWeight: 'bold' }} 
+                      />
+                      <ListItemText 
+                        secondary={chatMessages[contact.key] && chatMessages[contact.key].length > 0 ? chatMessages[contact.key][chatMessages[contact.key].length - 1].content : ''} 
+                        secondaryTypographyProps={{ fontSize: '13px', fontWeight: '500' }} 
+                      />
+                    </div>
+                  </ListItem>
+                ))}
+              </div>
+            ))}
           </List>
 
 
@@ -274,7 +276,7 @@ const Chats = () => {
           <Grid item xs={8}>
             <Grid item md={12}>
               {selectedContact && (
-                <ListItem button key="RemySharp" style={{ justifyContent: 'space-between' }}>
+                <ListItem button key="RemySharp" style={{ justifyContent: 'space-between', borderBottom:'1px solid #e0e0e0' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <ListItemIcon>
                       <Avatar alt={contacts.find(contact => contact.key === selectedContact)?.name || ""} src={chatImages[selectedContact]} />
@@ -289,6 +291,7 @@ const Chats = () => {
                   <Button variant="contained" style={{ backgroundColor: '#000' }}>Visit to Order Page</Button>
                 </ListItem>
               )}
+              <Divider />
             </Grid>
             <MessageAreaContainer className="messageArea">
               {selectedContact && chatMessages[selectedContact]?.map((message) => (

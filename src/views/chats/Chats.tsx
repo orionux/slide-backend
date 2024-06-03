@@ -245,7 +245,7 @@ const Chats = () => {
           <Grid item xs={8}>
             <Grid item md={12}>
               {selectedContact && (
-                <ListItem button key="RemySharp"  style={{justifyContent:'space-between'}}>
+                <ListItem button key="RemySharp"  style={{justifyContent:'space-between',  borderBottom:'1px solid #e0e0e0'}}>
                   <div style={{display:'flex', alignItems:'center'}}>
                     <ListItemIcon>
                       <Avatar alt={contacts.find(contact => contact.key === selectedContact)?.name || ""} src={chatImages[selectedContact]} />
@@ -260,6 +260,7 @@ const Chats = () => {
                   <Button variant="contained" style={{backgroundColor:'#000'}}>Visit Workplace</Button>
                 </ListItem>
               )}
+              
             </Grid>
             <MessageAreaContainer className="messageArea">
               {selectedContact && chatMessages[selectedContact]?.map((message) => (
