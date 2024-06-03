@@ -1,4 +1,4 @@
-import { Box, Button, Card, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Button, Card, Grid, Tab, Tabs, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { FaCircleCheck } from 'react-icons/fa6'
 
@@ -428,131 +428,138 @@ const CostMetrix: React.FC<StepDeliveryInfoProps> = ({ }) => {
             sed in mauris urna arcu nibh tellus vitae. Lacus.
           </Typography>{' '}
           <Box sx={{}}>
-            <Tabs
-              value={selectedTab}
-              onChange={handleTabChange}
-              indicatorColor='primary'
-              textColor='primary'
-              variant='fullWidth'
-              className='deliveryInfoTabs'
-              sx={{
-                borderRadius: '50px'
-              }}
-            >
-              {timeData.map(time => (
-                <Tab key={time.id} label={time.title} />
-              ))}
-            </Tabs>
-
-            <Box
-              sx={{ display: 'flex', justifyContent: 'center', alignItems: 'start', gap: '20px', marginTop: '30px' }}
-            >
-              {timeData[selectedTab].packages.map(packageData => (
-                <Card
-                  key={packageData.id}
-                  sx={{
-                    minWidth: 275,
-                    width: 330,
-                    maxWidth: 350,
-                    minHeight: 590,
-                    padding: '20px',
-                    textAlign: 'center',
-                    position: 'relative',
-                    borderRadius: '20px',
-                    boxShadow: '0px 5px 20px 0px rgba(58, 53, 65, 0.21)',
-                    backgroundColor: selectedPackageId === packageData.id ? '#2D2D2E' : '#fff'
-                  }}
-                >
-                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography sx={{ 
-                      color: selectedPackageId === packageData.id ? '#fff' : '#000', 
-                      fontSize: '20px', 
-                      fontFamily: '"Syne", sans-serif !important;' 
-                      }}>
-                      {packageData.type}
-                    </Typography>
-                    <Typography sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
-                      {packageData.price}
-                    </Typography>
-                    <Typography
-                      sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}
-                    >
-                      {packageData.slideCount}
-                    </Typography>
-                    <Typography
-                      sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}
-                    >
-                      SR /Slide
-                    </Typography>
-                    <Typography
-                      sx={{ mt: 2, color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
-                    >
-                      {packageData.description}
-                    </Typography>
-                    <Box
-                      sx={{
-                        mt: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'start',
-                        alignItems: 'start'
-                      }}
-                    >
-                      {packageData.features.map(feature => (
-                        <>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              mt: 2,
-                              textAlign: 'start',
-                              color: selectedPackageId === packageData.id ? '#fff' : '#585858',
-                            }}
-                          >
-                            <Box style={{ width: '20px' }}>
-                              <FaCircleCheck style={{ fontSize: '14px' }} />
-                            </Box>
-                            <Typography
-                              key={feature.id}
+          <Grid container justifyContent='center' sx={{ marginTop: '' }} >
+            <Grid item xs={12} lg={10.5} xl={12}>
+              <Tabs
+                value={selectedTab}
+                onChange={handleTabChange}
+                indicatorColor='primary'
+                textColor='primary'
+                variant='fullWidth'
+                className='deliveryInfoTabs'
+                sx={{
+                  borderRadius: '50px'
+                }}
+              >
+                {timeData.map(time => (
+                  <Tab key={time.id} label={time.title} />
+                ))}
+              </Tabs>
+            </Grid>
+          </Grid>
+          <Grid container justifyContent='center' sx={{ marginTop: '' }} >
+            <Grid item xs={12} lg={10.5} xl={12}>
+              <Box
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'start', gap: '20px', marginTop: '30px' }}
+              >
+                {timeData[selectedTab].packages.map(packageData => (
+                  <Card
+                    key={packageData.id}
+                    sx={{
+                      minWidth: 275,
+                      width: 330,
+                      maxWidth: 350,
+                      minHeight: 590,
+                      padding: '20px',
+                      textAlign: 'center',
+                      position: 'relative',
+                      borderRadius: '20px',
+                      boxShadow: '0px 5px 20px 0px rgba(58, 53, 65, 0.21)',
+                      backgroundColor: selectedPackageId === packageData.id ? '#2D2D2E' : '#fff'
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography sx={{ 
+                        color: selectedPackageId === packageData.id ? '#fff' : '#000', 
+                        fontSize: '20px', 
+                        fontFamily: '"Syne", sans-serif !important;' 
+                        }}>
+                        {packageData.type}
+                      </Typography>
+                      <Typography sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
+                        {packageData.price}
+                      </Typography>
+                      <Typography
+                        sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}
+                      >
+                        {packageData.slideCount}
+                      </Typography>
+                      <Typography
+                        sx={{ color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}
+                      >
+                        SR /Slide
+                      </Typography>
+                      <Typography
+                        sx={{ mt: 2, color: selectedPackageId === packageData.id ? '#fff' : '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
+                      >
+                        {packageData.description}
+                      </Typography>
+                      <Box
+                        sx={{
+                          mt: 2,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'start',
+                          alignItems: 'start'
+                        }}
+                      >
+                        {packageData.features.map(feature => (
+                          <>
+                            <Box
                               sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                mt: 2,
+                                textAlign: 'start',
                                 color: selectedPackageId === packageData.id ? '#fff' : '#585858',
-                                fontSize: '12px',
-                                fontFamily: '"Syne", sans-serif !important;',
-                                marginLeft: '6px'
                               }}
                             >
-                              {feature.text}
-                            </Typography>
-                          </Box>
-                        </>
-                      ))}
+                              <Box style={{ width: '20px' }}>
+                                <FaCircleCheck style={{ fontSize: '14px' }} />
+                              </Box>
+                              <Typography
+                                key={feature.id}
+                                sx={{
+                                  color: selectedPackageId === packageData.id ? '#fff' : '#585858',
+                                  fontSize: '12px',
+                                  fontFamily: '"Syne", sans-serif !important;',
+                                  marginLeft: '6px'
+                                }}
+                              >
+                                {feature.text}
+                              </Typography>
+                            </Box>
+                          </>
+                        ))}
+                      </Box>
                     </Box>
-                  </Box>
-                  <Button
-                    sx={{
-                      backgroundColor: '#2D2D2E',
-                      color: '#fff',
-                      fontFamily: '"Syne", sans-serif !important;',
-                      fontSize: '16px',
-                      fontWeight: 400,
-                      marginTop: '30px',
-                      position: 'absolute',
-                      bottom: '20px',
-                      left: '20px',
-                      width: '88%',
-                      '&:hover': {
+                    <Button
+                      sx={{
                         backgroundColor: '#2D2D2E',
-                        color: '#fff'
-                      }
-                    }}
-                    onClick={() => handlePackageSelect(packageData.id)}
-                  >
-                    {selectedPackageId === packageData.id ? <FaCircleCheck style={{fontSize: '40px'}} /> : 'Choose Plan'}
-                  </Button>
-                </Card>
-              ))}
-            </Box>
+                        color: '#fff',
+                        fontFamily: '"Syne", sans-serif !important;',
+                        fontSize: '16px',
+                        fontWeight: 400,
+                        marginTop: '30px',
+                        position: 'absolute',
+                        bottom: '20px',
+                        left: '20px',
+                        width: '88%',
+                        '&:hover': {
+                          backgroundColor: '#2D2D2E',
+                          color: '#fff'
+                        }
+                      }}
+                      onClick={() => handlePackageSelect(packageData.id)}
+                    >
+                      {selectedPackageId === packageData.id ? <FaCircleCheck style={{fontSize: '40px'}} /> : 'Choose Plan'}
+                    </Button>
+                  </Card>
+                ))}
+              </Box>
+            </Grid>
+          </Grid>
           </Box>
         </Box>
         <Button
