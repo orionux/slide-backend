@@ -168,6 +168,61 @@ const SubAdminTable = () => {
     setOpenSubAdmin(false)
   }
 
+  interface SubAdmin {
+    fullname: string;
+    gender: string;
+    email: string;
+    phoneNumber: string;
+    state: string;
+    profileImage: string;
+  }
+  
+  const [subAdminData, setSubAdminData] = useState<SubAdmin[]>([]);
+  const [formData, setFormData] = useState<SubAdmin>({
+    fullname: '',
+    gender: '',
+    email: '',
+    phoneNumber: '',
+    state: '',
+    profileImage: '' ,
+
+  });
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+const handleInputChangeSub = (e: { target: { name: any; value: any } }) => {
+  const { name, value } = e.target;
+  setFormData({
+    ...formData,
+    [name]: value
+  });
+}
+
+const handleAddSubAdmin = () => {
+  setSubAdminData([...subAdminData, formData]);
+  console.log([...subAdminData, formData]);
+  handleCloseSubAdmin();
+}
+
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        profileImage: reader.result as string
+      }));
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const handleImageClick = () => {
+  document.getElementById('profileImageInput')?.click();
+};
+
+
+
 
 
 
@@ -189,7 +244,18 @@ const SubAdminTable = () => {
               <Grid container spacing={5} style={{ marginBottom: 20 }}>
                 <Grid item xs={12} sm={4}>
                   <Card sx={{ backgroundColor: '#263238' }}>
-                    <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} />
+                  <CardMedia
+                      sx={{ height: '14.5625rem', cursor: 'pointer' }}
+                      image={formData.profileImage || '/images/avatars/3.png'}
+                      onClick={handleImageClick}
+                    />
+                     <input
+                      id="profileImageInput"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={handleFileChange}
+                    />
                     <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
                       <Typography variant='body2' sx={{ color: '#ffffff' }}>
                         EMP : {selectedRow && selectedRow.id}
@@ -210,23 +276,23 @@ const SubAdminTable = () => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.fullname} />
+                      <TextField fullWidth label='Full Name' name='fullname' value={formData.fullname} onChange={handleInputChangeSub} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Gender' name='gender' value={selectedRow && selectedRow.gender}/>
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Email' name='email' value={selectedRow && selectedRow.email} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phoneNumber} />
+                      <TextField fullWidth label='Gender' name='gender' value={formData.gender} onChange={handleInputChangeSub}/>
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='State' name='state' value={selectedRow && selectedRow.state}/>
+                      <TextField fullWidth label='Email' name='email' value={formData.email} onChange={handleInputChangeSub} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={formData.phoneNumber} onChange={handleInputChangeSub} />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='State' name='state'  value={formData.state} onChange={handleInputChangeSub}/>
                     </Grid>
                   </Grid>
 
@@ -334,7 +400,7 @@ const SubAdminTable = () => {
                 <Button type='button' variant='contained' size='large' onClick={handleCloseSubAdmin} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
                 Cancel
                 </Button>
-                <Button type='button' variant='contained' size='large' onClick={handleCloseSubAdmin} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+                <Button type='button' variant='contained' size='large' onClick={handleAddSubAdmin} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
                 Add
                 </Button>
             </Grid>
