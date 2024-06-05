@@ -148,6 +148,7 @@ border-color: #5A5A5A !important;
   .deliveryInfoTabs button{
     color: #fff !important;
     margin: 0;
+    background-color: #2A5467;
   }
   .deliveryInfoTabs .Mui-selected{
     background-color: #11D993 !important;
@@ -165,7 +166,11 @@ border-color: #5A5A5A !important;
     padding: 4px;
   }
 
-
+  .costSubTabs {
+    color: #fff !important;
+    margin: 0;
+    background-color: #676767;
+  }
 
   /* slider */
   .carouselContainer {

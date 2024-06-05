@@ -74,7 +74,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
     {
       title: 'Cost Matrix Management',
       icon: AccountPlusOutline,
-      path: '/cost-metrix',
+      path: '/cost-matrix',
     },
     {
       title: 'Order Management',
