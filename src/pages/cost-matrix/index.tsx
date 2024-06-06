@@ -1,7 +1,8 @@
 import { Box, Button, Card, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { FaCircleCheck } from 'react-icons/fa6'
 import { IoIosArrowDown } from 'react-icons/io'
+import { CgAddR } from "react-icons/cg";
 
 
 
@@ -363,8 +364,22 @@ const CostMatrix = () => {
         ]
       }
     ]
-  
-   
+
+        // Adding '!' asserts that urgentData will not be undefined
+    const urgentData = timeData.find(timeDataItem => timeDataItem.title === 'Urgent within 48 hours')!;
+
+    const initialPackages = urgentData?.packages.slice(0, 2) || [];
+    const [displayedPackages, setDisplayedPackages] = useState(initialPackages);
+
+    const addNewPricePlan = () => {
+        if (urgentData && urgentData.packages.length > 0) {
+            const nextPackageIndex = displayedPackages.length % urgentData.packages.length;
+            const nextPackage = urgentData.packages[nextPackageIndex];
+            setDisplayedPackages(prevDisplayedPackages => [...prevDisplayedPackages, nextPackage]);
+        }
+    };
+    
+
     
   return (
     <div>
@@ -393,7 +408,7 @@ const CostMatrix = () => {
                         sx={{backgroundColor:'#2A5467'}}
                     >
                     <Typography variant='h6' component="h6" sx={{fontFamily:'syne', color:'#fff', paddingLeft: '20px'}}>
-                        Design     
+                        Fixup     
                     </Typography>
                     <InputAdornment position="end" sx={{paddingRight: '20px'}}>
                         <IconButton>
@@ -426,12 +441,27 @@ const CostMatrix = () => {
             </Grid>
                  
              <Box
-                sx={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '30px', backgroundColor: '#f2f2f2' }}
+                sx={{ display: 'flex', 
+                justifyContent: 'center', 
+                gap: '20px', 
+                marginTop: '30px', 
+                backgroundColor: '#f2f2f2',  
+                overflowX: 'auto', 
+                width: 'auto',
+                padding: '20px',
+                '&::-webkit-scrollbar': {
+                    height: '8px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: '#57EBB7',
+                    borderRadius: '4px',
+                },
+                '&::-webkit-scrollbar-track': {
+                    backgroundColor: '#f2f2f2',
+                }
+            }}
               >
-                 {timeData
-                    .filter(timeDataItem => timeDataItem.title === 'Urgent within 48 hours') // Filter to get only 'Urgent within 48 hours'
-                    .map(timeDataItem =>
-                    timeDataItem.packages.slice(0, 2).map(packageData => (
+            {displayedPackages.map(packageData => (
 
                   <Card
                     key={packageData.id}
@@ -564,7 +594,30 @@ const CostMatrix = () => {
                     </Button>
                     </Box>
                   </Card>
-                )))}
+                ))}
+                <Button
+                    onClick={addNewPricePlan}
+                    sx={{
+                        display: 'flex',
+                        backgroundColor: '#fff', 
+                        color: '#455A64', 
+                        flexDirection:'column', 
+                        height: '140px',
+                        width: '100px', 
+                        fontSize:'10px', 
+                        flexWrap: 'wrap',
+                        marginTop: '25%',
+                        marginBottom: '25%',
+                        border: '1px solid #455A64',
+                        borderRadius: '15px',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <CgAddR fontSize={25}/>
+
+                    Add New Price <br/> Plan
+                </Button>
               </Box>
             
             <Grid container justifyContent='center' sx={{ marginTop: '20px' }} >
@@ -664,7 +717,7 @@ const CostMatrix = () => {
                         sx={{backgroundColor:'#2A5467'}}
                     >
                     <Typography variant='h6' component="h6" sx={{fontFamily:'syne', color:'#fff', paddingLeft: '20px'}}>
-                        Design     
+                        Consult, write and design       
                     </Typography>
                     <InputAdornment position="end" sx={{ paddingRight: '20px' }}>
                         <IconButton>
@@ -686,7 +739,7 @@ const CostMatrix = () => {
                         sx={{backgroundColor:'#2A5467'}}
                     >
                     <Typography variant='h6' component="h6" sx={{fontFamily:'syne', color:'#fff', paddingLeft: '20px'}}>
-                        Design     
+                        For Events or conferences       
                     </Typography>
                     <InputAdornment position="end" sx={{ paddingRight: '20px' }}>
                         <IconButton>
