@@ -379,6 +379,14 @@ const CostMatrix = () => {
         }
     };
     
+    
+    const [activeCardId, setActiveCardId] = useState(null);
+
+
+    const toggleEditMode = (cardId: string | number) => {
+        setActiveCardId((prevActiveCardId) => (prevActiveCardId === cardId ? null : cardId) as null);
+    };
+    
 
     
   return (
@@ -441,24 +449,25 @@ const CostMatrix = () => {
             </Grid>
                  
              <Box
-                sx={{ display: 'flex', 
-                justifyContent: 'center', 
-                gap: '20px', 
-                marginTop: '30px', 
-                backgroundColor: '#f2f2f2',  
-                overflowX: 'auto', 
-                width: 'auto',
-                padding: '20px',
-                '&::-webkit-scrollbar': {
-                    height: '8px',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: '#57EBB7',
-                    borderRadius: '4px',
-                },
-                '&::-webkit-scrollbar-track': {
-                    backgroundColor: '#f2f2f2',
-                }
+                sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'flex-start', 
+                    gap: '20px', 
+                    marginTop: '30px', 
+                    backgroundColor: '#f2f2f2',  
+                    overflowX: 'auto', 
+                    width: 'auto',
+                    padding: '20px',
+                    '&::-webkit-scrollbar': {
+                        height: '8px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: '#57EBB7',
+                        borderRadius: '4px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        backgroundColor: '#f2f2f2',
+                    }
             }}
               >
             {displayedPackages.map(packageData => (
@@ -481,8 +490,23 @@ const CostMatrix = () => {
                       backgroundColor: '#fff'
                     }}
                   >
+                    <Button
+                        sx= {{
+                            position: 'absolute',
+                            right: '0',
+                            top: '13px'
 
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                        }}
+                        onClick={() => toggleEditMode(packageData.id)} // Pass the card ID to toggle edit mode
+
+                        >
+                        <img src='/images/costMatrix/edit.png' width={20} height={20} alt='edit'/>
+                    </Button>    
+                    
+                    <Box sx={{ 
+                        display: 'flex', 
+                        flexDirection: 'column' }}>
+
                       <Typography sx={{ 
                         color:  '#000', 
                         fontSize: '20px', 
@@ -490,6 +514,7 @@ const CostMatrix = () => {
                         }}>
                         {packageData.type}
                       </Typography>
+
                       <Typography sx={{ color: '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
                         {packageData.price}
                       </Typography>
@@ -548,6 +573,8 @@ const CostMatrix = () => {
                         ))}
                       </Box>
                     </Box>
+                    {activeCardId === packageData.id && (
+
                     <Box
                         display= 'flex'
                         justifyContent= 'space-between'>
@@ -593,6 +620,7 @@ const CostMatrix = () => {
                         {'Done'}
                     </Button>
                     </Box>
+                    )}
                   </Card>
                 ))}
                 <Button
@@ -603,11 +631,12 @@ const CostMatrix = () => {
                         color: '#455A64', 
                         flexDirection:'column', 
                         height: '140px',
-                        width: '100px', 
+                        minWidth: '100px', 
                         fontSize:'10px', 
                         flexWrap: 'wrap',
                         marginTop: '25%',
                         marginBottom: '25%',
+                        marginLeft: '-25px',
                         border: '1px solid #455A64',
                         borderRadius: '15px',
                         alignItems: 'center',
