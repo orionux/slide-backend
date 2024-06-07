@@ -1,7 +1,7 @@
 import { Box, Button, Card, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { FaCircleCheck } from 'react-icons/fa6'
-import { IoIosArrowDown } from 'react-icons/io'
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import { CgAddR } from "react-icons/cg";
 
 
@@ -387,7 +387,11 @@ const CostMatrix = () => {
         setActiveCardId((prevActiveCardId) => (prevActiveCardId === cardId ? null : cardId) as null);
     };
     
+    const [expanded, setExpanded] = useState(false);
 
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
     
   return (
     <div>
@@ -426,6 +430,7 @@ const CostMatrix = () => {
                 </Box>
             </Grid>    
         </Grid>
+
             <Grid container justifyContent='center' sx={{ marginTop: '20px' }} >
                 <Grid item xs={11}>
                     <Box
@@ -440,34 +445,35 @@ const CostMatrix = () => {
                             Urgent within 48 hours    
                         </Typography>
                         <InputAdornment position="end" sx={{paddingRight: '20px'}}>
-                            <IconButton>
-                                <IoIosArrowDown />
+                            <IconButton onClick={handleExpandClick}>
+                                {expanded ? <IoIosArrowUp /> : <IoIosArrowDown />}
                             </IconButton>
                         </InputAdornment>
                     </Box>
-                </Grid>    
-            </Grid>
-                 
-             <Box
-                sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'flex-start', 
-                    gap: '20px', 
-                    marginTop: '30px', 
-                    backgroundColor: '#f2f2f2',  
-                    overflowX: 'auto', 
-                    width: 'auto',
-                    padding: '20px',
-                    '&::-webkit-scrollbar': {
-                        height: '8px',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                        backgroundColor: '#57EBB7',
-                        borderRadius: '4px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                        backgroundColor: '#f2f2f2',
-                    }
+
+                    {expanded && (
+                    <Box
+                        sx={{ 
+                            borderTopLeftRadius: '0',
+                            borderTopRightRadius: '0',
+                            display: 'flex', 
+                            justifyContent: 'flex-start', 
+                            gap: '20px', 
+                            marginTop: '-10px', 
+                            backgroundColor: '#f2f2f2',  
+                            overflowX: 'auto', 
+                            width: 'auto',
+                            padding: '20px',
+                            '&::-webkit-scrollbar': {
+                                height: '8px',
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                                backgroundColor: '#57EBB7',
+                                borderRadius: '4px',
+                            },
+                            '&::-webkit-scrollbar-track': {
+                                backgroundColor: '#f2f2f2',
+                            }
             }}
               >
             {displayedPackages.map(packageData => (
@@ -634,8 +640,9 @@ const CostMatrix = () => {
                         minWidth: '100px', 
                         fontSize:'10px', 
                         flexWrap: 'wrap',
-                        marginTop: '25%',
-                        marginBottom: '25%',
+                        position: 'relative',
+                        top: '250px',
+                        left: '-10px',
                         marginLeft: '-25px',
                         border: '1px solid #455A64',
                         borderRadius: '15px',
@@ -648,6 +655,10 @@ const CostMatrix = () => {
                     Add New Price <br/> Plan
                 </Button>
               </Box>
+                    )}
+                </Grid>    
+            </Grid>
+   
             
             <Grid container justifyContent='center' sx={{ marginTop: '20px' }} >
                 <Grid item xs={11}>
