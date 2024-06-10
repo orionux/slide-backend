@@ -79,7 +79,6 @@ const ProjectDeliverdView = () => {
             </Grid>
 
             <ProjectFooter />
-            <ProjectFooter />
         </>
     )
 }

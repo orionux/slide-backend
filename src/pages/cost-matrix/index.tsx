@@ -379,7 +379,7 @@ const CostMatrix = () => {
         }
     };
     
-    
+    //edit card activate
     const [activeCardId, setActiveCardId] = useState(null);
 
 
@@ -387,6 +387,7 @@ const CostMatrix = () => {
         setActiveCardId((prevActiveCardId) => (prevActiveCardId === cardId ? null : cardId) as null);
     };
     
+    //expand bars
     const [expanded, setExpanded] = useState(false);
 
     const handleExpandClick = () => {
