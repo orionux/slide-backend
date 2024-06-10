@@ -1,5 +1,5 @@
-import { Box, Button, Card, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { Box, Button, Card, Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import React, { ChangeEvent, useState } from 'react'
 import { FaCircleCheck } from 'react-icons/fa6'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import { CgAddR } from "react-icons/cg";
@@ -371,6 +371,8 @@ const CostMatrix = () => {
     const initialPackages = urgentData?.packages.slice(0, 2) || [];
     const [displayedPackages, setDisplayedPackages] = useState(initialPackages);
 
+    const [editableData, setEditableData] = useState(urgentData?.packages || []);
+
     const addNewPricePlan = () => {
         if (urgentData && urgentData.packages.length > 0) {
             const nextPackageIndex = displayedPackages.length % urgentData.packages.length;
@@ -380,19 +382,63 @@ const CostMatrix = () => {
     };
     
     //edit card activate
-    const [activeCardId, setActiveCardId] = useState(null);
+    const [activeCardId, setActiveCardId] = useState<string | number | null>(null);
 
 
     const toggleEditMode = (cardId: string | number) => {
-        setActiveCardId((prevActiveCardId) => (prevActiveCardId === cardId ? null : cardId) as null);
+        setActiveCardId(prevActiveCardId => (prevActiveCardId === cardId ? null : cardId));
     };
     
     //expand bars
-    const [expanded, setExpanded] = useState(false);
+    const [expanded, setExpanded] = useState(true);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    //card editing
+    type InputChangeEvent = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+
+    const handleInputChange = (e: InputChangeEvent, packageId: string | number, field: string) => {
+        const updatedData = editableData.map(item => {
+          if (item.id === packageId) {
+            if (field.startsWith('features-')) {
+              const featureId = field.split('-')[1];
+              const updatedFeatures = item.features.map(f =>
+                f.id === featureId ? { ...f, text: e.target.value } : f
+              );
+
+              return { ...item, features: updatedFeatures };
+            }
+
+            return { ...item, [field]: e.target.value };
+
+          }
+
+          return item;
+
+        });
+        setEditableData(updatedData);
+      };
+      
+      const handleDone = (packageId: string | number) => {
+        const updatedPackages = displayedPackages.map(item => {
+          if (item.id === packageId) {
+            const updatedItem = editableData.find(editItem => editItem.id === packageId);
+            console.log("Updated Data for Package:", updatedItem);
+
+            return updatedItem || item;
+
+          }
+          
+          return item;
+
+        });
+        setDisplayedPackages(updatedPackages);
+        setActiveCardId(null);
+      };
+      
+      
     
   return (
     <div>
@@ -500,8 +546,8 @@ const CostMatrix = () => {
                     <Button
                         sx= {{
                             position: 'absolute',
-                            right: '0',
-                            top: '13px'
+                            right: '-10px',
+                            top: '0px'
 
                         }}
                         onClick={() => toggleEditMode(packageData.id)} // Pass the card ID to toggle edit mode
@@ -514,32 +560,130 @@ const CostMatrix = () => {
                         display: 'flex', 
                         flexDirection: 'column' }}>
 
-                      <Typography sx={{ 
-                        color:  '#000', 
-                        fontSize: '20px', 
-                        fontFamily: '"Syne", sans-serif !important;' 
-                        }}>
-                        {packageData.type}
-                      </Typography>
+{activeCardId === packageData.id ? (
+                                        <TextField
+                                            value={editableData.find(item => item.id === packageData.id)?.type || ''}
+                                            onChange={(e) => handleInputChange(e, packageData.id, 'type')}
+                                            sx={{ 
+                                                input: {
+                                                    color: '#000',
+                                                    fontSize: '20px',
+                                                    textAlign: 'center', 
+                                                    fontFamily: '"Syne", sans-serif !important',
+                                                    fontWeight: '500',
+                                                    width: '100%',
+                                                    padding: 0,
+                                                },
+                                                "& fieldset": {
+                                                    border: 'none',
+                                                },
+                                                "& .MuiInputBase-root": {
+                                                    padding: 0,
+                                                }
 
-                      <Typography sx={{ color: '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
-                        {packageData.price}
-                      </Typography>
-                      <Typography
-                        sx={{ color: '#585858', fontSize: '24px', fontFamily: '"Syne", sans-serif !important;' }}
-                      >
-                        {packageData.slideCount}
-                      </Typography>
-                      <Typography
-                        sx={{ color: '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}
-                      >
-                        SR /Slide
-                      </Typography>
-                      <Typography
-                        sx={{ mt: 2, color: '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}
-                      >
-                        {packageData.description}
-                      </Typography>
+                                             }}
+                                        />
+                                    ) : (
+                                        <Typography sx={{ color: '#000', fontSize: '20px', fontFamily: '"Syne", sans-serif !important;' }}>
+                                            {packageData.type}
+                                        </Typography>
+                                    )}
+
+                                    {activeCardId === packageData.id ? (
+                                        <TextField
+                                            value={editableData.find(item => item.id === packageData.id)?.price || ''}
+                                            onChange={(e) => handleInputChange(e, packageData.id, 'price')}
+                                            sx={{ 
+                                                
+                                            input: {
+                                                color: '#000',
+                                                fontSize: '60px',
+                                                textAlign: 'center', 
+                                                fontFamily: '"Syne", sans-serif !important',
+                                                fontWeight: '500',
+                                                width: '100%',
+                                                padding: 1,
+                                            },
+                                            "& fieldset": {
+                                                border: 'none',
+                                            },
+                                            "& .MuiInputBase-root": {
+                                                padding: 0,
+                                            }
+                                        }}
+                                        />
+                                    ) : (
+                                        <Typography sx={{ color: '#000', fontSize: '60px', fontFamily: '"Syne", sans-serif !important;' }}>
+                                            {packageData.price}
+                                        </Typography>
+                                    )}
+
+                                    {activeCardId === packageData.id ? (
+                                        <TextField
+                                            value={editableData.find(item => item.id === packageData.id)?.slideCount || ''}
+                                            onChange={(e) => handleInputChange(e, packageData.id, 'slideCount')}
+                                            sx={{ 
+                                                input: {
+                                                    color: '#585858',
+                                                    fontSize: '20px',
+                                                    textAlign: 'center', 
+                                                    fontFamily: '"Syne", sans-serif !important',
+                                                    fontWeight: '600',
+                                                    width: '100%',
+                                                    padding: 0,
+                                                },
+                                                "& fieldset": {
+                                                    border: 'none',
+                                                },
+                                                "& .MuiInputBase-root": {
+                                                    padding: 0,
+                                                }
+                                            }}
+                                        />
+                                    ) : (
+                                        <Typography 
+                                            sx={{ color: '#585858', 
+                                            fontSize: '24px', 
+                                            fontFamily: '"Syne", sans-serif !important;',
+                                        
+                                        }}>
+                                            {packageData.slideCount}
+                                        </Typography>
+                                    )}
+
+                                    <Typography sx={{ color: '#585858', fontSize: '14px', fontFamily: '"Syne", sans-serif !important;' }}>
+                                        SR /Slide
+                                    </Typography>
+
+                                    {activeCardId === packageData.id ? (
+                                        <TextField
+                                            value={editableData.find(item => item.id === packageData.id)?.description || ''}
+                                            onChange={(e) => handleInputChange(e, packageData.id, 'description')}
+                                            multiline
+                                            maxRows={4} 
+                                            sx={{ 
+                                                input: {
+                                                    color: '#585858',
+                                                    fontSize: '10px',
+                                                    textAlign: 'center', 
+                                                    fontFamily: '"Syne", sans-serif !important',
+                                                    fontWeight: '600',
+                                                    width: '100%',
+                                                    padding: 0,
+                                                },
+                                                "& fieldset": {
+                                                    border: 'none',
+                                                },
+                                                "& .MuiInputBase-root": {
+                                                    padding: 0,
+                                                }
+                                            }}
+                                        />
+                                    ) : (
+                                        <Typography sx={{ mt: 2, color: '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}>
+                                            {packageData.description}
+                                        </Typography>
+                                    )}
                       <Box
                         sx={{
                           mt: 2,
@@ -564,17 +708,33 @@ const CostMatrix = () => {
                               <Box style={{ width: '20px' }}>
                                 <FaCircleCheck style={{ fontSize: '14px' }} />
                               </Box>
-                              <Typography
-                                key={feature.id}
-                                sx={{
-                                  color: '#585858',
-                                  fontSize: '12px',
-                                  fontFamily: '"Syne", sans-serif !important;',
-                                  marginLeft: '6px'
-                                }}
-                              >
-                                {feature.text}
-                              </Typography>
+                              {activeCardId === packageData.id ? (
+                                                    <TextField
+                                                        value={editableData.find(item => item.id === packageData.id)?.features.find(f => f.id === feature.id)?.text || ''}
+                                                        onChange={(e) => handleInputChange(e, packageData.id, `features-${feature.id}`)}
+                                                        sx={{ 
+                                                            input: {
+                                                                color: '#585858',
+                                                                fontSize: '12px',
+                                                                textAlign: 'flex-start', 
+                                                                fontFamily: '"Syne", sans-serif !important',
+                                                                fontWeight: '600',
+                                                                width: '100%',
+                                                                padding: 0,
+                                                            },
+                                                            "& fieldset": {
+                                                                border: 'none',
+                                                            },
+                                                            "& .MuiInputBase-root": {
+                                                                padding: 0,
+                                                            }
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <Typography sx={{ ml: 2, color: '#585858', fontSize: '12px', fontFamily: '"Syne", sans-serif !important;' }}>
+                                                        {feature.text}
+                                                    </Typography>
+                                                )}
                             </Box>
                           </>
                         ))}
@@ -607,6 +767,7 @@ const CostMatrix = () => {
                       {'Cancel'}
                     </Button>
                     <Button
+                    onClick={() => handleDone(packageData.id)}
                       sx={{
                         backgroundColor: '#455A64',
                         color: '#fff',
