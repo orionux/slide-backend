@@ -118,6 +118,10 @@ const Chats = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedUsers, setExpandedUsers] = useState<{ [key: string]: boolean }>({});
 
+
+  console.log("contacts :", contacts)
+  console.log("chatMessages :", chatMessages)
+
   useEffect(() => {
     fetch(apiUrl)
       .then(response => response.json())

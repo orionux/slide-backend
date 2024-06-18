@@ -47,6 +47,7 @@ const rows = [
 
 const PaymentTable = () => {
 
+  console.log("payment :", rows)
 
   return (
     <>

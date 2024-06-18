@@ -54,6 +54,8 @@ const ServiceTable = () => {
   const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
 
+  console.log("service array: ", rows)
+
   const handleCheckboxClick = (row: RowData, index: number) => {
     setOpenDialog(true);
     setSelectedRow(row);

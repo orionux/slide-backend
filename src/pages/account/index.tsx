@@ -37,6 +37,19 @@ interface State {
   showConfirmNewPassword: boolean
 }
 
+interface UserAccount {
+  username: string;
+  gender: string;
+  email: string;
+  phoneNumber: string;
+  status: string;
+  profileImage: string;
+  company: string;
+  vatNumber: string;
+  billingAddress: string;
+  location: string;
+}
+
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
   height: 120,
@@ -123,6 +136,37 @@ const AccountSettings = () => {
     event.preventDefault()
   }
 
+
+
+  const [subAdminData, setSubAdminData] = useState<UserAccount[]>([]);
+  const [formData, setFormData] = useState<UserAccount>({
+    username: '',
+    gender: '',
+    email: '',
+    phoneNumber: '',
+    status: '',
+    profileImage: '' ,
+    company: '' ,
+    vatNumber: '' ,
+    billingAddress: '' ,
+    location: '' ,
+  });
+
+  const handleInputChangeSub = (e: { target: { name: any; value: any } }) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  }
+
+  const handleAddSubAdmin = () => {
+    setSubAdminData([...subAdminData, formData]);
+    console.log([...subAdminData, formData]);
+  }
+
+
+
   return (
     <Card>
       <CardContent>
@@ -140,12 +184,15 @@ const AccountSettings = () => {
                     label='Email'
                     placeholder='johnDoe@example.com'
                     defaultValue='johnDoe@example.com'
+                    name='email'
+                    value={formData.email}
+                    onChange={handleInputChangeSub}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
-                    <Select label='Gender' defaultValue='male'>
+                    <Select label='Gender' defaultValue='male' name='gender' value={formData.gender} onChange={handleInputChangeSub}>
                       <MenuItem value='male'>Male</MenuItem>
                       <MenuItem value='female'>Female</MenuItem>
                     </Select>
@@ -160,12 +207,13 @@ const AccountSettings = () => {
                     label='Contact Number'
                     placeholder='123456789'
                     defaultValue='123456789'
+                    name='phoneNumber' value={formData.phoneNumber} onChange={handleInputChangeSub}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
                     <InputLabel>Status</InputLabel>
-                    <Select label='Status' defaultValue='active'>
+                    <Select label='Status' defaultValue='active' name='status' value={formData.status} onChange={handleInputChangeSub}>
                       <MenuItem value='active'>Active</MenuItem>
                       <MenuItem value='inactive'>Inactive</MenuItem>
                       <MenuItem value='pending'>Pending</MenuItem>
@@ -175,22 +223,22 @@ const AccountSettings = () => {
               </Grid>
               <Grid container spacing={4} style={{ marginTop: '20px' }}>
                 <Grid item xs={12} sm={6}>
-                  <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' />
+                  <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' name='company' value={formData.company} onChange={handleInputChangeSub} />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField fullWidth label='Vat Number' placeholder='Vat Number' defaultValue='123' />
+                  <TextField fullWidth label='Vat Number' placeholder='Vat Number' defaultValue='123' name='vatNumber' value={formData.vatNumber} onChange={handleInputChangeSub} />
                 </Grid>
               </Grid>
               <Grid container spacing={4} style={{ marginTop: '20px' }}>
                 <Grid item xs={12} sm={6}>
-                  <TextField fullWidth label='Billing Address' placeholder='Billing Address' defaultValue='ABC' />
+                  <TextField fullWidth label='Billing Address' placeholder='Billing Address' defaultValue='ABC' name='billingAddress' value={formData.billingAddress} onChange={handleInputChangeSub} />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField fullWidth label='Location' placeholder='Location' defaultValue='ABC' />
+                  <TextField fullWidth label='Location' placeholder='Location' defaultValue='ABC' name='location' value={formData.location} onChange={handleInputChangeSub} />
                 </Grid>
               </Grid>
               <Grid item xs={12} style={{ marginTop: '40px' }}>
-                <Button variant='contained' sx={{ marginRight: 3.5 }}>
+                <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={handleAddSubAdmin}>
                   Save Changes
                 </Button>
                 <Button type='reset' variant='outlined' color='secondary'>

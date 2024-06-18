@@ -99,6 +99,7 @@ const SubAdminTable = () => {
   const [value, setValue] = useState<string>('1')
   const [openSubAdmin, setOpenSubAdmin] = useState(false)
 
+  console.log("sub admin data: ",rows)
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)

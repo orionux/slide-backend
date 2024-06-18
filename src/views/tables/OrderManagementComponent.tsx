@@ -27,6 +27,7 @@ const OrderManagementComponent = () => {
 
     const [value, setValue] = useState<string>('1')
 
+    console.log("order management :", rows)
 
     const handleChange = (event: SyntheticEvent, newValue: string) => {
         setValue(newValue)
