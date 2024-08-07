@@ -9,7 +9,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout';
 import StepsIndicator from './StepIndicator';
 import ProjectFooter from 'src/views/projectComponents/projectFooter';
 import NormalHeader from 'src/layouts/components/NormalHeader';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Successfull from './successfullMessage';
 
 
@@ -44,8 +44,32 @@ const StartProject = () => {
     return (
         <>
             <NormalHeader />
-            <Box sx={{ backgroundColor: '#fff', padding: '100px' }}>
+            
+            <Box sx={{ backgroundColor: '#fff', padding: '100px',position: 'relative' }}>
+                {step > 1 && step < 7 && (
+                        <Button
+                            sx={{
+                                position: 'absolute',
+                                top: '0%',
+                                marginTop: '20px',
+                                backgroundColor: '#2D2D2E',
+                                color: '#fff',
+                                fontFamily: '"Syne", sans-serif !important;',
+                                fontSize: '16px',
+                                fontWeight: 400,
+                                width: '100px',
+                                '&:hover': {
+                                    backgroundColor: '#2D2D2E',
+                                    color: '#fff'
+                                }
+                            }}
+                            onClick={handleBack}
+                        >
+                            Back
+                        </Button>
+                    )}
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    
                     <Box>
                         <StepsIndicator totalSteps={totalSteps} currentStep={step} titles={stepTitles} />
                     </Box>
