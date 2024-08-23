@@ -115,7 +115,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
       item.title !== 'Services & Category Management' &&
       item.title !== 'Orders' &&
       item.title !== 'Account' &&
-      item.title !== 'Chats' 
+      item.title !== 'Chat Implementation & Moderation' 
       
       // &&s
       // item.title !== 'Info'
