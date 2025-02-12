@@ -32,6 +32,7 @@ import '../../styles/globals.css'
 import { useEffect, useState } from 'react'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { AuthProvider } from 'src/@core/context/AuthContext'
 
 
 // ** Extend App Props with Emotion
@@ -73,6 +74,7 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout userType={loggedUserType} >{page}</UserLayout>)
 
   return (
+    // <AuthProvider>
     <CacheProvider value={emotionCache}>
       <Head>
         <title>SLIDE - Admin Dashboard</title>
@@ -92,6 +94,7 @@ const App = (props: ExtendedAppProps) => {
         </SettingsConsumer>
       </SettingsProvider>
     </CacheProvider>
+    // </AuthProvider>
   )
 }
 

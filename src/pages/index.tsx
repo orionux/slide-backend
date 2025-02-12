@@ -32,6 +32,7 @@ import { TrendingUp, CellphoneLink, AccountOutline } from 'mdi-material-ui'
 import { FaCartShopping, FaUserGroup, FaUserPlus } from 'react-icons/fa6'
 import LineChartComponent from 'src/views/dashboard/SalesOverview'
 import PieChartComponent from 'src/views/dashboard/PieChart'
+import ProtectedRoute from 'src/@core/components/ProtectedRoute'
 
 type UserType = 'admin' | 'subadmin' | 'user';
 
@@ -48,17 +49,17 @@ const Dashboard: React.FC<Props> = () => {
   const [authChecked, setAuthChecked] = useState(false);
 
 
-  useEffect(() => {
-    const userType = localStorage.getItem('userType');
+  // useEffect(() => {
+  //   const userType = localStorage.getItem('userType');
 
-    if (!userType) {
-      router.replace('/pages/login');
-    } else {
-      setUserType(userType);
-    }
+  //   if (!userType) {
+  //     router.replace('/pages/login');
+  //   } else {
+  //     setUserType(userType);
+  //   }
 
-    setAuthChecked(true);
-  }, []);
+  //   setAuthChecked(true);
+  // }, []);
 
 
   const renderComponentByUserType = () => {
@@ -208,6 +209,7 @@ const SubAdminComponent: React.FC = () => {
 const RegularUserComponent: React.FC = () => {
   return (
     <>
+    <ProtectedRoute>
       <ApexChartWrapper>
         <Typography sx={{ fontWeight: 600, marginTop: '30px', marginBottom: '20px' }}>
           Notifications
@@ -257,6 +259,7 @@ const RegularUserComponent: React.FC = () => {
           </Link>
         </Box>
       </ApexChartWrapper>
+      </ProtectedRoute>
     </>
   );
 };

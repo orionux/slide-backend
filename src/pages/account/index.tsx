@@ -171,7 +171,6 @@ const AccountSettings = () => {
     <Card>
       <CardContent>
         <form>
-
           <Grid container spacing={7}>
             <Grid item xs={12} sm={6}>
               <Typography style={{ fontWeight: 600, marginBottom: '20px' }}>User Details</Typography>

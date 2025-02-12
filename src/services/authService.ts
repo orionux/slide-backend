@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { ApiConfig, LoginUserRequest, LoginUserResponse } from 'src/types/OnboardingApi';
 
-const metadataServiceUrl = 'https://orionux.xyz/sites/slide-backend/';
+const apiURL =process.env.NEXT_PUBLIC_API_URL;
 
 export async function loginUserService(data: LoginUserRequest, config?: ApiConfig): Promise<AxiosResponse<LoginUserResponse>> {
 
@@ -10,7 +10,7 @@ export async function loginUserService(data: LoginUserRequest, config?: ApiConfi
   formData.append('password', data.password);
   formData.append('type', data.type);
 
-  return await axios.post(metadataServiceUrl + 'api/login', formData, {
+  return await axios.post(apiURL + 'api/login', formData, {
     ...config,
     headers: {
       'Content-Type': 'multipart/form-data',

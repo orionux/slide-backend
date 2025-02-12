@@ -41,6 +41,8 @@ import { authenticateUser } from 'src/utils/authUtils'
 import { Grid } from '@mui/material'
 import { LoginUserRequest } from 'src/types/OnboardingApi'
 import { loginUser } from 'src/pages/api/authApi'
+import { useSnackbar } from 'notistack'
+import { validateLoginData } from 'src/helpers/validators'
 
 
 // ** Styled Components
@@ -72,6 +74,9 @@ const LoginPage = () => {
   const [userEmail, setUserEmail] = useState('');
   const [password, setPassword] = useState('');
   const [type, setType] = useState<'user' | 'sub admin' | 'admin'>('user');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   // ** Hook
   // const theme = useTheme()
@@ -94,27 +99,50 @@ const LoginPage = () => {
   };
 
 
-    const handleLogin = async () => {
-      // setLoading(true);
-      // setError(null);
-  
-      const loginData: LoginUserRequest = { email :  userEmail, password, type };
-  
-      const result = await loginUser(loginData);
-  
-      if (result.responseType === 'success') {
 
-        // setResponse(result.output);
-        // Handle successful login (e.g., store token in localStorage or redirect)
-        console.log('Login successful! Token:', result?.output?.data?.token);
-      } else if (result.responseType === 'fail') {
-        // setError(result.output.message || 'Login failed');
-      } else if (result.responseType === 'error') {
-        // setError(result.output.message || 'An error occurred');
+
+
+  const handleLogin = async () => {
+    const loginData: LoginUserRequest = { email: userEmail, password, type };
+
+    // Validate form data
+    const { isValid, errors } = await validateLoginData(loginData);
+    if (!isValid) {
+      Object.values(errors).forEach((error) => enqueueSnackbar(error, { variant: 'error' }));
+      return;
+    }
+
+    const result = await loginUser(loginData);
+
+    console.log("redda")
+
+    if (result.responseType === 'success') {
+      console.log("hehehe");
+      
+      enqueueSnackbar('Login successful!', { variant: 'success' });
+
+      // console.log('Login successful! Token:', result?.output?.data?.token);
+      const token = result?.output?.data?.token;
+      const type = result?.output?.data?.user?.role;
+      if (token) {
+        if (rememberMe) {
+          console.log(rememberMe)
+          localStorage.setItem('token', token);
+          localStorage.setItem('tokenExpiration', String(Date.now() + 24 * 60 * 60 * 1000)); // 1 day
+          localStorage.setItem('userType',type);
+        } else {
+          sessionStorage.setItem('token', token);
+          localStorage.setItem('userType',type);
+        }
+        enqueueSnackbar('Login successful!', { variant: 'success' });
+        router.push('/'); // Redirect to dashboard or protected route
       }
-  
-      // setLoading(false);
-    };
+    } else if (result.responseType === 'fail') {
+      enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  };
 
 
 
@@ -127,11 +155,11 @@ const LoginPage = () => {
     }}>
 
       <Grid container spacing={5}>
-        <Grid item xs={12} sm={6} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Box sx={{ mb: 6, textAlign: 'center', justifyContent: 'center', alignItems: 'center' }}>
-          <img src="/images/slide-logo.png" alt="Slide Logo" style={{ width: "100px", height: 'auto'}} />
-            <Typography variant='body2' sx={{ color: '#455A64', fontSize: '20px', fontFamily: '"Syne", sans-serif'}}>
-            We make extraordinary <br></br> Look and feel to your <br></br> presentaion 
+            <img src="/images/slide-logo.png" alt="Slide Logo" style={{ width: "100px", height: 'auto' }} />
+            <Typography variant='body2' sx={{ color: '#455A64', fontSize: '20px', fontFamily: '"Syne", sans-serif' }}>
+              We make extraordinary <br></br> Look and feel to your <br></br> presentaion
             </Typography>
           </Box>
         </Grid>
@@ -194,7 +222,16 @@ const LoginPage = () => {
                 <Box
                   sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
                 >
-                  <FormControlLabel control={<Checkbox />} label='Remember Me' />
+                  {/* <FormControlLabel control={<Checkbox />} label='Remember Me' /> */}
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                    }
+                    label='Remember Me'
+                  />
                   <Link passHref href='/'>
                     <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
                   </Link>
