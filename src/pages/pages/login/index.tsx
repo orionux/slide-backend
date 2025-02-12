@@ -39,6 +39,8 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 import { authenticateUser } from 'src/utils/authUtils'
 import { Grid } from '@mui/material'
+import { LoginUserRequest } from 'src/types/OnboardingApi'
+import { loginUser } from 'src/pages/api/authApi'
 
 
 // ** Styled Components
@@ -69,6 +71,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [type, setType] = useState<'user' | 'sub admin' | 'admin'>('user');
 
   // ** Hook
   // const theme = useTheme()
@@ -91,17 +94,28 @@ const LoginPage = () => {
   };
 
 
+    const handleLogin = async () => {
+      // setLoading(true);
+      // setError(null);
+  
+      const loginData: LoginUserRequest = { email :  userEmail, password, type };
+  
+      const result = await loginUser(loginData);
+  
+      if (result.responseType === 'success') {
 
+        // setResponse(result.output);
+        // Handle successful login (e.g., store token in localStorage or redirect)
+        console.log('Login successful! Token:', result?.output?.data?.token);
+      } else if (result.responseType === 'fail') {
+        // setError(result.output.message || 'Login failed');
+      } else if (result.responseType === 'error') {
+        // setError(result.output.message || 'An error occurred');
+      }
+  
+      // setLoading(false);
+    };
 
-
-  const handleLogin = () => {
-    const userType = authenticateUser(userEmail, password);
-    if (userType) {
-      router.push(`/`);
-    } else {
-      alert('Invalid username or password');
-    }
-  };
 
 
   return (
