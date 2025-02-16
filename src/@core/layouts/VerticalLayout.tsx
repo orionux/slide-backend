@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 // ** MUI Imports
 import Fab from '@mui/material/Fab'
@@ -25,6 +25,7 @@ import ScrollToTop from 'src/@core/components/scroll-to-top'
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useRouter } from 'next/router'
+import { useAuth } from '../context/AuthContext'
 
 
 const VerticalLayoutWrapper = styled('div')({
@@ -52,6 +53,8 @@ const ContentWrapper = styled('main')(({ theme }) => ({
 }))
 
 const VerticalLayout = (props: LayoutProps) => {
+
+  const { logout, isAuthenticated } = useAuth();
   // ** Props
   const { settings, children, scrollToTop } = props
 
@@ -68,8 +71,10 @@ const VerticalLayout = (props: LayoutProps) => {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('userType');
-    router.push('/pages/login');
+    // localStorage.removeItem('userType');
+    // router.push('/pages/login');
+    logout();
+
   };
 
   return (

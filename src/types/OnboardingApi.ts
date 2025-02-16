@@ -9,6 +9,13 @@ export interface ApiResponse<T> {
     password: string;
     type: 'user' | 'sub admin' | 'admin';
   }
+  export interface RegisterUserRequest {
+    name: string;
+    phone_no: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+  }
   
   // login res type
   export interface LoginUserResponse {
@@ -36,6 +43,10 @@ export interface ApiResponse<T> {
         };
       };
     };
+  }
+  export interface RegisterUserResponse {
+    status: string;
+    message: string;
   }
   
   export interface ApiConfig {

@@ -74,7 +74,7 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout userType={loggedUserType} >{page}</UserLayout>)
 
   return (
-    // <AuthProvider>
+    <AuthProvider>
     <CacheProvider value={emotionCache}>
       <Head>
         <title>SLIDE - Admin Dashboard</title>
@@ -94,7 +94,7 @@ const App = (props: ExtendedAppProps) => {
         </SettingsConsumer>
       </SettingsProvider>
     </CacheProvider>
-    // </AuthProvider>
+    </AuthProvider>
   )
 }
 

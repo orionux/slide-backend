@@ -43,6 +43,7 @@ import { LoginUserRequest } from 'src/types/OnboardingApi'
 import { loginUser } from 'src/pages/api/authApi'
 import { useSnackbar } from 'notistack'
 import { validateLoginData } from 'src/helpers/validators'
+import { useAuth } from 'src/@core/context/AuthContext'
 
 
 // ** Styled Components
@@ -81,6 +82,7 @@ const LoginPage = () => {
   // ** Hook
   // const theme = useTheme()
   const router = useRouter()
+  const { login } = useAuth();
 
   const handleChange = (prop: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     if (prop === 'password') {
@@ -114,8 +116,6 @@ const LoginPage = () => {
 
     const result = await loginUser(loginData);
 
-    console.log("redda")
-
     if (result.responseType === 'success') {
       console.log("hehehe");
       
@@ -124,11 +124,13 @@ const LoginPage = () => {
       // console.log('Login successful! Token:', result?.output?.data?.token);
       const token = result?.output?.data?.token;
       const type = result?.output?.data?.user?.role;
+      login(token, rememberMe);
+      
       if (token) {
         if (rememberMe) {
           console.log(rememberMe)
-          localStorage.setItem('token', token);
-          localStorage.setItem('tokenExpiration', String(Date.now() + 24 * 60 * 60 * 1000)); // 1 day
+          // localStorage.setItem('token', token);
+          // localStorage.setItem('tokenExpiration', String(Date.now() + 24 * 60 * 60 * 1000)); // 1 day
           localStorage.setItem('userType',type);
         } else {
           sessionStorage.setItem('token', token);

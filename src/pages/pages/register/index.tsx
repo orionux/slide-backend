@@ -34,11 +34,19 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import { Grid } from '@mui/material'
+import { RegisterUser } from 'src/pages/api/authApi'
+import { enqueueSnackbar } from 'notistack'
+import { Router, useRouter } from 'next/router'
 
-interface State {
-  password: string
-  showPassword: boolean
-}
+// interface State {
+//   fullname: string
+//   mobile_number: string
+//   email: string
+//   password: string
+//   showPassword: boolean
+//   confirmPassword: string
+//   agreeToTerms: boolean
+// }
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -60,58 +68,167 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
   }
 }))
 
+
+interface State {
+  fullname: string;
+  mobile_number: string;
+  email: string;
+  password: string;
+  showPassword: boolean;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+  showConfirmPassword: boolean;
+}
+
 const RegisterPage = () => {
+
   // ** States
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<State>({
     fullname: '',
     mobile_number: '',
     email: '',
     password: '',
     showPassword: false,
-    confirmPassword: false,
+    showConfirmPassword: false,
+    confirmPassword: '',
     agreeToTerms: false,
   });
 
+  const [errors, setErrors] = useState({
+    mobile_number: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
   // ** Hook
+  const router = useRouter()
 
+
+  // Handle input changes and validate fields
   const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword })
-  }
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
-  }
 
+    const { value } = event.target;
+    setValues({ ...values, [prop]: value });
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-
-    const formData = {
-      fullname: values.fullname,
-      mobile_number: values.mobile_number,
-      email: values.email,
-      password: values.password,
-      agreeToTerms: values.agreeToTerms,
-    };
-
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Registration successful:', data);
-    } else {
-      const errorData = await response.json();
-      console.error('Registration error:', errorData);
+    // Validate fields on change
+    switch (prop) {
+      case 'mobile_number':
+        setErrors({
+          ...errors,
+          mobile_number: validateMobileNumber(value),
+        });
+        break;
+      case 'email':
+        setErrors({
+          ...errors,
+          email: validateEmail(value),
+        });
+        break;
+      case 'password':
+        setErrors({
+          ...errors,
+          password: validatePassword(value),
+          confirmPassword: validateConfirmPassword(values.confirmPassword, value),
+        });
+        break;
+      case 'confirmPassword':
+        setErrors({
+          ...errors,
+          confirmPassword: validateConfirmPassword(value, values.password),
+        });
+        break;
+      default:
+        break;
     }
   };
+
+
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setValues({ ...values, agreeToTerms: checked });
+  };
+
+  // Validation functions
+  const validateMobileNumber = (value: string): string => {
+    const regex = /^[0-9]{10}$/; // 10-digit mobile number
+    return regex.test(value) ? '' : 'Invalid mobile number';
+  };
+
+  const validateEmail = (value: string): string => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+    return regex.test(value) ? '' : 'Invalid email address';
+  };
+
+  const validatePassword = (value: string): string => {
+    const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$/;
+    return regex.test(value)
+      ? ''
+      : 'Password must be at least 8 characters with one uppercase letter, one lowercase letter, one number, and one symbol';
+  };
+
+  const validateConfirmPassword = (confirmPassword: string, password: string): string => {
+    return confirmPassword === password ? '' : 'Passwords do not match';
+  };
+
+  // Handle form submission
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const hasErrors = Object.values(errors).some((error) => error !== '');
+    if (hasErrors) {
+      alert('Please fix the errors before submitting.');
+      return;
+    } else if (!values.agreeToTerms) {
+      alert('please agree to terms and condition.');
+      return;
+    } else {
+      
+
+      const formData = {
+        name: values.fullname,
+        phone_no: values.mobile_number,
+        email: values.email,
+        password: values.password,
+        password_confirmation: values.confirmPassword,
+      };
+
+      
+
+      const result = await RegisterUser(formData);
+
+      if (result.responseType === 'success') {
+        enqueueSnackbar('Registration successful!', { variant: 'success' });
+        router.push('/pages/login'); 
+      } else if (result.responseType === 'fail') {
+        // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+      } else if (result.responseType === 'error') {
+        // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+      }
+
+    }
+
+  };
+
+  // Toggle password visibility
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  // Toggle confirm password visibility
+  const handleClickShowConfirmPassword = () => {
+    setValues({ ...values, showConfirmPassword: !values.showConfirmPassword });
+  };
+
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+
+
+
+
+
 
   return (
     <Box className='content-center' sx={{
@@ -147,12 +264,36 @@ const RegisterPage = () => {
                   Regi<span style={{ backgroundColor: '#030211', color: '#fff' }}>ster</span>
                 </Typography>
               </Box>
-              <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-                <TextField autoFocus fullWidth id='fullname' label='Fullname' sx={{ marginBottom: 4 }} />
-                <TextField autoFocus fullWidth id='mobile_number' label='Mobile Number' sx={{ marginBottom: 4 }} />
-                <TextField fullWidth type='email' label='Email' sx={{ marginBottom: 4 }} />
+              <form noValidate autoComplete='off' onSubmit={handleSubmit}>
+                <TextField
+                  autoFocus
+                  fullWidth
+                  id='fullname'
+                  label='Fullname'
+                  sx={{ marginBottom: 4 }}
+                  onChange={handleChange('fullname')}
+                />
+                <TextField
+                  autoFocus
+                  fullWidth
+                  id='mobile_number'
+                  label='Mobile Number'
+                  sx={{ marginBottom: 4 }}
+                  onChange={handleChange('mobile_number')}
+                  error={!!errors.mobile_number}
+                  helperText={errors.mobile_number}
+                />
+                <TextField
+                  fullWidth
+                  type='email'
+                  label='Email'
+                  sx={{ marginBottom: 4 }}
+                  onChange={handleChange('email')}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                />
                 <FormControl fullWidth>
-                  <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
+                  <InputLabel htmlFor='auth-register-password' error={!!errors.password}>Password</InputLabel>
                   <OutlinedInput
                     label='Password'
                     value={values.password}
@@ -160,6 +301,7 @@ const RegisterPage = () => {
                     onChange={handleChange('password')}
                     type={values.showPassword ? 'text' : 'password'}
                     sx={{ marginBottom: 4 }}
+                    error={!!errors.password}
                     endAdornment={
                       <InputAdornment position='end'>
                         <IconButton
@@ -173,30 +315,47 @@ const RegisterPage = () => {
                       </InputAdornment>
                     }
                   />
+                  {errors.password && (
+                    <Typography variant='body2' color='error' sx={{ marginBottom: 3 }}>
+                      {errors.password}
+                    </Typography>
+                  )}
                 </FormControl>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
+                  <InputLabel htmlFor='auth-register-confirm-password' error={!!errors.confirmPassword}>Re-enter Password</InputLabel>
                   <OutlinedInput
                     label='Re-enter Password'
-                    value={values.password}
+                    value={values.confirmPassword}
                     id='auth-register-confirm-password'
-                    type={values.showPassword ? 'text' : 'password'}
+                    onChange={handleChange('confirmPassword')}
+                    type={values.showConfirmPassword ? 'text' : 'password'}
+                    error={!!errors.confirmPassword}
                     endAdornment={
                       <InputAdornment position='end'>
                         <IconButton
                           edge='end'
-                          onClick={handleClickShowPassword}
+                          onClick={handleClickShowConfirmPassword}
                           onMouseDown={handleMouseDownPassword}
                           aria-label='toggle password visibility'
                         >
-                          {values.showPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
+                          {values.showConfirmPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
                         </IconButton>
                       </InputAdornment>
                     }
                   />
+                  {errors.confirmPassword && (
+                    <Typography variant='body2' color='error' sx={{ marginBottom: 2 }}>
+                      {errors.confirmPassword}
+                    </Typography>
+                  )}
                 </FormControl>
                 <FormControlLabel
-                  control={<Checkbox />}
+                  control={
+                    <Checkbox
+                      checked={values.agreeToTerms}
+                      onChange={handleCheckboxChange}
+                    />
+                  }
                   label={
                     <Fragment>
                       <span>I agree to </span>
@@ -208,15 +367,19 @@ const RegisterPage = () => {
                     </Fragment>
                   }
                 />
-                <Button fullWidth size='large' type='submit' variant='contained' onClick={handleSubmit} sx={{
-                  marginBottom: 7,
-                  backgroundColor: '#404040',
-                  color: '#fff',
-
-                }}>
+                <Button
+                  fullWidth
+                  size='large'
+                  type='submit'
+                  variant='contained'
+                  sx={{
+                    marginBottom: 7,
+                    backgroundColor: '#404040',
+                    color: '#fff',
+                  }}
+                >
                   Sign up
                 </Button>
-
                 <Divider sx={{ my: 5 }}>or</Divider>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Link href='/' passHref>
@@ -231,16 +394,22 @@ const RegisterPage = () => {
                   </Link>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Typography variant='body2' sx={{ marginRight: 2 }}>
-                Already have an account?
-              </Typography>
-              <Typography variant='body2'>
-                <Link passHref href='/pages/login'>
-                  <LinkStyled>Sign in instead</LinkStyled>
-                </Link>
-              </Typography>
-            </Box>
+                  <Typography variant='body2' sx={{ marginRight: 2 }}>
+                    Already have an account?
+                  </Typography>
+                  <Typography variant='body2'>
+                    <Link passHref href='/pages/login'>
+                      <LinkStyled>Sign in instead</LinkStyled>
+                    </Link>
+                  </Typography>
+                </Box>
               </form>
+
+
+
+
+
+
             </CardContent>
           </Card>
         </Grid>
