@@ -25,7 +25,7 @@ import { OverridableComponent } from '@mui/material/OverridableComponent'
 
 const navigation = (loggedUserType: string | undefined): VerticalNavItemsType => {
 
-    console.log('user type navmenu: ', loggedUserType)
+    // console.log('user type navmenu: ', loggedUserType)
   
 
   // Define all navigation items
@@ -105,7 +105,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
       // &&
       // item.title !== 'Info'
     );
-  } else if (loggedUserType === 'subadmin') {
+  } else if (loggedUserType === 'sub admin') {
     // Subadmin gets specific items
     filteredNavItems = allNavItems.filter(item =>
       item.title !== 'User Management' &&
@@ -120,7 +120,7 @@ const navigation = (loggedUserType: string | undefined): VerticalNavItemsType =>
       // &&s
       // item.title !== 'Info'
     );
-  } else if (loggedUserType === 'user') {
+  } else if (loggedUserType === 'customer') {
     // Regular user gets specific items
     filteredNavItems = allNavItems.filter(item =>
       item.title !== 'User Management' &&

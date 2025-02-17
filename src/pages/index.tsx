@@ -66,7 +66,7 @@ const Dashboard: React.FC<Props> = () => {
     switch (userType) {
       case 'admin':
         return <AdminComponent />;
-      case 'subadmin':
+      case 'sub admin':
         return <SubAdminComponent />;
       case 'user':
         return <RegularUserComponent />;

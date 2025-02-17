@@ -7,8 +7,10 @@ import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow, { TableRowProps } from '@mui/material/TableRow';
 import TableCell, { TableCellProps, tableCellClasses } from '@mui/material/TableCell';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Checkbox, Dialog, DialogContent, DialogActions, Button, CardContent, Grid, TextField, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { useAuth } from 'src/@core/context/AuthContext';
+import { getAllCustomers } from 'src/pages/api/userManagementAPI';
 
 interface RowData {
   id: string;
@@ -18,6 +20,38 @@ interface RowData {
   actionStatus: string;
   gender?: string;
 }
+
+
+interface CustomerDetails {
+  id: number;
+  user_id: number;
+  name: string;
+  phone_no: string;
+  gender: string | null;
+  state: string | null;
+  company_name: string | null;
+  vat_number: string | null;
+  billing_address: string | null;
+  location: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+}
+
+interface User {
+  id: number;
+  email: string;
+  email_verified_at: string | null;
+  role: string;
+  otp: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  customer_details: CustomerDetails;
+}
+
+type Users = User[]; // Users is an array of User objects
 
 const StyledTableCell = styled(TableCell)<TableCellProps>(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,6 +73,7 @@ const StyledTableRow = styled(TableRow)<TableRowProps>(({ theme }) => ({
   },
 }));
 
+
 const createData = (id: string, fullname: string, email: string, phoneNumber: string, actionStatus: string, gender?: string) => {
   return { id, fullname, email, phoneNumber, actionStatus, gender: gender || '' };
 };
@@ -56,6 +91,10 @@ const UserTable = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+
+  const [user, setUsers] = useState<Users | null>(null)
+
+  const { apiConfig } = useAuth();
 
   const handleCheckboxClick = (row: RowData, index: number) => {
     setOpenDialog(true);
@@ -102,6 +141,63 @@ const UserTable = () => {
     }
     handleCloseDialog();
   };
+
+
+
+
+
+
+
+
+
+
+
+  const fetchCustomers = async () => {
+
+
+    
+
+    const result = await getAllCustomers(apiConfig);
+
+    if (result.responseType === 'success') {
+      console.log(result?.output);
+      setUsers(result?.output);
+      // setRows(result?.output);
+
+
+      
+
+    } else if (result.responseType === 'fail') {
+      // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  };
+
+
+  useEffect(() => {
+    fetchCustomers();
+
+  }, [])
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <>

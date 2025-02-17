@@ -7,7 +7,7 @@ export interface ApiResponse<T> {
   export interface LoginUserRequest {
     email: string;
     password: string;
-    type: 'user' | 'sub admin' | 'admin';
+    // type: 'user' | 'sub admin' | 'admin';
   }
   export interface RegisterUserRequest {
     name: string;
@@ -53,3 +53,5 @@ export interface ApiResponse<T> {
     headers?: Record<string, string>;
     //more
   }
+
+  

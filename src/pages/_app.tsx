@@ -65,7 +65,7 @@ const App = (props: ExtendedAppProps) => {
   useEffect(() => {
     const user_type = localStorage.getItem('userType') || '';
     setLoggedUserType(user_type)
-    console.log('user type app : ', user_type)
+    // console.log('user type app : ', user_type)
   
   }, [])
   

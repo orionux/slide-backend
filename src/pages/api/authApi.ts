@@ -9,7 +9,7 @@ export const loginUser = async (data: LoginUserRequest, config?: any): Promise<A
       const formData = new FormData();
       formData.append('email', data.email);
       formData.append('password', data.password);
-      formData.append('type', data.type);
+      // formData.append('type', data.type);
 
       const response = await loginUserService(encryptRequest(formData), config);
       if (response?.data?.status === 'success') {

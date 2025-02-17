@@ -105,7 +105,7 @@ const LoginPage = () => {
 
 
   const handleLogin = async () => {
-    const loginData: LoginUserRequest = { email: userEmail, password, type };
+    const loginData: LoginUserRequest = { email: userEmail, password};
 
     // Validate form data
     const { isValid, errors } = await validateLoginData(loginData);
@@ -137,7 +137,7 @@ const LoginPage = () => {
           localStorage.setItem('userType',type);
         }
         enqueueSnackbar('Login successful!', { variant: 'success' });
-        router.push('/'); // Redirect to dashboard or protected route
+        router.push('/'); 
       }
     } else if (result.responseType === 'fail') {
       enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });

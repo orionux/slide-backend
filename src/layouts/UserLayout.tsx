@@ -18,7 +18,7 @@ interface Props {
 
 const UserLayout = ({ userType, children }: Props) => {
 
-  console.log("user type: ", userType)
+  // console.log("user type: ", userType)
 
   const { settings, saveSettings } = useSettings()
   const [navItems, setNavItems] = useState<VerticalNavItemsType>([]);

@@ -5,7 +5,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (token: string, rememberMe: boolean) => void;
   logout: () => void;
-  formconfig :{
+  apiConfig :{
   headers: {
     "Access-Control-Allow": boolean;
     "Access-Control-Allow-Origin": string;
@@ -36,6 +36,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    console.log(token);
+    
     if (token) {
       setToken(token)
       setIsAuthenticated(true);
@@ -61,7 +63,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     router.push('/pages/login');
   };
 
-  const formconfig = {
+  // const formconfig = {
+  //   headers: {
+  //     "Access-Control-Allow": true,
+  //     "Access-Control-Allow-Origin": "*",
+  //     "Content-Type": "multipart/form-data",
+  //     Authorization: `Bearer ${token}`,
+  //     "x-api-key": "web",
+  //   },
+  // };
+  const apiConfig = {
     headers: {
       "Access-Control-Allow": true,
       "Access-Control-Allow-Origin": "*",
@@ -72,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout ,formconfig }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout ,apiConfig }}>
       {children}
     </AuthContext.Provider>
   );
