@@ -9,8 +9,7 @@ export const getAllCustomers = async (config?: any): Promise<ApiResponse<GetCust
 
   try {
     const response = await getCustomers(config);
-    // if (response?.data?.status === 'success') {
-    if (response?.data) {
+    if (response?.data?.status === 'success') {
       return {
         responseType: 'success',
         output: decryptResponse(response.data),

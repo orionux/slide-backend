@@ -33,6 +33,7 @@ import { useEffect, useState } from 'react'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthProvider } from 'src/@core/context/AuthContext'
+import { SnackbarProvider } from 'notistack'
 
 
 // ** Extend App Props with Emotion
@@ -87,11 +88,14 @@ const App = (props: ExtendedAppProps) => {
       </Head>
 
       <SettingsProvider>
+        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
         <SettingsConsumer>
           {({ settings }) => {
             return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
           }}
+
         </SettingsConsumer>
+        </SnackbarProvider>
       </SettingsProvider>
     </CacheProvider>
     </AuthProvider>

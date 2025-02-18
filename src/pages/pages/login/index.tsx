@@ -124,21 +124,21 @@ const LoginPage = () => {
       // console.log('Login successful! Token:', result?.output?.data?.token);
       const token = result?.output?.data?.token;
       const type = result?.output?.data?.user?.role;
-      login(token, rememberMe);
+      login(token, rememberMe,type);
       
-      if (token) {
-        if (rememberMe) {
-          console.log(rememberMe)
-          // localStorage.setItem('token', token);
-          // localStorage.setItem('tokenExpiration', String(Date.now() + 24 * 60 * 60 * 1000)); // 1 day
-          localStorage.setItem('userType',type);
-        } else {
-          sessionStorage.setItem('token', token);
-          localStorage.setItem('userType',type);
-        }
-        enqueueSnackbar('Login successful!', { variant: 'success' });
-        router.push('/'); 
-      }
+      // if (token) {
+      //   if (rememberMe) {
+      //     console.log(rememberMe)
+      //     // localStorage.setItem('token', token);
+      //     // localStorage.setItem('tokenExpiration', String(Date.now() + 24 * 60 * 60 * 1000)); // 1 day
+      //     localStorage.setItem('userType',type);
+      //   } else {
+      //     sessionStorage.setItem('token', token);
+      //     localStorage.setItem('userType',type);
+      //   }
+      //   enqueueSnackbar('Login successful!', { variant: 'success' });
+      // }
+      router.push('/'); 
     } else if (result.responseType === 'fail') {
       enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
     } else if (result.responseType === 'error') {

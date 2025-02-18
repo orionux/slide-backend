@@ -18,5 +18,6 @@ interface Customer {
 export interface GetCustomersResponse {
     customers: Customer[];
     total: number;
+    status: string;
     // Add other fields as needed
 }
