@@ -39,10 +39,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     console.log(sessionStorage.getItem('token'))
 
     if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
-      setToken(localStorage.getItem('token') ? localStorage.getItem('token') : sessionStorage.getItem('token'))
+      setToken(localStorage.getItem('token') ? localStorage.getItem('token') : sessionStorage.getItem('token')? sessionStorage.getItem('token'):'')
       setIsAuthenticated(true)
     }else{
       setIsAuthenticated(false)
+      setToken(null)
+      localStorage.removeItem('userType')
       router.push('/pages/login')
     }
 
@@ -60,9 +62,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (rememberMe) {
       localStorage.setItem('userType', type)
       localStorage.setItem('token', token)
+      setToken(token)
+
     } else {
       localStorage.setItem('userType', type)
       sessionStorage.setItem('token', token)
+      setToken(token)
     }
     setIsAuthenticated(true)
   }

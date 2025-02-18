@@ -197,6 +197,8 @@ const UserTable = () => {
 
     if (result.responseType === 'success') {
       updateRows(result?.output?.data)
+      console.log(result?.output?.data);
+      
       setLoading(false)
     } else if (result.responseType === 'fail') {
       setLoading(false)
@@ -219,7 +221,7 @@ const UserTable = () => {
       email: item.email,
       phone: item.customer_details.phone_no,
       status: item.status,
-      gender: item.customer_details.gender || 'N/A' // Default to 'Unknown' if gender is null
+      gender: item.customer_details.gender || 'Male' // Default to 'Unknown' if gender is null
     }));
   };
 
@@ -283,7 +285,7 @@ const UserTable = () => {
                   <TextField
                     fullWidth
                     label='Full Name'
-                    name='fullname'
+                    name='name'
                     value={selectedRow ? selectedRow.name : ''}
                     onChange={handleInputChange}
                   />
@@ -322,7 +324,7 @@ const UserTable = () => {
                   disabled
                     fullWidth
                     label='Phone Number'
-                    name='phoneNumber'
+                    name='phone_no'
                     value={selectedRow ? selectedRow.phone : ''}
                     onChange={handleInputChange}
                   />
@@ -337,7 +339,7 @@ const UserTable = () => {
                     fullWidth
                     label='Company Name'
                     placeholder=''
-                    name='companyName'
+                    name='company_name'
                     onChange={handleInputChange}
                   />
                 </Grid>
@@ -348,7 +350,7 @@ const UserTable = () => {
                     fullWidth
                     label='VAT Number'
                     placeholder=''
-                    name='vatNumber'
+                    name='vat_number'
                     onChange={handleInputChange}
                   />
                 </Grid>
@@ -357,7 +359,7 @@ const UserTable = () => {
                     fullWidth
                     label='Billing Address'
                     placeholder=''
-                    name='billingAddress'
+                    name='billing_address'
                     onChange={handleInputChange}
                   />
                 </Grid>
