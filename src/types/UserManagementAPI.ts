@@ -19,5 +19,21 @@ export interface GetCustomersResponse {
     customers: Customer[];
     total: number;
     status: string;
-    // Add other fields as needed
 }
+
+export interface CommonResponse {
+    message: number;
+    status: string;
+}
+
+export interface UpdateCustomer {
+    name: string;
+    phone_no: string;
+    gender: string;
+    state: string;
+    company_name: string;
+    vat_number: string;
+    billing_address: string;
+    location: string; 
+}
+

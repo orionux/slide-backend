@@ -22,10 +22,12 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  CircularProgress
+  CircularProgress,
+  Skeleton
 } from '@mui/material'
 import { useAuth } from 'src/@core/context/AuthContext'
-import { getAllCustomers } from 'src/pages/api/userManagementAPI'
+import { getAllCustomers, updateCustomer, updateCustomerApi } from 'src/pages/api/userManagementAPI'
+import { Sledding } from 'mdi-material-ui'
 
 interface RowData {
   id: string
@@ -70,7 +72,24 @@ interface Row {
   phone: string;
   status: string;
   gender: string;
+  state?: string;
+  company_name?: string;
+  vat_number?: string;
+  billing_address?: string;
+  location?: string;
+  
 }
+
+// interface UpdatedRowData {
+//   id: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   status: string;
+//   gender: string;
+//   state: string;
+  
+// }
 
 
 const createData = (
@@ -128,7 +147,9 @@ const UserTable = () => {
   // const [rows, setRows] = useState(initialRows)
   const [rows, setRows] = useState<Row[]>([]);
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectedRow, setSelectedRow] = useState<Row | null>(null)
+  const [saveLoading, setSaveLoading] = useState(false)
+  const [selectedRow, setSelectedRow] = useState<Row| null>(null)
+  // const [updatedRowData, setUpdatedRowData] = useState<UpdatedRowData| null>(null)
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
 
   // const [customerData, setCustomersData] = useState<CustomerData[]>([])
@@ -150,7 +171,42 @@ const UserTable = () => {
   }
   const updateCustomer = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(selectedRow);
+    // setUpdatedRowData(selectedRow);
+
+
+    const updatedCustomerData = {
+      userId: selectedRow?.id,
+      name: selectedRow?.name,
+      phone_no: selectedRow?.phone,
+      gender: selectedRow?.gender,
+      state: selectedRow?.state,
+      company_name: selectedRow?.company_name,
+      vat_number: selectedRow?.vat_number,
+      billing_address: selectedRow?.billing_address,
+      location: selectedRow?.location 
+    }
+
+    console.log(updatedCustomerData);
+
+
+    const updateCustomerMethod = async () => {
+      setSaveLoading(true)
+      console.log(apiConfig);
+      
+      const result = await updateCustomerApi(apiConfig,updatedCustomerData)
+  
+      if (result.responseType === 'success') {
+        // updateRows(result?.output?.data)
+        
+        setSaveLoading(false)
+      } else if (result.responseType === 'fail') {
+        setLoading(false)
+        // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+      } else if (result.responseType === 'error') {
+        setSaveLoading(false)
+        // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+      }
+    }
     
 
   }
@@ -191,13 +247,12 @@ const UserTable = () => {
 
   const fetchCustomers = async () => {
     setLoading(true)
-    console.log(apiConfig);
+    // console.log(apiConfig);
     
     const result = await getAllCustomers(apiConfig)
 
     if (result.responseType === 'success') {
       updateRows(result?.output?.data)
-      console.log(result?.output?.data);
       
       setLoading(false)
     } else if (result.responseType === 'fail') {
@@ -221,7 +276,7 @@ const UserTable = () => {
       email: item.email,
       phone: item.customer_details.phone_no,
       status: item.status,
-      gender: item.customer_details.gender || 'Male' // Default to 'Unknown' if gender is null
+      gender: item.customer_details.gender || 'Male' 
     }));
   };
 
@@ -254,14 +309,32 @@ const UserTable = () => {
           </TableHead>
           <TableBody>
           {loading ? (
-            <TableRow>
-              <TableCell colSpan={5} align="center">
-                <CircularProgress />
-              </TableCell>
-            </TableRow>
+            <>
+            {[...Array(5)].map((_, index) => (
+              <TableRow key={index}>
+                <TableCell  align="center">
+                  <Skeleton variant="rectangular" width="100%" height={40} />
+                </TableCell>
+                <TableCell  align="center">
+                  <Skeleton variant="rectangular" width="100%" height={40} />
+                </TableCell>
+                <TableCell  align="center">
+                  <Skeleton variant="rectangular" width="100%" height={40} />
+                </TableCell>
+                <TableCell  align="center">
+                  <Skeleton variant="rectangular" width="100%" height={40} />
+                </TableCell>
+                <TableCell  align="center">
+                  <Skeleton variant="rectangular" width="100%" height={40} />
+                </TableCell>
+              </TableRow>
+            ))}
+            </>
           ) : (
             rows.map((row, index) => (
-              <TableRow key={row.id} onClick={() => handleCheckboxClick(row, index)}>
+              <TableRow key={row.id} onClick={() => handleCheckboxClick(row, index)} style={{
+                cursor: 'pointer'
+              }}>
                 <TableCell component="th" scope="row">
                   <Checkbox checked={selectedRowIndex === index} readOnly />
                 </TableCell>
