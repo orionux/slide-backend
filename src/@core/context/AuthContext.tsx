@@ -35,8 +35,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-    console.log(localStorage.getItem('token'))
-    console.log(sessionStorage.getItem('token'))
+    // console.log(localStorage.getItem('token'))
+    // console.log(sessionStorage.getItem('token'))
 
     if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
       setToken(localStorage.getItem('token') ? localStorage.getItem('token') : sessionStorage.getItem('token')? sessionStorage.getItem('token'):'')

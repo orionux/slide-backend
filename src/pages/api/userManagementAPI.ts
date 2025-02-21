@@ -42,19 +42,22 @@ export const getAllCustomers = async (config?: any): Promise<ApiResponse<GetCust
 
 
 export const updateCustomerApi = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+
+// debugg
+// console.log(data)
   
   try {
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('phone_no', data.phone_no);
+    formData.append('gender', data.gender);
+    formData.append('state', data.state);
     formData.append('email', data.email);
-    formData.append('password', data.password);
-    formData.append('password_confirmation', data.password_confirmation);
-
-    // debugggg
-    // for (const [key, value] of formData.entries()) {
-    //   console.log(key, value);
-    // }
+    formData.append('company_name', data.company_name);
+    formData.append('vat_number', data.vat_number);
+    formData.append('billing_address', data.billing_address);
+    formData.append('location', data.location);
+  
     const userId = data.userId
 
     const response = await updateCustomerService(encryptRequest(formData),config,userId);
