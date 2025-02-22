@@ -56,3 +56,30 @@ export async function addSubAdminService(
     }
   })
 }
+
+export async function updateSubAdminService(
+  data: UpdateCustomer,
+  config: ApiConfig,
+  userId: string
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/admin-update-sub-admin/${userId}`, data, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}
+
+export async function deleteSubAdminService(
+  userId: string,
+  config: ApiConfig
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.delete(apiURL + `api/delete-sub-admin/${userId}`, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}

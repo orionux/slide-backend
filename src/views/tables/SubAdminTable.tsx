@@ -27,13 +27,14 @@ import {
   Tab,
   InputAdornment,
   IconButton,
-  OutlinedInput
+  OutlinedInput,
+  CircularProgress
 } from '@mui/material'
 import React from 'react'
 import { FaUserLarge, FaUserPen, FaUserMinus } from 'react-icons/fa6'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
-import { addSubAdminApi, getAllSubAdmins } from 'src/pages/api/userManagementAPI'
+import { addSubAdminApi, deleteSubAdminApi, getAllSubAdmins, updateSubAdminApi } from 'src/pages/api/userManagementAPI'
 import { useAuth } from 'src/@core/context/AuthContext'
 import { EyeOffOutline, EyeOutline } from 'mdi-material-ui'
 import { enqueueSnackbar } from 'notistack'
@@ -103,6 +104,14 @@ interface FormData {
   state: string;
   password: string;
   confirmPassword: string;
+}
+interface FormDataUpdate {
+  id: string;
+  name: string;
+  gender: string;
+  email: string;
+  phone: string;
+  state: string;
 }
 
 interface Errors {
@@ -182,6 +191,9 @@ const SubAdminTable = () => {
   const [loading, setLoading] = useState(false)
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [addLoading, setAddLoading] = useState(false)
+  const [saveLoading, setSaveLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  
 
 
   const { apiConfig } = useAuth()
@@ -206,6 +218,7 @@ const SubAdminTable = () => {
 
   // edit model
   const handleEditUser = (row: Row, index: number) => {
+    // console.log(index)
     setOpenDialogEditUser(true)
     setSelectedRow(row)
     setSelectedRowIndex(index)
@@ -230,9 +243,27 @@ const SubAdminTable = () => {
   const handleSave = () => {
     // if (selectedRow && selectedRowIndex !== null) {
     //   rows[selectedRowIndex] = selectedRow;
-    //   console.log("Updated rows:", rows);
+    //   // console.log("Updated row:", selectedRow);
     // }
-    handleCloseEditDialog();
+
+if (selectedRow) {
+  const formDataToSubmit: FormDataUpdate = {
+    id: selectedRow.id,
+    name: selectedRow.name,
+    gender: selectedRow.gender,
+    email: selectedRow.email,
+    phone: selectedRow.phone,
+    state: selectedRow.state || '',
+  }
+  // handleEditSubAdmin(formDataToSubmit)
+
+  console.log(formDataToSubmit)
+
+  handleEditSubAdmin(formDataToSubmit)
+
+}
+
+    // handleCloseEditDialog();
   };
 
   //delete model
@@ -248,11 +279,19 @@ const SubAdminTable = () => {
   }
 
   //Add Sub Admin
-
   const handleSubAdmin = () => {
     setOpenSubAdmin(true)
   }
   const handleCloseSubAdmin = () => {
+    setFormData({
+      name: '',
+      gender: '',
+      email: '',
+      phone: '',
+      state: '',
+      password: '',
+      confirmPassword: '',
+    });
     setOpenSubAdmin(false)
   }
 
@@ -302,19 +341,6 @@ const SubAdminTable = () => {
     showPassword: false,
     showConfirmPassword: false,
   });
-
-
-
-
-  // const handleInputChangeSub = (e: { target: { name: any; value: any } }) => {
-  //   const { name, value } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value
-  //   });
-  // }
-
-
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // const file = event.target.files?.[0];
@@ -416,18 +442,14 @@ const SubAdminTable = () => {
   // Handle form submission
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
     if (validateForm()) {
-      // Form is valid, proceed with submission
-
       handleAddSubAdmin(formData);
-      console.log('Form Data:', formData);
-      alert('Form submitted successfully!');
     } else {
-      // Form is invalid, display errors
-      console.log('Form validation failed');
+      return
     }
   };
+
+
 
   // Toggle password visibility
   const handleClickShowPassword = () => {
@@ -447,7 +469,6 @@ const SubAdminTable = () => {
 
 
 //API HANDLING 
-
 const handleAddSubAdmin = async (formData: FormData) => {
   setAddLoading(true)
 
@@ -456,23 +477,38 @@ const handleAddSubAdmin = async (formData: FormData) => {
   if (result.responseType === 'success') {
 
     console.log(result?.output?.data);
-    
-
     setAddLoading(false)
     enqueueSnackbar('Sub Admin added successful!', { variant: 'success' });
     handleCloseSubAdmin();
     fetchSubAdmins()
   } else if (result.responseType === 'fail') {
     setAddLoading(false)
-    enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+    enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
   } else if (result.responseType === 'error') {
     setAddLoading(false)
-    // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
   }
 
 }
+const handleEditSubAdmin = async (formData: FormDataUpdate) => {
+  setSaveLoading(true)
 
+  const result = await updateSubAdminApi(formData, apiConfig)
 
+  if (result.responseType === 'success') {
+    enqueueSnackbar('Sub Admin Updated successful!', { variant: 'success' });
+    fetchSubAdmins()
+    setOpenDialogEditUser(false)
+    setSaveLoading(false)
+  } else if (result.responseType === 'fail') {
+    setSaveLoading(false)
+    enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
+  } else if (result.responseType === 'error') {
+    setSaveLoading(false)
+    enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+  }
+
+}
 const fetchSubAdmins = async () => {
   setLoading(true)
   // console.log(apiConfig);
@@ -495,21 +531,26 @@ const fetchSubAdmins = async () => {
 }
 
 
+  const handleDeleteSubAdmin = async () => {
+    setDeleteLoading(true)
 
+    const result = await deleteSubAdminApi(selectedRow?.id || '', apiConfig)
 
+    if (result.responseType ==='success') {
+      enqueueSnackbar('Sub Admin Deleted successful!', { variant:'success' });
+      fetchSubAdmins()
+      setOpenDialogDeleteUser(false)
+      setDeleteLoading(false)
+      setSelectedRowIndex(null)
+    } else if (result.responseType === 'fail') {
+      setDeleteLoading(false)
+      enqueueSnackbar(result.output.message ||'something went wrong', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      setDeleteLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
+  }
 
 
   useEffect(() => {
@@ -570,7 +611,7 @@ const fetchSubAdmins = async () => {
                         value={formData.gender || ''} // Use empty string as the initial value
                         id='form-layouts-separator-select'
                         labelId='form-layouts-separator-select-label'
-                        onChange={handleInputChangeSub}
+onChange={(event) => handleInputChangeSub(event as ChangeEvent<{ name?: string; value: unknown }>)}
                         fullWidth
                         displayEmpty // This ensures the placeholder is displayed when no value is selected
                         inputProps={{ 'aria-label': 'Gender' }}
@@ -697,7 +738,10 @@ const fetchSubAdmins = async () => {
               >
                 Cancel
               </Button>
-              <Button type='submit' variant='contained' size='large' style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+              <Button type='submit' variant='contained' size='large' style={{ backgroundColor: '#57EBB7', color: '#455A64' }}
+              disabled={addLoading}
+              startIcon={addLoading ? <CircularProgress size={20} color='inherit' /> : null}
+              >
                 Add
               </Button>
             </Grid>
@@ -1014,23 +1058,23 @@ const fetchSubAdmins = async () => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.name} onChange={handleInputChange} />
+                      <TextField fullWidth label='Full Name' name='name' value={selectedRow?.name} onChange={handleInputChange} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Gender' name='gender' value={selectedRow && selectedRow.gender} onChange={handleInputChange} />
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Email' name='email' value={selectedRow && selectedRow.email} onChange={handleInputChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phone} onChange={handleInputChange} />
+                      <TextField fullWidth label='Gender' name='gender' value={selectedRow?.gender} onChange={handleInputChange} />
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='State' name='state' value={selectedRow && selectedRow.state} onChange={handleInputChange} />
+                      <TextField fullWidth label='Email' disabled name='email' value={selectedRow?.email} onChange={handleInputChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='Phone Number' disabled name='phoneNumber' value={selectedRow?.phone} onChange={handleInputChange} />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField fullWidth label='State' name='state' value={selectedRow?.state} onChange={handleInputChange} />
                     </Grid>
                   </Grid>
 
@@ -1138,7 +1182,10 @@ const fetchSubAdmins = async () => {
               <Button type='button' variant='contained' size='large' onClick={handleCloseEditDialog} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
                 Cancel
               </Button>
-              <Button type='button' variant='contained' size='large' onClick={handleSave} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+              <Button type='button' variant='contained' size='large' onClick={handleSave} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}
+              disabled={saveLoading}
+              startIcon={saveLoading ? <CircularProgress size={20} color='inherit' /> : null}
+              >
                 Save
               </Button>
             </Grid>
@@ -1208,7 +1255,11 @@ const fetchSubAdmins = async () => {
                         backgroundColor: 'red',
                         color: '#fff'
                       },
-                    }}>Delete</Button>
+                    }}
+                    onClick={handleDeleteSubAdmin}
+                    disabled={deleteLoading}
+                    startIcon={deleteLoading ? <CircularProgress size={20} color='inherit' /> : null}
+                    >Delete</Button>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Button onClick={handleCloseDeleteDialog} variant='contained' sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}>Cancel</Button>
