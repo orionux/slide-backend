@@ -26,8 +26,9 @@ import {
   Skeleton
 } from '@mui/material'
 import { useAuth } from 'src/@core/context/AuthContext'
-import { getAllCustomers, updateCustomerApi } from 'src/pages/api/userManagementAPI'
+import { deleteCustomerApi, getAllCustomers, updateCustomerApi } from 'src/pages/api/userManagementAPI'
 import { Email, Sledding } from 'mdi-material-ui'
+import { enqueueSnackbar } from 'notistack'
 
 interface RowData {
   id: string
@@ -145,6 +146,7 @@ const UserTable = () => {
   const [rows, setRows] = useState<Row[]>([])
   const [openDialog, setOpenDialog] = useState(false)
   const [saveLoading, setSaveLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const [selectedRow, setSelectedRow] = useState<Row | null>(null)
   // const [updatedRowData, setUpdatedRowData] = useState<UpdatedRowData| null>(null)
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
@@ -222,7 +224,9 @@ const UserTable = () => {
     //   console.log(updatedRows)
     // }
 
-    handleCloseDialog()
+    deleteCustomerMethod(selectedRow?.id)
+
+    
   }
 
   const updateRows = (data: Customer[]) => {
@@ -278,11 +282,12 @@ const UserTable = () => {
       // updateRows(result?.output?.data)
 
       setSaveLoading(false)
+      enqueueSnackbar('User Updated successful!', { variant: 'success' });
       setOpenDialog(false)
       fetchCustomers()
       setSelectedRowIndex(null)
     } else if (result.responseType === 'fail') {
-      setLoading(false)
+      setSaveLoading(false)
       // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
     } else if (result.responseType === 'error') {
       setSaveLoading(false)
@@ -290,24 +295,25 @@ const UserTable = () => {
     }
   }
 
-  const deleteCustomerMethod = async (customerData: any) => {
-    setSaveLoading(true)
+  const deleteCustomerMethod = async (userId: any) => {
+    setDeleteLoading(true)
     console.log(apiConfig)
 
-    const result = await updateCustomerApi(customerData, apiConfig)
+    const result = await deleteCustomerApi(userId, apiConfig)
 
     if (result.responseType === 'success') {
       // updateRows(result?.output?.data)
 
-      setSaveLoading(false)
+      setDeleteLoading(false)
       setOpenDialog(false)
       fetchCustomers()
       setSelectedRowIndex(null)
+      enqueueSnackbar('User deleted successful!', { variant: 'success' });
     } else if (result.responseType === 'fail') {
-      setLoading(false)
+      setDeleteLoading(false)
       // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
     } else if (result.responseType === 'error') {
-      setSaveLoading(false)
+      setDeleteLoading(false)
       // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
   }
@@ -507,6 +513,8 @@ const UserTable = () => {
                         color: '#fff'
                       }
                     }}
+                    disabled={deleteLoading}
+                    startIcon={deleteLoading ? <CircularProgress size={20} color='inherit' /> : null}
                   >
                     Delete User
                   </Button>

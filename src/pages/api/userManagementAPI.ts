@@ -56,7 +56,7 @@ export const updateCustomerApi = async (data: any, config?: any): Promise<ApiRes
 export const deleteCustomerApi = async (userId: string, config?: any): Promise<ApiResponse<GetCustomersResponse>> => {
 
   try {
-    const response = await deleteCustomerService(config, userId);
+    const response = await deleteCustomerService(userId, config);
     if (response?.data?.status === 'success') {
       return {
         responseType: 'success',

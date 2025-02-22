@@ -117,7 +117,7 @@ const LoginPage = () => {
     const result = await loginUser(loginData);
 
     if (result.responseType === 'success') {
-      console.log("hehehe");
+      // console.log("hehehe");
       
       enqueueSnackbar('Login successful!', { variant: 'success' });
 

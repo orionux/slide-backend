@@ -24,8 +24,8 @@ export async function updateCustomerService(
 }
 
 export async function deleteCustomerService(
-  config: ApiConfig,
-  userId: string
+  userId: string,
+  config: ApiConfig
 ): Promise<AxiosResponse<CommonResponse>> {
   return await axios.delete(apiURL + `api/delete-customer/${userId}`, {
     ...config,
