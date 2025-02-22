@@ -16,9 +16,9 @@ interface Customer {
 
 }
 export interface GetCustomersResponse {
-    customers: Customer[];
-    total: number;
-    status: string;
+    customers?: Customer[];
+    total?: number;
+    status?: string;
 }
 
 export interface CommonResponse {

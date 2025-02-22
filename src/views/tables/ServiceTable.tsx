@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import { styled } from '@mui/material/styles';
@@ -9,12 +9,21 @@ import TableRow, { TableRowProps } from '@mui/material/TableRow';
 import TableCell, { TableCellProps, tableCellClasses } from '@mui/material/TableCell';
 import { Checkbox, Dialog, DialogContent, DialogActions, Button, CardContent, Grid, TextField, Typography } from '@mui/material';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { useAuth } from 'src/@core/context/AuthContext';
+import { enqueueSnackbar } from 'notistack';
+import { getAllServices } from 'src/pages/api/ServiceManagement';
 
-interface RowData {
-  service_id: string;
-  service_name: string;
-  service_desc: string;
-  service_image: string;
+// interface RowData {
+//   service_id: string;
+//   service_name: string;
+//   service_desc: string;
+//   service_image: string;
+// }
+interface Row {
+  id: string;
+  featured_image: string;
+  name: string;
+  description: string;
 }
 
 const StyledTableCell = styled(TableCell)<TableCellProps>(({ theme }) => ({
@@ -49,14 +58,15 @@ const initialRows = [
 ];
 
 const ServiceTable = () => {
-  const [rows, setRows] = useState<RowData[]>(initialRows);
+  // const [rows, setRows] = useState<RowData[]>(initialRows);
+  const [rows, setRows] = useState<Row[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
+  const [selectedRow, setSelectedRow] = useState<Row | null>(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
 
-  console.log("service array: ", rows)
+  const { apiConfig } = useAuth()
 
-  const handleCheckboxClick = (row: RowData, index: number) => {
+  const handleCheckboxClick = (row: Row, index: number) => {
     setOpenDialog(true);
     setSelectedRow(row);
     setSelectedRowIndex(index);
@@ -93,13 +103,13 @@ const ServiceTable = () => {
   };
 
   const handleSubmit = () => {
-    if (selectedRow && selectedRowIndex !== null) {
-      const updatedRows = [...rows];
-      updatedRows[selectedRowIndex] = selectedRow;
-      setRows(updatedRows);
-      console.log("Updated rows:", updatedRows);
-    }
-    handleCloseDialog();
+    // if (selectedRow && selectedRowIndex !== null) {
+    //   const updatedRows = [...rows];
+    //   updatedRows[selectedRowIndex] = selectedRow;
+    //   setRows(updatedRows);
+    //   console.log("Updated rows:", updatedRows);
+    // }
+    // handleCloseDialog();
   };
 
   const handleAddNewService = () => {
@@ -116,6 +126,35 @@ const ServiceTable = () => {
 
     setRows([...rows, newService]);
   };
+
+
+  //API Calls
+  const fetchServices = async () => {
+    // setLoading(true)
+    // console.log(apiConfig);
+
+    const result = await getAllServices(apiConfig)
+
+    if (result.responseType === 'success') {
+      // updateRows(result?.output?.data)
+      setRows(result?.output?.data)
+
+      console.log(result?.output?.data);
+      
+
+      // setLoading(false)
+    } else if (result.responseType === 'fail') {
+      // setLoading(false)
+      enqueueSnackbar(result.output.message || 'Retrieving services failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      // setLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  }
+
+  useEffect(() => {
+    fetchServices();
+  }, [])
 
 
   return (
@@ -160,16 +199,16 @@ const ServiceTable = () => {
           </TableHead>
           <TableBody>
             {rows.map((row, index) => (
-              <StyledTableRow key={row.service_id} onClick={() => handleCheckboxClick(row, index)}>
+              <StyledTableRow key={row.id} onClick={() => handleCheckboxClick(row, index)}>
                 <StyledTableCell component='th' scope='row'>
                   <span style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <Checkbox checked={selectedRowIndex === index} readOnly /> {row.service_id}
+                    <Checkbox checked={selectedRowIndex === index} readOnly /> {row.id}
                   </span>
                 </StyledTableCell>
-                <StyledTableCell align='left'><b>{row.service_name}</b></StyledTableCell>
-                <StyledTableCell align='left'>{row.service_desc}</StyledTableCell>
+                <StyledTableCell align='left'><b>{row.name}</b></StyledTableCell>
+                <StyledTableCell align='left'>{row.description}</StyledTableCell>
                 <StyledTableCell align='left'>
-                  <img src={row.service_image} width={100} height={100} alt='' />
+                  <img src={row.featured_image} width={100} height={100} alt='' />
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -188,7 +227,7 @@ const ServiceTable = () => {
             <form onSubmit={(e) => e.preventDefault()}>
               <Grid container spacing={5} style={{ marginBottom: 20 }}>
                 <Grid item xs={12} sm={3} style={{ display: 'flex', flexDirection: 'column' }}>
-                  <img src={selectedRow?.service_image} alt='' style={{ width: '100%', height: 'auto', marginBottom: '10px' }} />
+                  <img src={selectedRow?.featured_image} alt='' style={{ width: '100%', height: 'auto', marginBottom: '10px' }} />
                   <input
                     type='file'
                     accept='image/*'
@@ -206,9 +245,9 @@ const ServiceTable = () => {
                   <Typography variant='h6' sx={{ marginBottom: '20px', color: '#455A64' }}>
                     Service Info
                   </Typography>
-                  <TextField fullWidth label='Service ID' name='service_id' value={selectedRow?.service_id || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
-                  <TextField fullWidth label='Service Name' name='service_name' value={selectedRow?.service_name || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
-                  <TextField fullWidth label='Service Description' name='service_desc' value={selectedRow?.service_desc || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service ID' name='service_id' value={selectedRow?.id || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service Name' name='service_name' value={selectedRow?.name || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service Description' name='service_desc' value={selectedRow?.description || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
                 </Grid>
               </Grid>
               <Grid container spacing={5} style={{ marginBottom: 20, display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>

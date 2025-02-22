@@ -80,7 +80,7 @@ export const getAllSubAdmins = async (config?: any): Promise<ApiResponse<GetCust
     if (response?.data?.status === 'success') {
       return {
         responseType: 'success',
-        output: decryptResponse(response.data),
+        output: decryptResponse(response?.data),
       };
     } else {
  

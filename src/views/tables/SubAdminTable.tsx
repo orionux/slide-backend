@@ -518,8 +518,6 @@ const fetchSubAdmins = async () => {
   if (result.responseType === 'success') {
     updateRows(result?.output?.data)
 
-    console.log(result?.output?.data)
-
     // setLoading(false)
   } else if (result.responseType === 'fail') {
     setLoading(false)

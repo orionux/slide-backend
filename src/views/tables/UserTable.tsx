@@ -160,7 +160,6 @@ const UserTable = () => {
   const handleCheckboxClick = (row: Row, index: number) => {
     setOpenDialog(true)
     console.log(row)
-
     setSelectedRow(row)
     setSelectedRowIndex(index)
   }
@@ -191,49 +190,25 @@ const UserTable = () => {
 
     updateCustomerMethod(updatedCustomerData)
   }
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (selectedRow) {
       const { name, value } = e.target
       setSelectedRow({ ...selectedRow, [name]: value })
     }
   }
-
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     if (selectedRow) {
       const { name, value } = e.target
       setSelectedRow({ ...selectedRow, [name as string]: value })
     }
   }
-
-  // const handleSave = () => {
-  //   // if (selectedRowIndex !== null && selectedRow) {
-  //   //   const updatedRows = rows.map((row, index) =>
-  //   //     index === selectedRowIndex ? { ...selectedRow, gender: selectedRow.gender || '' } : row
-  //   //   )
-  //   //   setRows(updatedRows)
-  //   //   console.log(updatedRows)
-  //   // }
-  //   // handleCloseDialog()
-  // }
-
   const handleDelete = () => {
-    // if (selectedRowIndex !== null) {
-    //   const updatedRows = rows.filter((_, index) => index !== selectedRowIndex)
-    //   setRows(updatedRows)
-    //   console.log(updatedRows)
-    // }
-
     deleteCustomerMethod(selectedRow?.id)
-
-    
   }
-
   const updateRows = (data: Customer[]) => {
     const transformedData = transformData(data)
     setRows(transformedData)
   }
-
   const transformData = (data: Customer[]): Row[] => {
     // console.log(data)
     return data.map(item => ({
@@ -252,7 +227,6 @@ const UserTable = () => {
   }
 
   //api calls
-
   const fetchCustomers = async () => {
     setLoading(true)
     // console.log(apiConfig);
@@ -271,7 +245,6 @@ const UserTable = () => {
       // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
   }
-
   const updateCustomerMethod = async (customerData: any) => {
     setSaveLoading(true)
     console.log(apiConfig)
@@ -294,7 +267,6 @@ const UserTable = () => {
       // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
   }
-
   const deleteCustomerMethod = async (userId: any) => {
     setDeleteLoading(true)
     console.log(apiConfig)
@@ -317,8 +289,6 @@ const UserTable = () => {
       // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
   }
-
-
 
   useEffect(() => {
     fetchCustomers()
