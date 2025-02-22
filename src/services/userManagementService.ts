@@ -22,3 +22,16 @@ export async function updateCustomerService(
     }
   })
 }
+
+export async function deleteCustomerService(
+  config: ApiConfig,
+  userId: string
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.delete(apiURL + `api/delete-customer/${userId}`, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}

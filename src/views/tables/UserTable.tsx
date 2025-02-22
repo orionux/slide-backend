@@ -190,28 +190,6 @@ const UserTable = () => {
     updateCustomerMethod(updatedCustomerData)
   }
 
-  const updateCustomerMethod = async (customerData: any) => {
-    setSaveLoading(true)
-    console.log(apiConfig)
-
-    const result = await updateCustomerApi(customerData, apiConfig)
-
-    if (result.responseType === 'success') {
-      // updateRows(result?.output?.data)
-
-      setSaveLoading(false)
-      setOpenDialog(false)
-      fetchCustomers()
-      setSelectedRowIndex(null)
-    } else if (result.responseType === 'fail') {
-      setLoading(false)
-      // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
-    } else if (result.responseType === 'error') {
-      setSaveLoading(false)
-      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
-    }
-  }
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (selectedRow) {
       const { name, value } = e.target
@@ -238,31 +216,13 @@ const UserTable = () => {
   // }
 
   const handleDelete = () => {
-    if (selectedRowIndex !== null) {
-      const updatedRows = rows.filter((_, index) => index !== selectedRowIndex)
-      setRows(updatedRows)
-      console.log(updatedRows)
-    }
+    // if (selectedRowIndex !== null) {
+    //   const updatedRows = rows.filter((_, index) => index !== selectedRowIndex)
+    //   setRows(updatedRows)
+    //   console.log(updatedRows)
+    // }
+
     handleCloseDialog()
-  }
-
-  const fetchCustomers = async () => {
-    setLoading(true)
-    // console.log(apiConfig);
-
-    const result = await getAllCustomers(apiConfig)
-
-    if (result.responseType === 'success') {
-      updateRows(result?.output?.data)
-
-      setLoading(false)
-    } else if (result.responseType === 'fail') {
-      setLoading(false)
-      // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
-    } else if (result.responseType === 'error') {
-      setLoading(false)
-      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
-    }
   }
 
   const updateRows = (data: Customer[]) => {
@@ -287,19 +247,76 @@ const UserTable = () => {
     }))
   }
 
-  // const updateRows = (rows) => {
-  //   const transformedData = transformData(users);
-  //   setRows(transformedData);
-  // };
+  //api calls
+
+  const fetchCustomers = async () => {
+    setLoading(true)
+    // console.log(apiConfig);
+
+    const result = await getAllCustomers(apiConfig)
+
+    if (result.responseType === 'success') {
+      updateRows(result?.output?.data)
+
+      setLoading(false)
+    } else if (result.responseType === 'fail') {
+      setLoading(false)
+      // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      setLoading(false)
+      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  }
+
+  const updateCustomerMethod = async (customerData: any) => {
+    setSaveLoading(true)
+    console.log(apiConfig)
+
+    const result = await updateCustomerApi(customerData, apiConfig)
+
+    if (result.responseType === 'success') {
+      // updateRows(result?.output?.data)
+
+      setSaveLoading(false)
+      setOpenDialog(false)
+      fetchCustomers()
+      setSelectedRowIndex(null)
+    } else if (result.responseType === 'fail') {
+      setLoading(false)
+      // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      setSaveLoading(false)
+      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  }
+
+  const deleteCustomerMethod = async (customerData: any) => {
+    setSaveLoading(true)
+    console.log(apiConfig)
+
+    const result = await updateCustomerApi(customerData, apiConfig)
+
+    if (result.responseType === 'success') {
+      // updateRows(result?.output?.data)
+
+      setSaveLoading(false)
+      setOpenDialog(false)
+      fetchCustomers()
+      setSelectedRowIndex(null)
+    } else if (result.responseType === 'fail') {
+      setLoading(false)
+      // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      setSaveLoading(false)
+      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  }
+
+
 
   useEffect(() => {
     fetchCustomers()
   }, [])
-
-  // useEffect(() => {
-  //   // fetchCustomers()
-  //   updateRows()
-  // }, [users])
 
   return (
     <>

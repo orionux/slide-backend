@@ -1,5 +1,5 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { getCustomers, updateCustomerService } from 'src/services/userManagementService';
+import { deleteCustomerService, getCustomers, updateCustomerService } from 'src/services/userManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAPI';
 
@@ -21,28 +21,7 @@ export const getAllCustomers = async (config?: any): Promise<ApiResponse<GetCust
     return { responseType: 'error', output: error };
   }
 };
-
-
-// export const updateCustomer = async (config?: any , data?: any): Promise<ApiResponse<CommonResponse>> => {
-
-//   try {
-//     const response = await updateCustomerApi(config , data);
-//     if (response?.data?.status === 'success') {
-//       return {
-//         responseType: 'success',
-//         output: decryptResponse(response.data),
-//       };
-//     } else {
-//       return { responseType: 'fail', output: response.data };
-//     }
-//   } catch (error) {
-//     return { responseType: 'error', output: error };
-//   }
-// };
-
-
 export const updateCustomerApi = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
-
 // debugg
 // console.log(data)
   
@@ -61,6 +40,23 @@ export const updateCustomerApi = async (data: any, config?: any): Promise<ApiRes
     const userId = data.userId
 
     const response = await updateCustomerService(encryptRequest(formData),config,userId);
+    if (response?.data?.status === 'success') {
+      return {
+        responseType: 'success',
+        output: decryptResponse(response.data),
+      };
+    } else {
+      return { responseType: 'fail', output: response.data };
+    }
+  } catch (error) {
+    return { responseType: 'error', output: error };
+  }
+};
+
+export const deleteCustomerApi = async (userId: string, config?: any): Promise<ApiResponse<GetCustomersResponse>> => {
+
+  try {
+    const response = await deleteCustomerService(config, userId);
     if (response?.data?.status === 'success') {
       return {
         responseType: 'success',
