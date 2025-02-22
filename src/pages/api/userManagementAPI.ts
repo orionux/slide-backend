@@ -1,5 +1,5 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { deleteCustomerService, getCustomers, getSubAdmins, updateCustomerService } from 'src/services/userManagementService';
+import { addSubAdminService, deleteCustomerService, getCustomers, getSubAdmins, updateCustomerService } from 'src/services/userManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAPI';
 
@@ -22,9 +22,9 @@ export const getAllCustomers = async (config?: any): Promise<ApiResponse<GetCust
   }
 };
 export const updateCustomerApi = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
-// debugg
-// console.log(data)
-  
+  // debugg
+  // console.log(data)
+
   try {
     const formData = new FormData();
     formData.append('name', data.name);
@@ -36,10 +36,10 @@ export const updateCustomerApi = async (data: any, config?: any): Promise<ApiRes
     formData.append('vat_number', data.vat_number);
     formData.append('billing_address', data.billing_address);
     formData.append('location', data.location);
-  
+
     const userId = data.userId
 
-    const response = await updateCustomerService(encryptRequest(formData),config,userId);
+    const response = await updateCustomerService(encryptRequest(formData), config, userId);
     if (response?.data?.status === 'success') {
       return {
         responseType: 'success',
@@ -77,6 +77,36 @@ export const getAllSubAdmins = async (config?: any): Promise<ApiResponse<GetCust
 
   try {
     const response = await getSubAdmins(config);
+    if (response?.data?.status === 'success') {
+      return {
+        responseType: 'success',
+        output: decryptResponse(response.data),
+      };
+    } else {
+      return { responseType: 'fail', output: response.data };
+    }
+  } catch (error) {
+    return { responseType: 'error', output: error };
+  }
+};
+
+export const addSubAdminApi = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+  // debugg
+  // console.log(data)
+
+  try {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('phone_no', data.phone);
+    formData.append('gender', data.gender);
+    formData.append('state', data.state);
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('password_confirmation', data.confirmPassword);
+
+    
+
+    const response = await addSubAdminService(encryptRequest(formData), config);
     if (response?.data?.status === 'success') {
       return {
         responseType: 'success',

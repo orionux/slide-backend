@@ -3,14 +3,18 @@ import { ReactNode, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/pages/login');
+    if (!loading && !isAuthenticated) {
+      router.replace('/pages/login'); // Use replace to prevent going back
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, loading, router]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading indicator
+  }
 
   return isAuthenticated ? <>{children}</> : null;
 };

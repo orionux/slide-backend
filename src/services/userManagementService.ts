@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { ApiConfig } from 'src/types/OnboardingApi'
-import { CommonResponse, GetCustomersResponse, UpdateCustomer } from 'src/types/UserManagementAPI'
+import { AddSubAdmin, CommonResponse, GetCustomersResponse, UpdateCustomer } from 'src/types/UserManagementAPI'
 
 const apiURL = process.env.NEXT_PUBLIC_API_URL
 
@@ -42,4 +42,17 @@ export async function deleteCustomerService(
 //Subadmins
 export async function getSubAdmins(config?: ApiConfig): Promise<AxiosResponse<GetCustomersResponse>> {
   return await axios.get(apiURL + 'api/admin-sub-admins', config)
+}
+
+export async function addSubAdminService(
+  data: AddSubAdmin,
+  config: ApiConfig,
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/admin-add-sub-admin`, data, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
 }

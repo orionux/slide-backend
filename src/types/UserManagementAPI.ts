@@ -27,13 +27,21 @@ export interface CommonResponse {
 }
 
 export interface UpdateCustomer {
-    name: string;
-    phone_no: string;
-    gender: string;
-    state: string;
-    company_name: string;
-    vat_number: string;
-    billing_address: string;
-    location: string; 
+    name?: string;
+    phone_no?: string;
+    gender?: string;
+    state?: string;
+    company_name?: string;
+    vat_number?: string;
+    billing_address?: string;
+    location?: string; 
 }
-
+export interface AddSubAdmin {
+    name?: string;
+    phone_no?: string;
+    gender?: string;
+    state?: string;
+    email?: string;
+    password?: string;
+    password_confirmation?: string;
+}

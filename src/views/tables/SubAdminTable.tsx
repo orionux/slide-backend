@@ -7,7 +7,7 @@ import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow, { TableRowProps } from '@mui/material/TableRow'
 import TableCell, { TableCellProps, tableCellClasses } from '@mui/material/TableCell'
-import { SyntheticEvent, useEffect, useState } from 'react'
+import { SyntheticEvent, useEffect, useState, ChangeEvent, FormEvent, MouseEvent } from 'react'
 import {
   Checkbox,
   Dialog,
@@ -18,17 +18,25 @@ import {
   Grid,
   TextField,
   Card,
+  InputLabel,
   CardMedia,
+  Select,
+  MenuItem,
   Typography,
   Rating,
-  Tab
+  Tab,
+  InputAdornment,
+  IconButton,
+  OutlinedInput
 } from '@mui/material'
 import React from 'react'
 import { FaUserLarge, FaUserPen, FaUserMinus } from 'react-icons/fa6'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
-import { getAllSubAdmins } from 'src/pages/api/userManagementAPI'
+import { addSubAdminApi, getAllSubAdmins } from 'src/pages/api/userManagementAPI'
 import { useAuth } from 'src/@core/context/AuthContext'
+import { EyeOffOutline, EyeOutline } from 'mdi-material-ui'
+import { enqueueSnackbar } from 'notistack'
 
 interface OrderStatus {
   projectName: string
@@ -86,16 +94,29 @@ interface Row {
   location?: string | null
 }
 
-// interface RowData {
-//   id: string
-//   fullname: string
-//   email: string
-//   phoneNumber: string
-//   gender: string
-//   state: string
-//   profileImage: string
-//   orderStatus: OrderStatus[]
-// }
+
+interface FormData {
+  name: string;
+  gender: string;
+  email: string;
+  phone: string;
+  state: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface Errors {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface Visibility {
+  showPassword: boolean;
+  showConfirmPassword: boolean;
+}
 
 const createData = (
   id: string,
@@ -159,6 +180,8 @@ const SubAdminTable = () => {
   const [value, setValue] = useState<string>('1')
   const [openSubAdmin, setOpenSubAdmin] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [addLoading, setAddLoading] = useState(false)
 
 
   const { apiConfig } = useAuth()
@@ -199,7 +222,7 @@ const SubAdminTable = () => {
       setSelectedRow(prevState => ({
         ...prevState!,
         [name]: value
-        
+
       }));
     }
   };
@@ -241,52 +264,213 @@ const SubAdminTable = () => {
   //   state: string;
   //   profileImage: string;
   // }
-  
-  const [subAdminData, setSubAdminData] = useState<SubAdmin[]>([]);
-  const [formData, setFormData] = useState<Row>({
-    id: '',
+
+
+  // const [subAdminData, setSubAdminData] = useState<SubAdmin[]>([]);
+  // const [formData, setFormData] = useState<Row>({
+  //   id: '',
+  //   name: '',
+  //   gender: '',
+  //   email: '',
+  //   phone: '',
+  //   state: '',
+  //   status: ''
+  //   // profileImage: '' ,
+  // });
+
+  // State for form data
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     gender: '',
     email: '',
     phone: '',
     state: '',
-    status: ''
-    // profileImage: '' ,
+    password: '',
+    confirmPassword: '',
   });
-  const [profileImage, setProfileImage] = useState<string | null>(null);
 
-const handleInputChangeSub = (e: { target: { name: any; value: any } }) => {
-  // const { name, value } = e.target;
-  // setFormData({
-  //   ...formData,
-  //   [name]: value
-  // });
-}
+  // State for validation errors
+  const [errors, setErrors] = useState<Errors>({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-const handleAddSubAdmin = () => {
-  // setSubAdminData([...subAdminData, formData]);
-  // console.log([...subAdminData, formData]);
-  handleCloseSubAdmin();
-}
+  const [visibility, setVisibility] = useState<Visibility>({
+    showPassword: false,
+    showConfirmPassword: false,
+  });
 
-const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  // const file = event.target.files?.[0];
-  // if (file) {
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setFormData(prevFormData => ({
-  //       ...prevFormData,
-  //       profileImage: reader.result as string
-  //     }));
-  //   };
-  //   reader.readAsDataURL(file);
+
+
+
+  // const handleInputChangeSub = (e: { target: { name: any; value: any } }) => {
+  //   const { name, value } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value
+  //   });
   // }
-};
 
-const handleImageClick = () => {
-  document.getElementById('profileImageInput')?.click();
-};
 
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // const file = event.target.files?.[0];
+    // if (file) {
+    //   const reader = new FileReader();
+    //   reader.onloadend = () => {
+    //     setFormData(prevFormData => ({
+    //       ...prevFormData,
+    //       profileImage: reader.result as string
+    //     }));
+    //   };
+    //   reader.readAsDataURL(file);
+    // }
+  };
+
+  const handleImageClick = () => {
+    document.getElementById('profileImageInput')?.click();
+  };
+
+  const updateRows = (data: SubAdmin[]) => {
+    const transformedData = transformData(data)
+    setRows(transformedData)
+  }
+
+  const transformData = (data: SubAdmin[]): Row[] => {
+    // console.log(data)
+    return data.map(item => ({
+      id: item.id.toString(),
+      name: item.sub_admin_details.name,
+      email: item.email,
+      phone: item.sub_admin_details.phone_no,
+      status: item.status,
+      gender: item.sub_admin_details.gender || 'Male',
+      state: item.sub_admin_details.state,
+      company_name: item.sub_admin_details.company_name,
+      vat_number: item.sub_admin_details.vat_number,
+      billing_address: item.sub_admin_details.billing_address,
+      location: item.sub_admin_details.location
+    }))
+  }
+
+
+  // Handle input change
+  const handleInputChangeSub = (e: ChangeEvent<{ name?: string; value: unknown }>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name as string]: value,
+    }));
+
+    // Clear errors when the user starts typing
+    if (errors[name as keyof Errors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name as string]: '',
+      }));
+    }
+  };
+
+  // Validate mobile number
+  const validateMobileNumber = (value: string): string => {
+    const regex = /^[0-9]{10}$/; // 10-digit mobile number
+    return regex.test(value) ? '' : 'Invalid mobile number';
+  };
+
+  // Validate email
+  const validateEmail = (value: string): string => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+    return regex.test(value) ? '' : 'Invalid email address';
+  };
+
+  // Validate password
+  const validatePassword = (value: string): string => {
+    const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$/;
+    return regex.test(value)
+      ? ''
+      : 'Password must be at least 8 characters with one uppercase letter, one lowercase letter, one number, and one symbol';
+  };
+
+  // Validate confirm password
+  const validateConfirmPassword = (confirmPassword: string, password: string): string => {
+    return confirmPassword === password ? '' : 'Passwords do not match';
+  };
+
+  // Validate form fields
+  const validateForm = (): boolean => {
+    const newErrors: Errors = {
+      name: formData.name ? '' : 'Name is required',
+      email: validateEmail(formData.email),
+      phone: validateMobileNumber(formData.phone),
+      password: validatePassword(formData.password),
+      confirmPassword: validateConfirmPassword(formData.confirmPassword, formData.password),
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error !== '');
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      // Form is valid, proceed with submission
+
+      handleAddSubAdmin(formData);
+      console.log('Form Data:', formData);
+      alert('Form submitted successfully!');
+    } else {
+      // Form is invalid, display errors
+      console.log('Form validation failed');
+    }
+  };
+
+  // Toggle password visibility
+  const handleClickShowPassword = () => {
+    setVisibility((prev) => ({ ...prev, showPassword: !prev.showPassword }));
+  };
+
+  // Toggle confirm password visibility
+  const handleClickShowConfirmPassword = () => {
+    setVisibility((prev) => ({ ...prev, showConfirmPassword: !prev.showConfirmPassword }));
+  };
+
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+
+
+
+//API HANDLING 
+
+const handleAddSubAdmin = async (formData: FormData) => {
+  setAddLoading(true)
+
+  const result = await addSubAdminApi(formData, apiConfig)
+
+  if (result.responseType === 'success') {
+
+    console.log(result?.output?.data);
+    
+
+    setAddLoading(false)
+    enqueueSnackbar('Sub Admin added successful!', { variant: 'success' });
+    handleCloseSubAdmin();
+    fetchSubAdmins()
+  } else if (result.responseType === 'fail') {
+    setAddLoading(false)
+    enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+  } else if (result.responseType === 'error') {
+    setAddLoading(false)
+    // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+  }
+
+}
 
 
 const fetchSubAdmins = async () => {
@@ -314,78 +498,51 @@ const fetchSubAdmins = async () => {
 
 
 
-const updateRows = (data: SubAdmin[]) => {
-  const transformedData = transformData(data)
-  setRows(transformedData)
-}
-
-const transformData = (data: SubAdmin[]): Row[] => {
-  // console.log(data)
-  return data.map(item => ({
-    id: item.id.toString(),
-    name: item.sub_admin_details.name,
-    email: item.email,
-    phone: item.sub_admin_details.phone_no,
-    status: item.status,
-    gender: item.sub_admin_details.gender || 'Male',
-    state: item.sub_admin_details.state,
-    company_name: item.sub_admin_details.company_name,
-    vat_number: item.sub_admin_details.vat_number,
-    billing_address: item.sub_admin_details.billing_address,
-    location: item.sub_admin_details.location
-  }))
-}
 
 
 
 
 
-useEffect(() => {
-  fetchSubAdmins()
-}, [])
+
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    fetchSubAdmins()
+  }, [apiConfig])
 
 
   return (
     <>
       <CardContent>
-        <Button onClick = {handleSubAdmin} variant='contained' sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}>Add Sub Admin</Button>
+        <Button onClick={handleSubAdmin} variant='contained' sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}>Add Sub Admin</Button>
       </CardContent>
 
-      <Dialog open={openSubAdmin} onClose={handleCloseSubAdmin} maxWidth='xl' >
+      <Dialog open={openSubAdmin} onClose={handleCloseSubAdmin} maxWidth='xl'>
         <DialogActions style={{ paddingTop: '20px', paddingBottom: '10px' }}>
           <Button onClick={handleCloseSubAdmin}>
             <AiOutlineCloseCircle style={{ fontSize: '25px' }} />
           </Button>
         </DialogActions>
         <DialogContent style={{ maxWidth: '1000px' }}>
-          <form onSubmit={e => e.preventDefault()}>
+          <form onSubmit={handleSubmit}>
             <CardContent>
               <Grid container spacing={5} style={{ marginBottom: 20 }}>
                 <Grid item xs={12} sm={4}>
                   <Card sx={{ backgroundColor: '#263238' }}>
-                  {/* <CardMedia
-                      sx={{ height: '14.5625rem', cursor: 'pointer' }}
-                      image={formData.profileImage || '/images/avatars/3.png'}
-                      onClick={handleImageClick}
-                    /> */}
-                     <input
-                      id="profileImageInput"
-                      type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={handleFileChange}
-                    />
                     <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-                      <Typography variant='body2' sx={{ color: '#ffffff' }}>
-                        EMP : {selectedRow && selectedRow.id}
-                      </Typography>
+                      {/* <Typography variant='body2' sx={{ color: '#ffffff' }}>
+                  EMP : 12345
+                </Typography> */}
                       <Typography variant='h6' sx={{ marginBottom: 2, color: '#ffffff' }}>
-                        {selectedRow && selectedRow.name}
+                        {formData.name}
                       </Typography>
                       <Rating readOnly value={5} name='read-only' sx={{ marginRight: 2 }} />
-                      <Typography variant='body2' sx={{ color: '#ffffff' }}>
-                        {/* {selectedRow && selectedRow.orderStatus.length} Projects */}
-                      </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -395,135 +552,161 @@ useEffect(() => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' name='fullname' value={formData.name} onChange={handleInputChangeSub} />
+                      <TextField
+                        fullWidth
+                        // label='Full Name'
+                        placeholder='Full name'
+                        name='name'
+                        value={formData.name}
+                        onChange={handleInputChangeSub}
+                        error={!!errors.name}
+                        helperText={errors.name}
+                        required
+                      />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Gender' name='gender' value={formData.gender} onChange={handleInputChangeSub}/>
+                    <Grid item xs={12} sm={6} style={{ color: '#455A64' }}>
+                      <Select
+                        name='gender'
+                        value={formData.gender || ''} // Use empty string as the initial value
+                        id='form-layouts-separator-select'
+                        labelId='form-layouts-separator-select-label'
+                        onChange={handleInputChangeSub}
+                        fullWidth
+                        displayEmpty // This ensures the placeholder is displayed when no value is selected
+                        inputProps={{ 'aria-label': 'Gender' }}
+                        sx={{
+                          '& .MuiSelect-select': {
+                            color: formData.gender ? 'inherit' : '#999', // Gray text for placeholder
+                          },
+                        }}
+                      >
+                        <MenuItem disabled value=''>
+                          <div>Gender</div> {/* Placeholder text */}
+                        </MenuItem>
+                        <MenuItem value='Male'>Male</MenuItem>
+                        <MenuItem value='Female'>Female</MenuItem>
+                      </Select>
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Email' name='email' value={formData.email} onChange={handleInputChangeSub} />
+                      <TextField
+                        fullWidth
+                        // label='Email'
+                        placeholder='Email'
+                        name='email'
+                        value={formData.email}
+                        onChange={handleInputChangeSub}
+                        error={!!errors.email}
+                        helperText={errors.email}
+                        required
+                      />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={formData.phone} onChange={handleInputChangeSub} />
+                      <TextField
+                        fullWidth
+                        // label='Phone Number'
+                        placeholder='Phone number'
+                        name='phone'
+                        value={formData.phone}
+                        onChange={handleInputChangeSub}
+                        error={!!errors.phone}
+                        helperText={errors.phone}
+                        required
+                      />
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='State' name='state'  value={formData.state} onChange={handleInputChangeSub}/>
+                      <OutlinedInput
+                        fullWidth
+                        // label='Password'
+                        placeholder='Password'
+                        value={formData.password}
+                        name='password'
+                        onChange={handleInputChangeSub}
+                        type={visibility.showPassword ? 'text' : 'password'}
+                        error={!!errors.password}
+                        endAdornment={
+                          <InputAdornment position='end'>
+                            <IconButton
+                              edge='end'
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              aria-label='toggle password visibility'
+                            >
+                              {visibility.showPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                      {errors.password && (
+                        <Typography variant='body2' color='error' sx={{ marginBottom: 3 }}>
+                          {errors.password}
+                        </Typography>
+                      )}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <OutlinedInput
+                        fullWidth
+                        // label='Confirm Password'
+                        placeholder='Confirm Password'
+                        value={formData.confirmPassword}
+                        name='confirmPassword'
+                        onChange={handleInputChangeSub}
+                        type={visibility.showConfirmPassword ? 'text' : 'password'}
+                        error={!!errors.confirmPassword}
+                        endAdornment={
+                          <InputAdornment position='end'>
+                            <IconButton
+                              edge='end'
+                              onClick={handleClickShowConfirmPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              aria-label='toggle password visibility'
+                            >
+                              {visibility.showConfirmPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                      {errors.confirmPassword && (
+                        <Typography variant='body2' color='error' sx={{ marginBottom: 2 }}>
+                          {errors.confirmPassword}
+                        </Typography>
+                      )}
                     </Grid>
                   </Grid>
-
-                  <Card>
-                    <Typography variant='h6' sx={{ marginBottom: 2, color: '#455A64' }}>
-                      Projects
-                    </Typography>
-                    <TabContext value={value}>
-                      <TabList onChange={handleChange} aria-label='card navigation example'>
-                        <Tab value='1' label='Ongoing' />
-                        <Tab value='2' label='History' />
-                      </TabList>
-                      <CardContent>
-                        <TabPanel value='1' sx={{ p: 0 }}>
-                          {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            {selectedRow &&
-                              selectedRow.orderStatus
-                                .filter(status => status.status !== 'Terminated' && status.status !== 'Completed')
-                                .map((status, statusIndex) => (
-                                  <div key={statusIndex} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.projectName}</div>
-                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.duration}</div>
-                                    <div style={{ width: '40%', padding: '5px' }}>
-                                      <span
-                                        style={{
-                                          backgroundColor:
-                                            status.status === 'Review'
-                                              ? '#57EBB7'
-                                              : status.status === 'Preparing'
-                                                ? '#FFE66A'
-                                                : status.status === 'Terminated'
-                                                  ? '#B80000'
-                                                  : 'inherit',
-                                          color:
-                                            status.status === 'Review'
-                                              ? '#455A64'
-                                              : status.status === 'Preparing'
-                                                ? '#455A64'
-                                                : status.status === 'Terminated'
-                                                  ? '#FFFFFF'
-                                                  : 'inherit',
-                                          fontSize: '11px',
-                                          padding: '5px 10px',
-                                          borderRadius: '6px',
-                                        }}
-                                      >
-                                        {status.status}
-                                      </span>
-                                    </div>
-                                  </div>
-                                ))}
-                          </div> */}
-                        </TabPanel>
-                        <TabPanel value='2' sx={{ p: 0 }}>
-                          {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            {selectedRow &&
-                              selectedRow.orderStatus
-                                .filter(status => status.status === 'Terminated' || status.status === 'Completed')
-                                .map((status, statusIndex) => (
-                                  <div key={statusIndex} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.projectName}</div>
-                                    <div style={{ width: '30%', marginRight: '10px' }}>{status.duration}</div>
-                                    <div style={{ width: '40%', padding: '5px' }}>
-                                      <span
-                                        style={{
-                                          backgroundColor:
-                                            status.status === 'Review'
-                                              ? '#57EBB7'
-                                              : status.status === 'Preparing'
-                                                ? '#FFE66A'
-                                                : status.status === 'Completed'
-                                                  ? '#5836B6'
-                                                  : status.status === 'Terminated'
-                                                    ? '#B80000'
-                                                    : 'inherit',
-                                          color:
-                                            status.status === 'Review'
-                                              ? '#455A64'
-                                              : status.status === 'Preparing'
-                                                ? '#455A64'
-                                                : status.status === 'Completed'
-                                                  ? '#FFFFFF'
-                                                  : status.status === 'Terminated'
-                                                    ? '#FFFFFF'
-                                                    : 'inherit',
-                                          fontSize: '11px',
-                                          padding: '5px 10px',
-                                          borderRadius: '6px',
-                                        }}
-                                      >
-                                        {status.status}
-                                      </span>
-                                    </div>
-                                  </div>
-                                ))}
-                          </div> */}
-                        </TabPanel>
-                      </CardContent>
-                    </TabContext>
-                  </Card>
+                  <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        placeholder='State'
+                        // label='State'
+                        name='state'
+                        value={formData.state}
+                        onChange={handleInputChangeSub}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             </CardContent>
-            <Grid container spacing={5} style={{ marginBottom: 20, display: "flex", flexDirection: 'row', justifyContent: 'end' }}>
-                <Button type='button' variant='contained' size='large' onClick={handleCloseSubAdmin} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
+            <Grid container spacing={5} style={{ marginBottom: 20, display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
+              <Button type='button' variant='contained' size='large' style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }} 
+              onClick={handleCloseSubAdmin}
+              >
                 Cancel
-                </Button>
-                <Button type='button' variant='contained' size='large' onClick={handleAddSubAdmin} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+              </Button>
+              <Button type='submit' variant='contained' size='large' style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
                 Add
-                </Button>
+              </Button>
             </Grid>
           </form>
+
+
+
+
+
         </DialogContent>
       </Dialog>
 
@@ -542,7 +725,7 @@ useEffect(() => {
             {rows.map((row, index) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell component='th' scope='row'>
-                  <Checkbox checked={selectedRowIndex === index} readOnly /> {row.id}
+                  <Checkbox checked={selectedRowIndex === index} readOnly />
                 </StyledTableCell>
                 <StyledTableCell align='left' style={{ position: 'relative' }}>
                   {row.name}
@@ -831,7 +1014,7 @@ useEffect(() => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.name} onChange={handleInputChange}/>
+                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.name} onChange={handleInputChange} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField fullWidth label='Gender' name='gender' value={selectedRow && selectedRow.gender} onChange={handleInputChange} />
@@ -842,12 +1025,12 @@ useEffect(() => {
                       <TextField fullWidth label='Email' name='email' value={selectedRow && selectedRow.email} onChange={handleInputChange} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phone}  onChange={handleInputChange}/>
+                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phone} onChange={handleInputChange} />
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='State' name='state' value={selectedRow && selectedRow.state}  onChange={handleInputChange}/>
+                      <TextField fullWidth label='State' name='state' value={selectedRow && selectedRow.state} onChange={handleInputChange} />
                     </Grid>
                   </Grid>
 
@@ -952,13 +1135,13 @@ useEffect(() => {
               </Grid>
             </CardContent>
             <Grid container spacing={5} style={{ marginBottom: 20, display: "flex", flexDirection: 'row', justifyContent: 'end' }}>
-                <Button type='button' variant='contained' size='large' onClick={handleCloseEditDialog} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
+              <Button type='button' variant='contained' size='large' onClick={handleCloseEditDialog} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
                 Cancel
-                </Button>
-                <Button type='button' variant='contained' size='large' onClick={handleSave} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+              </Button>
+              <Button type='button' variant='contained' size='large' onClick={handleSave} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
                 Save
-                </Button>
-              </Grid>
+              </Button>
+            </Grid>
           </form>
         </DialogContent>
       </Dialog>
@@ -1019,10 +1202,13 @@ useEffect(() => {
                 </Grid>
                 <Grid container spacing={5} style={{ marginBottom: 20 }}>
                   <Grid item xs={12} sm={6}>
-                    <Button variant='contained' sx={{ backgroundColor: '#F1F1F1', color: '#455A64', 
-                    '&:hover': {
-                      backgroundColor: 'red',
-                      color: '#fff'}, }}>Delete</Button>
+                    <Button variant='contained' sx={{
+                      backgroundColor: '#F1F1F1', color: '#455A64',
+                      '&:hover': {
+                        backgroundColor: 'red',
+                        color: '#fff'
+                      },
+                    }}>Delete</Button>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Button onClick={handleCloseDeleteDialog} variant='contained' sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}>Cancel</Button>
