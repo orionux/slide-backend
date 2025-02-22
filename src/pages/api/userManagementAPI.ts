@@ -1,10 +1,10 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { deleteCustomerService, getCustomers, updateCustomerService } from 'src/services/userManagementService';
+import { deleteCustomerService, getCustomers, getSubAdmins, updateCustomerService } from 'src/services/userManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAPI';
 
 
-
+//customers(users)
 export const getAllCustomers = async (config?: any): Promise<ApiResponse<GetCustomersResponse>> => {
 
   try {
@@ -57,6 +57,26 @@ export const deleteCustomerApi = async (userId: string, config?: any): Promise<A
 
   try {
     const response = await deleteCustomerService(userId, config);
+    if (response?.data?.status === 'success') {
+      return {
+        responseType: 'success',
+        output: decryptResponse(response.data),
+      };
+    } else {
+      return { responseType: 'fail', output: response.data };
+    }
+  } catch (error) {
+    return { responseType: 'error', output: error };
+  }
+};
+
+
+
+//subAdmins 
+export const getAllSubAdmins = async (config?: any): Promise<ApiResponse<GetCustomersResponse>> => {
+
+  try {
+    const response = await getSubAdmins(config);
     if (response?.data?.status === 'success') {
       return {
         responseType: 'success',

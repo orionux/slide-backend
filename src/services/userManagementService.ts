@@ -5,6 +5,8 @@ import { CommonResponse, GetCustomersResponse, UpdateCustomer } from 'src/types/
 
 const apiURL = process.env.NEXT_PUBLIC_API_URL
 
+
+//Customer (users)
 export async function getCustomers(config?: ApiConfig): Promise<AxiosResponse<GetCustomersResponse>> {
   return await axios.get(apiURL + 'api/admin-customers', config)
 }
@@ -34,4 +36,10 @@ export async function deleteCustomerService(
       ...config?.headers
     }
   })
+}
+
+
+//Subadmins
+export async function getSubAdmins(config?: ApiConfig): Promise<AxiosResponse<GetCustomersResponse>> {
+  return await axios.get(apiURL + 'api/admin-sub-admins', config)
 }

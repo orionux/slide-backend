@@ -235,7 +235,7 @@ const UserTable = () => {
   }
 
   const transformData = (data: Customer[]): Row[] => {
-    console.log(data)
+    // console.log(data)
     return data.map(item => ({
       id: item.id.toString(),
       name: item.customer_details.name,

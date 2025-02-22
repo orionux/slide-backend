@@ -7,7 +7,7 @@ import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow, { TableRowProps } from '@mui/material/TableRow'
 import TableCell, { TableCellProps, tableCellClasses } from '@mui/material/TableCell'
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import {
   Checkbox,
   Dialog,
@@ -27,6 +27,8 @@ import React from 'react'
 import { FaUserLarge, FaUserPen, FaUserMinus } from 'react-icons/fa6'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
+import { getAllSubAdmins } from 'src/pages/api/userManagementAPI'
+import { useAuth } from 'src/@core/context/AuthContext'
 
 interface OrderStatus {
   projectName: string
@@ -34,19 +36,76 @@ interface OrderStatus {
   status: string
 }
 
-interface RowData {
-  id: string
-  fullname: string
+// interface RowData {
+//   id: string
+//   fullname: string
+//   email: string
+//   phoneNumber: string
+//   actionStatus: string
+//   gender?: string
+// }
+
+interface SubAdmin {
+  id: number
   email: string
-  phoneNumber: string
-  gender: string
-  state: string
-  profileImage: string
-  orderStatus: OrderStatus[]
+  email_verified_at: string | null
+  role: string
+  otp: string | null
+  status: string
+  created_at: string
+  updated_at: string
+  deleted_at: string | null
+  sub_admin_details: {
+    id: number
+    user_id: number
+    name: string
+    phone_no: string
+    gender: string | null
+    state: string | null
+    company_name: string | null
+    vat_number: string | null
+    billing_address: string | null
+    location: string | null
+    created_at: string
+    updated_at: string
+    deleted_at: string | null
+  }
 }
 
-const createData = (id: string, fullname: string, email: string, phoneNumber: string, gender: string, state: string, profileImage: string, orderStatus: OrderStatus[]) => {
-  return { id, fullname, email, phoneNumber, gender, state, profileImage, orderStatus }
+interface Row {
+  id: string
+  name: string
+  email: string
+  phone: string
+  status: string
+  gender: string
+  state?: string | null
+  company_name?: string | null
+  vat_number?: string | null
+  billing_address?: string | null
+  location?: string | null
+}
+
+// interface RowData {
+//   id: string
+//   fullname: string
+//   email: string
+//   phoneNumber: string
+//   gender: string
+//   state: string
+//   profileImage: string
+//   orderStatus: OrderStatus[]
+// }
+
+const createData = (
+  id: string,
+  fullname: string,
+  email: string,
+  phoneNumber: string,
+  actionStatus: string,
+  gender?: string
+) => {
+  return { id, fullname, email, phoneNumber, actionStatus, gender: gender || '' }
 }
 
 const StyledTableCell = styled(TableCell)<TableCellProps>(({ theme }) => ({
@@ -70,43 +129,48 @@ const StyledTableRow = styled(TableRow)<TableRowProps>(({ theme }) => ({
   }
 }))
 
-const rows: RowData[] = [
-  createData('1', 'John Doe', 'john@example.com', '0123654789', 'Male', 'Califonia', '/images/admin/sub-admin-avatar.png', [
-    { projectName: 'Project 1', duration: '10 days', status: 'Review' },
-    { projectName: 'Project 2', duration: '5 days', status: 'Review' },
-    { projectName: 'Project 8', duration: '0 days', status: 'Completed' },
-  ]),
-  createData('2', 'Jane Smith', 'jane@example.com', '0123654789', 'Female', 'Sidny', '/images/admin/4.png', [
-    { projectName: 'Project 3', duration: '15 days', status: 'Preparing' },
-    { projectName: 'Project 9', duration: '0 days', status: 'Completed' },
-    { projectName: 'Project 10', duration: '0 days', status: 'Terminated' },
-  ]),
-  createData('3', 'Alice Johnson', 'alice@example.com', '0123654789', 'Male', 'New York', '/images/admin/7.png', [
-    { projectName: 'Project 4', duration: '3 days', status: 'Review' },
-    { projectName: 'Project 5', duration: '0 days', status: 'Terminated' },
-    { projectName: 'Project 6', duration: '7 days', status: 'Preparing' },
-    { projectName: 'Project 7', duration: '10 days', status: 'Review' },
-    { projectName: 'Project 11', duration: '0 days', status: 'Completed' },
-  ])
-]
+// const rows: RowData[] = [
+//   createData('1', 'John Doe', 'john@example.com', '0123654789', 'Male', 'Califonia', '/images/admin/sub-admin-avatar.png', [
+//     { projectName: 'Project 1', duration: '10 days', status: 'Review' },
+//     { projectName: 'Project 2', duration: '5 days', status: 'Review' },
+//     { projectName: 'Project 8', duration: '0 days', status: 'Completed' },
+//   ]),
+//   // createData('2', 'Jane Smith', 'jane@example.com', '0123654789', 'Female', 'Sidny', '/images/admin/4.png', [
+//   //   { projectName: 'Project 3', duration: '15 days', status: 'Preparing' },
+//   //   { projectName: 'Project 9', duration: '0 days', status: 'Completed' },
+//   //   { projectName: 'Project 10', duration: '0 days', status: 'Terminated' },
+//   // ]),
+//   // createData('3', 'Alice Johnson', 'alice@example.com', '0123654789', 'Male', 'New York', '/images/admin/7.png', [
+//   //   { projectName: 'Project 4', duration: '3 days', status: 'Review' },
+//   //   { projectName: 'Project 5', duration: '0 days', status: 'Terminated' },
+//   //   { projectName: 'Project 6', duration: '7 days', status: 'Preparing' },
+//   //   { projectName: 'Project 7', duration: '10 days', status: 'Review' },
+//   //   { projectName: 'Project 11', duration: '0 days', status: 'Completed' },
+//   // ])
+// ]
 
 const SubAdminTable = () => {
+  const [rows, setRows] = useState<Row[]>([])
   const [openDialogViewUser, setOpenDialogViewUser] = useState(false)
   const [openDialogEditUser, setOpenDialogEditUser] = useState(false)
   const [openDialogDeleteUser, setOpenDialogDeleteUser] = useState(false)
-  const [selectedRow, setSelectedRow] = useState<RowData | null>(null)
+  const [selectedRow, setSelectedRow] = useState<Row | null>(null)
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
   const [value, setValue] = useState<string>('1')
   const [openSubAdmin, setOpenSubAdmin] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  console.log("sub admin data: ",rows)
+
+  const { apiConfig } = useAuth()
+
+  // console.log("sub admin data: ",rows)
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
 
   // view model
-  const handleViewUser = (row: RowData, index: number) => {
+  const handleViewUser = (row: Row, index: number) => {
     setOpenDialogViewUser(true)
     setSelectedRow(row)
     setSelectedRowIndex(index)
@@ -118,7 +182,7 @@ const SubAdminTable = () => {
   }
 
   // edit model
-  const handleEditUser = (row: RowData, index: number) => {
+  const handleEditUser = (row: Row, index: number) => {
     setOpenDialogEditUser(true)
     setSelectedRow(row)
     setSelectedRowIndex(index)
@@ -141,15 +205,15 @@ const SubAdminTable = () => {
   };
 
   const handleSave = () => {
-    if (selectedRow && selectedRowIndex !== null) {
-      rows[selectedRowIndex] = selectedRow;
-      console.log("Updated rows:", rows);
-    }
+    // if (selectedRow && selectedRowIndex !== null) {
+    //   rows[selectedRowIndex] = selectedRow;
+    //   console.log("Updated rows:", rows);
+    // }
     handleCloseEditDialog();
   };
 
   //delete model
-  const handleDeleteUser = (row: RowData, index: number) => {
+  const handleDeleteUser = (row: Row, index: number) => {
     setOpenDialogDeleteUser(true)
     setSelectedRow(row)
     setSelectedRowIndex(index)
@@ -169,53 +233,54 @@ const SubAdminTable = () => {
     setOpenSubAdmin(false)
   }
 
-  interface SubAdmin {
-    fullname: string;
-    gender: string;
-    email: string;
-    phoneNumber: string;
-    state: string;
-    profileImage: string;
-  }
+  // interface SubAdmin {
+  //   fullname: string;
+  //   gender: string;
+  //   email: string;
+  //   phoneNumber: string;
+  //   state: string;
+  //   profileImage: string;
+  // }
   
   const [subAdminData, setSubAdminData] = useState<SubAdmin[]>([]);
-  const [formData, setFormData] = useState<SubAdmin>({
-    fullname: '',
+  const [formData, setFormData] = useState<Row>({
+    id: '',
+    name: '',
     gender: '',
     email: '',
-    phoneNumber: '',
+    phone: '',
     state: '',
-    profileImage: '' ,
-
+    status: ''
+    // profileImage: '' ,
   });
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
 const handleInputChangeSub = (e: { target: { name: any; value: any } }) => {
-  const { name, value } = e.target;
-  setFormData({
-    ...formData,
-    [name]: value
-  });
+  // const { name, value } = e.target;
+  // setFormData({
+  //   ...formData,
+  //   [name]: value
+  // });
 }
 
 const handleAddSubAdmin = () => {
-  setSubAdminData([...subAdminData, formData]);
-  console.log([...subAdminData, formData]);
+  // setSubAdminData([...subAdminData, formData]);
+  // console.log([...subAdminData, formData]);
   handleCloseSubAdmin();
 }
 
 const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        profileImage: reader.result as string
-      }));
-    };
-    reader.readAsDataURL(file);
-  }
+  // const file = event.target.files?.[0];
+  // if (file) {
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setFormData(prevFormData => ({
+  //       ...prevFormData,
+  //       profileImage: reader.result as string
+  //     }));
+  //   };
+  //   reader.readAsDataURL(file);
+  // }
 };
 
 const handleImageClick = () => {
@@ -224,7 +289,60 @@ const handleImageClick = () => {
 
 
 
+const fetchSubAdmins = async () => {
+  setLoading(true)
+  // console.log(apiConfig);
 
+  const result = await getAllSubAdmins(apiConfig)
+
+  if (result.responseType === 'success') {
+    updateRows(result?.output?.data)
+
+    console.log(result?.output?.data)
+
+    // setLoading(false)
+  } else if (result.responseType === 'fail') {
+    setLoading(false)
+    // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+  } else if (result.responseType === 'error') {
+    setLoading(false)
+    // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+  }
+}
+
+
+
+
+
+const updateRows = (data: SubAdmin[]) => {
+  const transformedData = transformData(data)
+  setRows(transformedData)
+}
+
+const transformData = (data: SubAdmin[]): Row[] => {
+  // console.log(data)
+  return data.map(item => ({
+    id: item.id.toString(),
+    name: item.sub_admin_details.name,
+    email: item.email,
+    phone: item.sub_admin_details.phone_no,
+    status: item.status,
+    gender: item.sub_admin_details.gender || 'Male',
+    state: item.sub_admin_details.state,
+    company_name: item.sub_admin_details.company_name,
+    vat_number: item.sub_admin_details.vat_number,
+    billing_address: item.sub_admin_details.billing_address,
+    location: item.sub_admin_details.location
+  }))
+}
+
+
+
+
+
+useEffect(() => {
+  fetchSubAdmins()
+}, [])
 
 
   return (
@@ -245,11 +363,11 @@ const handleImageClick = () => {
               <Grid container spacing={5} style={{ marginBottom: 20 }}>
                 <Grid item xs={12} sm={4}>
                   <Card sx={{ backgroundColor: '#263238' }}>
-                  <CardMedia
+                  {/* <CardMedia
                       sx={{ height: '14.5625rem', cursor: 'pointer' }}
                       image={formData.profileImage || '/images/avatars/3.png'}
                       onClick={handleImageClick}
-                    />
+                    /> */}
                      <input
                       id="profileImageInput"
                       type="file"
@@ -262,11 +380,11 @@ const handleImageClick = () => {
                         EMP : {selectedRow && selectedRow.id}
                       </Typography>
                       <Typography variant='h6' sx={{ marginBottom: 2, color: '#ffffff' }}>
-                        {selectedRow && selectedRow.fullname}
+                        {selectedRow && selectedRow.name}
                       </Typography>
                       <Rating readOnly value={5} name='read-only' sx={{ marginRight: 2 }} />
                       <Typography variant='body2' sx={{ color: '#ffffff' }}>
-                        {selectedRow && selectedRow.orderStatus.length} Projects
+                        {/* {selectedRow && selectedRow.orderStatus.length} Projects */}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -277,7 +395,7 @@ const handleImageClick = () => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' name='fullname' value={formData.fullname} onChange={handleInputChangeSub} />
+                      <TextField fullWidth label='Full Name' name='fullname' value={formData.name} onChange={handleInputChangeSub} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField fullWidth label='Gender' name='gender' value={formData.gender} onChange={handleInputChangeSub}/>
@@ -288,7 +406,7 @@ const handleImageClick = () => {
                       <TextField fullWidth label='Email' name='email' value={formData.email} onChange={handleInputChangeSub} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={formData.phoneNumber} onChange={handleInputChangeSub} />
+                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={formData.phone} onChange={handleInputChangeSub} />
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
@@ -308,7 +426,7 @@ const handleImageClick = () => {
                       </TabList>
                       <CardContent>
                         <TabPanel value='1' sx={{ p: 0 }}>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
                             {selectedRow &&
                               selectedRow.orderStatus
                                 .filter(status => status.status !== 'Terminated' && status.status !== 'Completed')
@@ -345,10 +463,10 @@ const handleImageClick = () => {
                                     </div>
                                   </div>
                                 ))}
-                          </div>
+                          </div> */}
                         </TabPanel>
                         <TabPanel value='2' sx={{ p: 0 }}>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
                             {selectedRow &&
                               selectedRow.orderStatus
                                 .filter(status => status.status === 'Terminated' || status.status === 'Completed')
@@ -389,7 +507,7 @@ const handleImageClick = () => {
                                     </div>
                                   </div>
                                 ))}
-                          </div>
+                          </div> */}
                         </TabPanel>
                       </CardContent>
                     </TabContext>
@@ -427,7 +545,7 @@ const handleImageClick = () => {
                   <Checkbox checked={selectedRowIndex === index} readOnly /> {row.id}
                 </StyledTableCell>
                 <StyledTableCell align='left' style={{ position: 'relative' }}>
-                  {row.fullname}
+                  {row.name}
                   <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <Button
                       onClick={() => handleViewUser(row, index)}
@@ -477,9 +595,9 @@ const handleImageClick = () => {
                   </div>
                 </StyledTableCell>
                 <StyledTableCell align='left'>{row.email}</StyledTableCell>
-                <StyledTableCell align='left'>{row.phoneNumber}</StyledTableCell>
+                <StyledTableCell align='left'>{row.phone}</StyledTableCell>
                 <StyledTableCell align='left'>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
                     {row.orderStatus
                       .filter(status => status.status !== 'Terminated' && status.status !== 'Completed')
                       .map((status, statusIndex) => (
@@ -515,7 +633,7 @@ const handleImageClick = () => {
                           </div>
                         </div>
                       ))}
-                  </div>
+                  </div> */}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -535,17 +653,17 @@ const handleImageClick = () => {
             <Grid container spacing={5} style={{ marginBottom: 20 }}>
               <Grid item xs={12} sm={4}>
                 <Card sx={{ backgroundColor: '#263238' }}>
-                  <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} />
+                  {/* <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} /> */}
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
                     <Typography variant='body2' sx={{ color: '#ffffff' }}>
                       EMP : {selectedRow && selectedRow.id}
                     </Typography>
                     <Typography variant='h6' sx={{ marginBottom: 2, color: '#ffffff' }}>
-                      {selectedRow && selectedRow.fullname}
+                      {selectedRow && selectedRow.name}
                     </Typography>
                     <Rating readOnly value={5} name='read-only' sx={{ marginRight: 2 }} />
                     <Typography variant='body2' sx={{ color: '#ffffff' }}>
-                      {selectedRow && selectedRow.orderStatus.length} Projects
+                      {/* {selectedRow && selectedRow.orderStatus.length} Projects */}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -556,7 +674,7 @@ const handleImageClick = () => {
                 </Typography>
                 <Grid container spacing={5} style={{ marginBottom: 20 }}>
                   <Grid item xs={12} sm={6}>
-                    <TextField fullWidth label='Full Name' placeholder='' value={selectedRow && selectedRow.fullname} />
+                    <TextField fullWidth label='Full Name' placeholder='' value={selectedRow && selectedRow.name} />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField fullWidth label='Gender' placeholder='' value={selectedRow && selectedRow.gender} />
@@ -567,7 +685,7 @@ const handleImageClick = () => {
                     <TextField fullWidth label='Email' placeholder='' value={selectedRow && selectedRow.email} />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField fullWidth label='Phone Number' placeholder='' value={selectedRow && selectedRow.phoneNumber} />
+                    <TextField fullWidth label='Phone Number' placeholder='' value={selectedRow && selectedRow.phone} />
                   </Grid>
                 </Grid>
                 <Grid container spacing={5} style={{ marginBottom: 20 }}>
@@ -587,7 +705,7 @@ const handleImageClick = () => {
                     </TabList>
                     <CardContent>
                       <TabPanel value='1' sx={{ p: 0 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
                           {selectedRow &&
                             selectedRow.orderStatus
                               .filter(status => status.status !== 'Terminated' && status.status !== 'Completed')
@@ -624,10 +742,10 @@ const handleImageClick = () => {
                                   </div>
                                 </div>
                               ))}
-                        </div>
+                        </div> */}
                       </TabPanel>
                       <TabPanel value='2' sx={{ p: 0 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
                           {selectedRow &&
                             selectedRow.orderStatus
                               .filter(status => status.status === 'Terminated' || status.status === 'Completed')
@@ -668,7 +786,7 @@ const handleImageClick = () => {
                                   </div>
                                 </div>
                               ))}
-                        </div>
+                        </div> */}
                       </TabPanel>
                     </CardContent>
                   </TabContext>
@@ -692,17 +810,17 @@ const handleImageClick = () => {
               <Grid container spacing={5} style={{ marginBottom: 20 }}>
                 <Grid item xs={12} sm={4}>
                   <Card sx={{ backgroundColor: '#263238' }}>
-                    <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} />
+                    {/* <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} /> */}
                     <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
                       <Typography variant='body2' sx={{ color: '#ffffff' }}>
                         EMP : {selectedRow && selectedRow.id}
                       </Typography>
                       <Typography variant='h6' sx={{ marginBottom: 2, color: '#ffffff' }}>
-                        {selectedRow && selectedRow.fullname}
+                        {selectedRow && selectedRow.name}
                       </Typography>
                       <Rating readOnly value={5} name='read-only' sx={{ marginRight: 2 }} />
                       <Typography variant='body2' sx={{ color: '#ffffff' }}>
-                        {selectedRow && selectedRow.orderStatus.length} Projects
+                        {/* {selectedRow && selectedRow.orderStatus.length} Projects */}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -713,7 +831,7 @@ const handleImageClick = () => {
                   </Typography>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.fullname} onChange={handleInputChange}/>
+                      <TextField fullWidth label='Full Name' name='fullname' value={selectedRow && selectedRow.name} onChange={handleInputChange}/>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField fullWidth label='Gender' name='gender' value={selectedRow && selectedRow.gender} onChange={handleInputChange} />
@@ -724,7 +842,7 @@ const handleImageClick = () => {
                       <TextField fullWidth label='Email' name='email' value={selectedRow && selectedRow.email} onChange={handleInputChange} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phoneNumber}  onChange={handleInputChange}/>
+                      <TextField fullWidth label='Phone Number' name='phoneNumber' value={selectedRow && selectedRow.phone}  onChange={handleInputChange}/>
                     </Grid>
                   </Grid>
                   <Grid container spacing={5} style={{ marginBottom: 20 }}>
@@ -744,7 +862,7 @@ const handleImageClick = () => {
                       </TabList>
                       <CardContent>
                         <TabPanel value='1' sx={{ p: 0 }}>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
                             {selectedRow &&
                               selectedRow.orderStatus
                                 .filter(status => status.status !== 'Terminated' && status.status !== 'Completed')
@@ -781,10 +899,10 @@ const handleImageClick = () => {
                                     </div>
                                   </div>
                                 ))}
-                          </div>
+                          </div> */}
                         </TabPanel>
                         <TabPanel value='2' sx={{ p: 0 }}>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          {/* <div style={{ display: 'flex', flexDirection: 'column' }}>
                             {selectedRow &&
                               selectedRow.orderStatus
                                 .filter(status => status.status === 'Terminated' || status.status === 'Completed')
@@ -825,7 +943,7 @@ const handleImageClick = () => {
                                     </div>
                                   </div>
                                 ))}
-                          </div>
+                          </div> */}
                         </TabPanel>
                       </CardContent>
                     </TabContext>
@@ -852,17 +970,17 @@ const handleImageClick = () => {
             <Grid container spacing={5} style={{ marginBottom: 20 }}>
               <Grid item xs={12} sm={4}>
                 <Card sx={{ backgroundColor: '#263238' }}>
-                  <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} />
+                  {/* <CardMedia sx={{ height: '14.5625rem' }} image={selectedRow?.profileImage} /> */}
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
                     <Typography variant='body2' sx={{ color: '#ffffff' }}>
                       EMP : {selectedRow && selectedRow.id}
                     </Typography>
                     <Typography variant='h6' sx={{ marginBottom: 2, color: '#ffffff' }}>
-                      {selectedRow && selectedRow.fullname}
+                      {selectedRow && selectedRow.name}
                     </Typography>
                     <Rating readOnly value={5} name='read-only' sx={{ marginRight: 2 }} />
                     <Typography variant='body2' sx={{ color: '#ffffff' }}>
-                      {selectedRow && selectedRow.orderStatus.length} Projects
+                      {/* {selectedRow && selectedRow.orderStatus.length} Projects */}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -873,7 +991,7 @@ const handleImageClick = () => {
                 </Typography>
                 <Grid container spacing={5} style={{ marginBottom: 20 }}>
                   <Grid item xs={12} sm={6}>
-                    <TextField fullWidth label='Full Name' placeholder='' value={selectedRow && selectedRow.fullname} />
+                    <TextField fullWidth label='Full Name' placeholder='' value={selectedRow && selectedRow.name} />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField fullWidth label='Gender' placeholder='' value={selectedRow && selectedRow.gender} />
@@ -884,7 +1002,7 @@ const handleImageClick = () => {
                     <TextField fullWidth label='Email' placeholder='' value={selectedRow && selectedRow.email} />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField fullWidth label='Phone Number' placeholder='' value={selectedRow && selectedRow.phoneNumber} />
+                    <TextField fullWidth label='Phone Number' placeholder='' value={selectedRow && selectedRow.phone} />
                   </Grid>
                 </Grid>
                 <Grid container spacing={5} style={{ marginBottom: 20 }}>
