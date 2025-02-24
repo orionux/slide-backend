@@ -45,14 +45,6 @@ interface OrderStatus {
   status: string
 }
 
-// interface RowData {
-//   id: string
-//   fullname: string
-//   email: string
-//   phoneNumber: string
-//   actionStatus: string
-//   gender?: string
-// }
 
 interface SubAdmin {
   id: number
@@ -159,26 +151,6 @@ const StyledTableRow = styled(TableRow)<TableRowProps>(({ theme }) => ({
   }
 }))
 
-// const rows: RowData[] = [
-//   createData('1', 'John Doe', 'john@example.com', '0123654789', 'Male', 'Califonia', '/images/admin/sub-admin-avatar.png', [
-//     { projectName: 'Project 1', duration: '10 days', status: 'Review' },
-//     { projectName: 'Project 2', duration: '5 days', status: 'Review' },
-//     { projectName: 'Project 8', duration: '0 days', status: 'Completed' },
-//   ]),
-//   // createData('2', 'Jane Smith', 'jane@example.com', '0123654789', 'Female', 'Sidny', '/images/admin/4.png', [
-//   //   { projectName: 'Project 3', duration: '15 days', status: 'Preparing' },
-//   //   { projectName: 'Project 9', duration: '0 days', status: 'Completed' },
-//   //   { projectName: 'Project 10', duration: '0 days', status: 'Terminated' },
-//   // ]),
-//   // createData('3', 'Alice Johnson', 'alice@example.com', '0123654789', 'Male', 'New York', '/images/admin/7.png', [
-//   //   { projectName: 'Project 4', duration: '3 days', status: 'Review' },
-//   //   { projectName: 'Project 5', duration: '0 days', status: 'Terminated' },
-//   //   { projectName: 'Project 6', duration: '7 days', status: 'Preparing' },
-//   //   { projectName: 'Project 7', duration: '10 days', status: 'Review' },
-//   //   { projectName: 'Project 11', duration: '0 days', status: 'Completed' },
-//   // ])
-// ]
-
 const SubAdminTable = () => {
   const [rows, setRows] = useState<Row[]>([])
   const [openDialogViewUser, setOpenDialogViewUser] = useState(false)
@@ -196,9 +168,8 @@ const SubAdminTable = () => {
   
 
 
-  const { apiConfig } = useAuth()
+  const { apiConfig , isAuthenticated } = useAuth()
 
-  // console.log("sub admin data: ",rows)
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)
@@ -241,10 +212,6 @@ const SubAdminTable = () => {
   };
 
   const handleSave = () => {
-    // if (selectedRow && selectedRowIndex !== null) {
-    //   rows[selectedRowIndex] = selectedRow;
-    //   // console.log("Updated row:", selectedRow);
-    // }
 
 if (selectedRow) {
   const formDataToSubmit: FormDataUpdate = {
@@ -295,27 +262,6 @@ if (selectedRow) {
     setOpenSubAdmin(false)
   }
 
-  // interface SubAdmin {
-  //   fullname: string;
-  //   gender: string;
-  //   email: string;
-  //   phoneNumber: string;
-  //   state: string;
-  //   profileImage: string;
-  // }
-
-
-  // const [subAdminData, setSubAdminData] = useState<SubAdmin[]>([]);
-  // const [formData, setFormData] = useState<Row>({
-  //   id: '',
-  //   name: '',
-  //   gender: '',
-  //   email: '',
-  //   phone: '',
-  //   state: '',
-  //   status: ''
-  //   // profileImage: '' ,
-  // });
 
   // State for form data
   const [formData, setFormData] = useState<FormData>({
@@ -552,7 +498,10 @@ const fetchSubAdmins = async () => {
 
 
   useEffect(() => {
-    fetchSubAdmins()
+    if (isAuthenticated) {
+
+      fetchSubAdmins()
+    }
   }, [apiConfig])
 
 

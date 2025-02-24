@@ -10,3 +10,10 @@ export interface GetServicesResponse {
     total?: number;
     status?: string;
 }
+
+export interface AddService {
+    service_id: string;
+    featured_image?: File;
+    name?: string;
+    description?: string;
+}

@@ -11,7 +11,7 @@ import { Checkbox, Dialog, DialogContent, DialogActions, Button, CardContent, Gr
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useAuth } from 'src/@core/context/AuthContext';
 import { enqueueSnackbar } from 'notistack';
-import { getAllServices } from 'src/pages/api/ServiceManagement';
+import { addServiceApi, getAllServices } from 'src/pages/api/ServiceManagement';
 
 // interface RowData {
 //   service_id: string;
@@ -21,6 +21,7 @@ import { getAllServices } from 'src/pages/api/ServiceManagement';
 // }
 interface Row {
   id: string;
+  service_id: string;
   featured_image: string;
   name: string;
   description: string;
@@ -61,10 +62,24 @@ const ServiceTable = () => {
   // const [rows, setRows] = useState<RowData[]>(initialRows);
   const [rows, setRows] = useState<Row[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [addReqBody, setAddReqBody] = useState<Row | null>(null);
+  const [updateReqBody, setUpdateReqBody] = useState<Row | null>(null);
   const [selectedRow, setSelectedRow] = useState<Row | null>(null);
+  const [addService, setAddService] = useState<Row | null>(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+  const [addLoading, setAddLoading] = useState(false);
 
-  const { apiConfig } = useAuth()
+  const { apiConfig, isAuthenticated } = useAuth()
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageUpdate, setSelectedImageUpdate] = useState<string | null>(null);
+
+const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file) {
+    setSelectedImage(URL.createObjectURL(file));
+  }
+};
 
   const handleCheckboxClick = (row: Row, index: number) => {
     setOpenDialog(true);
@@ -77,28 +92,52 @@ const ServiceTable = () => {
     setSelectedRow(null);
     setSelectedRowIndex(null);
   };
+  const handleCloseAddDialog = () => {
+    setOpenAddDialog(false);
+  };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChangeAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    if (selectedRow) {
-      setSelectedRow((prevState) => ({
+    if (setAddReqBody) {
+      setAddReqBody((prevState) => ({
+        ...prevState!,
+        [name]: value,
+      }));
+    }
+  };
+  const handleInputChangeUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (setUpdateReqBody) {
+      setUpdateReqBody((prevState) => ({
         ...prevState!,
         [name]: value,
       }));
     }
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0] && selectedRow) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        setSelectedRow((prevState) => ({
-          ...prevState!,
-          service_image: imageUrl,
-        }));
-      };
-      reader.readAsDataURL(event.target.files[0]);
+  const handleImageUploadAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+      setAddReqBody((prevState) => ({
+        ...prevState!,
+        image: file,
+      }));
+    }
+  };
+  const handleImageUploadUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // setSelectedImage(URL.createObjectURL(file)); // Preview the image
+      // setSelectedImage(URL.createObjectURL(file)); // Preview the image
+      setSelectedRow((prevState)=>({
+        ...prevState!,
+        featured_image: (URL.createObjectURL(file)),
+      }));
+      setUpdateReqBody((prevState) => ({
+        ...prevState!,
+        image: file, // Store the file object
+      }));
     }
   };
 
@@ -111,20 +150,26 @@ const ServiceTable = () => {
     // }
     // handleCloseDialog();
   };
+  const handleSubmitAdd = () => {
+    // console.log(addReqBody)
+    handleAddService(addReqBody)
+
+  };
 
   const handleAddNewService = () => {
-    const lastServiceId = rows[rows.length - 1].service_id;
-    const newServiceIdNumber = parseInt(lastServiceId.replace('#S', '')) + 1;
-    const newServiceId = `#S${newServiceIdNumber.toString().padStart(3, '0')}`;
+    setOpenAddDialog(true)
+    // const lastServiceId = rows[rows.length - 1].service_id;
+    // const newServiceIdNumber = parseInt(lastServiceId.replace('#S', '')) + 1;
+    // const newServiceId = `#S${newServiceIdNumber.toString().padStart(3, '0')}`;
 
-    const newService = createData(
-      newServiceId,
-      'New Service',
-      'Description of new service',
-      '/images/services/Pattern.png'
-    );
+    // const newService = createData(
+    //   newServiceId,
+    //   'New Service',
+    //   'Description of new service',
+    //   '/images/services/Pattern.png'
+    // );
 
-    setRows([...rows, newService]);
+    // setRows([...rows, newService]);
   };
 
 
@@ -138,10 +183,6 @@ const ServiceTable = () => {
     if (result.responseType === 'success') {
       // updateRows(result?.output?.data)
       setRows(result?.output?.data)
-
-      console.log(result?.output?.data);
-      
-
       // setLoading(false)
     } else if (result.responseType === 'fail') {
       // setLoading(false)
@@ -152,9 +193,33 @@ const ServiceTable = () => {
     }
   }
 
+  const handleAddService = async (formData: any) => {
+    setAddLoading(true)
+    const result = await addServiceApi(formData, apiConfig)
+  
+    if (result.responseType === 'success') {
+      fetchServices();
+      setOpenAddDialog(false)
+      setAddLoading(false)
+      setSelectedImage(null)
+      enqueueSnackbar('Services added successful!', { variant: 'success' });
+      // handleCloseSubAdmin();
+      // fetchSubAdmins()
+    } else if (result.responseType === 'fail') {
+      setAddLoading(false)
+      enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      setAddLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  
+  }
+
   useEffect(() => {
-    fetchServices();
-  }, [])
+    if (isAuthenticated) {
+      fetchServices();
+    }
+  }, [apiConfig])
 
 
   return (
@@ -216,6 +281,135 @@ const ServiceTable = () => {
         </Table>
       </TableContainer>
 
+
+      {/* add service dialog  */}
+      <Dialog open={openAddDialog} onClose={handleCloseAddDialog} maxWidth="xl">
+        <DialogActions>
+          <Button onClick={handleCloseAddDialog}>
+            <AiOutlineCloseCircle style={{ fontSize: "25px" }} />
+          </Button>
+        </DialogActions>
+        <DialogContent style={{ maxWidth: "1000px" }}>
+          <CardContent>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <Grid container spacing={5} style={{ marginBottom: 20 }}>
+                {/* Image Upload Section */}
+                <Grid item xs={12} sm={3} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  {/* Image Preview Box */}
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "200px",
+                      border: "2px dashed #455A64",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "10px",
+                      backgroundColor: "#f4f4f4",
+                    }}
+                  >
+                    {selectedImage ? (
+                      <img
+                        src={selectedImage}
+                        alt="Preview"
+                        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                      />
+                    ) : (
+                      <Typography variant="body2" color="textSecondary">
+                        No Image Selected
+                      </Typography>
+                    )}
+                  </div>
+
+                  {/* Hidden File Input */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    id="image-upload"
+                    onChange={handleImageUploadAdd}
+                  />
+                  <label htmlFor="image-upload">
+                    <Button
+                      variant="contained"
+                      size="large"
+                      style={{ backgroundColor: "#455A64", color: "#ffffff" }}
+                      component="span"
+                    >
+                      Add Image
+                    </Button>
+                  </label>
+                </Grid>
+
+                {/* Service Info Section */}
+                <Grid item xs={12} sm={9}>
+                  <Typography variant="h6" sx={{ marginBottom: "20px", color: "#455A64" }}>
+                    Service Info
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    label="Service ID"
+                    name="service_id"
+                    // value={selectedRow?.id || ""}
+                    onChange={handleInputChangeAdd}
+                    style={{ marginBottom: "25px" }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Service Name"
+                    name="name"
+                    // value={selectedRow?.name || ""}
+                    onChange={handleInputChangeAdd}
+                    style={{ marginBottom: "25px" }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Service Description"
+                    name="description"
+                    // value={selectedRow?.description || ""}
+                    onChange={handleInputChangeAdd}
+                    style={{ marginBottom: "25px" }}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* Action Buttons */}
+              <Grid
+                container
+                spacing={5}
+                style={{ marginBottom: 20, display: "flex", flexDirection: "row", justifyContent: "end" }}
+              >
+                <Button
+                  type="button"
+                  variant="contained"
+                  size="large"
+                  onClick={handleCloseAddDialog}
+                  style={{
+                    marginRight: "20px",
+                    backgroundColor: "#FFF",
+                    color: "#455A64",
+                    border: "solid 1px #455A64",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  variant="contained"
+                  size="large"
+                  onClick={handleSubmitAdd}
+                  style={{ backgroundColor: "#57EBB7", color: "#455A64" }}
+                >
+                  Submit
+                </Button>
+              </Grid>
+            </form>
+          </CardContent>
+        </DialogContent>
+      </Dialog>
+
+
+        {/* Update service dialog  */}    
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth='xl'>
         <DialogActions>
           <Button onClick={handleCloseDialog}>
@@ -233,7 +427,7 @@ const ServiceTable = () => {
                     accept='image/*'
                     style={{ display: 'none' }}
                     id='image-upload'
-                    onChange={handleImageUpload}
+                    onChange={handleImageUploadUpdate}
                   />
                   <label htmlFor='image-upload'>
                     <Button variant='contained' size='large' style={{ backgroundColor: '#455A64', color: '#ffffff' }} component='span'>
@@ -245,23 +439,26 @@ const ServiceTable = () => {
                   <Typography variant='h6' sx={{ marginBottom: '20px', color: '#455A64' }}>
                     Service Info
                   </Typography>
-                  <TextField fullWidth label='Service ID' name='service_id' value={selectedRow?.id || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
-                  <TextField fullWidth label='Service Name' name='service_name' value={selectedRow?.name || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
-                  <TextField fullWidth label='Service Description' name='service_desc' value={selectedRow?.description || ''} onChange={handleInputChange} style={{ marginBottom: '25px' }} />
-                </Grid>
+                  <TextField fullWidth label='Service ID' name='service_id' value={selectedRow?.id} onChange={handleInputChangeUpdate} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service Name' name='name' value={selectedRow?.name} onChange={handleInputChangeUpdate} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service Description' name='description' value={selectedRow?.description} onChange={handleInputChangeUpdate} style={{ marginBottom: '25px' }} />
+                </Grid>     
               </Grid>
               <Grid container spacing={5} style={{ marginBottom: 20, display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
                 <Button type='button' variant='contained' size='large' onClick={handleCloseDialog} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
                   Cancel
                 </Button>
                 <Button type='button' variant='contained' size='large' onClick={handleSubmit} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
-                  Submit
+                  Update
                 </Button>
               </Grid>
             </form>
           </CardContent>
         </DialogContent>
       </Dialog>
+
+      
+
     </>
   );
 };
