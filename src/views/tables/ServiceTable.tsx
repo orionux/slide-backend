@@ -11,7 +11,7 @@ import { Checkbox, Dialog, DialogContent, DialogActions, Button, CardContent, Gr
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useAuth } from 'src/@core/context/AuthContext';
 import { enqueueSnackbar } from 'notistack';
-import { addServiceApi, getAllServices } from 'src/pages/api/ServiceManagement';
+import { addServiceApi, getAllServices, updateServiceApi } from 'src/pages/api/ServiceManagement';
 
 // interface RowData {
 //   service_id: string;
@@ -23,6 +23,13 @@ interface Row {
   id: string;
   service_id: string;
   featured_image: string;
+  name: string;
+  description: string;
+}
+interface RowUpdated {
+  id: string;
+  service_id: string;
+  featured_image: File;
   name: string;
   description: string;
 }
@@ -64,27 +71,30 @@ const ServiceTable = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [addReqBody, setAddReqBody] = useState<Row | null>(null);
-  const [updateReqBody, setUpdateReqBody] = useState<Row | null>(null);
+  const [updateReqBody, setUpdateReqBody] = useState<RowUpdated | null>(null);
   const [selectedRow, setSelectedRow] = useState<Row | null>(null);
   const [addService, setAddService] = useState<Row | null>(null);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const [addLoading, setAddLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { apiConfig, isAuthenticated } = useAuth()
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedImageUpdate, setSelectedImageUpdate] = useState<string | null>(null);
 
-const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    setSelectedImage(URL.createObjectURL(file));
-  }
-};
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+    }
+  };
 
   const handleCheckboxClick = (row: Row, index: number) => {
     setOpenDialog(true);
     setSelectedRow(row);
     setSelectedRowIndex(index);
+
   };
 
   const handleCloseDialog = () => {
@@ -107,8 +117,14 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
   };
   const handleInputChangeUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    if (setUpdateReqBody) {
-      setUpdateReqBody((prevState) => ({
+    // if (setUpdateReqBody) {
+    //   setUpdateReqBody((prevState) => ({
+    //     ...prevState!,
+    //     [name]: value,
+    //   }));
+    // }
+    if (selectedRow) {
+      setSelectedRow((prevState) => ({
         ...prevState!,
         [name]: value,
       }));
@@ -130,18 +146,19 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (file) {
       // setSelectedImage(URL.createObjectURL(file)); // Preview the image
       // setSelectedImage(URL.createObjectURL(file)); // Preview the image
-      setSelectedRow((prevState)=>({
+      setSelectedRow((prevState) => ({
         ...prevState!,
         featured_image: (URL.createObjectURL(file)),
+        // featured_image: file,
       }));
       setUpdateReqBody((prevState) => ({
         ...prevState!,
-        image: file, // Store the file object
+        featured_image: file, // Store the file object
       }));
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmitUpdate = () => {
     // if (selectedRow && selectedRowIndex !== null) {
     //   const updatedRows = [...rows];
     //   updatedRows[selectedRowIndex] = selectedRow;
@@ -149,6 +166,37 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     //   console.log("Updated rows:", updatedRows);
     // }
     // handleCloseDialog();
+
+    // console.log(selectedRow);
+
+
+    if (updateReqBody?.featured_image) {
+
+      const updatedBodyReq = {
+        ...selectedRow,
+        featured_image: updateReqBody?.featured_image
+      }
+
+      console.log("image have ",updatedBodyReq)
+
+      handleUpdateService(updatedBodyReq)
+    } else {
+
+      const updatedBodyReq = {
+
+        id: selectedRow?.id,
+        service_id: selectedRow?.service_id,
+        // featured_image: selectedRow?.featured_image,  
+        name: selectedRow?.name,
+        description: selectedRow?.description
+      }
+
+      console.log("no image",updatedBodyReq)
+
+      handleUpdateService(updatedBodyReq)
+
+    }
+
   };
   const handleSubmitAdd = () => {
     // console.log(addReqBody)
@@ -175,7 +223,7 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   //API Calls
   const fetchServices = async () => {
-    // setLoading(true)
+    setLoading(true)
     // console.log(apiConfig);
 
     const result = await getAllServices(apiConfig)
@@ -183,12 +231,12 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (result.responseType === 'success') {
       // updateRows(result?.output?.data)
       setRows(result?.output?.data)
-      // setLoading(false)
+      setLoading(false)
     } else if (result.responseType === 'fail') {
-      // setLoading(false)
+      setLoading(false)
       enqueueSnackbar(result.output.message || 'Retrieving services failed', { variant: 'error' });
     } else if (result.responseType === 'error') {
-      // setLoading(false)
+      setLoading(false)
       enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
   }
@@ -196,7 +244,7 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
   const handleAddService = async (formData: any) => {
     setAddLoading(true)
     const result = await addServiceApi(formData, apiConfig)
-  
+
     if (result.responseType === 'success') {
       fetchServices();
       setOpenAddDialog(false)
@@ -212,7 +260,32 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       setAddLoading(false)
       enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
-  
+
+  }
+  const handleUpdateService = async (formData: any) => {
+    setUpdateLoading(true)
+    const result = await updateServiceApi(formData, apiConfig)
+
+    if (result.responseType === 'success') {
+      
+      // setOpenAddDialog(false)
+      // setSelectedImage(null)
+      
+      setSelectedRow(null)
+      setUpdateLoading(false)
+      setSelectedRow(null)
+      setUpdateReqBody(null)
+      enqueueSnackbar('Services updated successful!', { variant: 'success' });
+      setOpenDialog(false);
+      fetchServices();
+    } else if (result.responseType === 'fail') {
+      setUpdateLoading(false)
+      enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      setUpdateLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+
   }
 
   useEffect(() => {
@@ -227,11 +300,11 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       <Grid container alignItems="center">
         <Grid item sm={3}>
           <CardContent>
-            <Button 
-              variant='contained' 
+            <Button
+              variant='contained'
               sx={{ backgroundColor: '#57EBB7', color: '#455A64' }}
               onClick={handleAddNewService}>
-                Add New Service
+              Add New Service
             </Button>
           </CardContent>
         </Grid>
@@ -409,7 +482,7 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       </Dialog>
 
 
-        {/* Update service dialog  */}    
+      {/* Update service dialog  */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth='xl'>
         <DialogActions>
           <Button onClick={handleCloseDialog}>
@@ -439,16 +512,16 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   <Typography variant='h6' sx={{ marginBottom: '20px', color: '#455A64' }}>
                     Service Info
                   </Typography>
-                  <TextField fullWidth label='Service ID' name='service_id' value={selectedRow?.id} onChange={handleInputChangeUpdate} style={{ marginBottom: '25px' }} />
+                  <TextField fullWidth label='Service ID' name='service_id' value={selectedRow?.id} disabled onChange={handleInputChangeUpdate} style={{ marginBottom: '25px' }} />
                   <TextField fullWidth label='Service Name' name='name' value={selectedRow?.name} onChange={handleInputChangeUpdate} style={{ marginBottom: '25px' }} />
                   <TextField fullWidth label='Service Description' name='description' value={selectedRow?.description} onChange={handleInputChangeUpdate} style={{ marginBottom: '25px' }} />
-                </Grid>     
+                </Grid>
               </Grid>
               <Grid container spacing={5} style={{ marginBottom: 20, display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
                 <Button type='button' variant='contained' size='large' onClick={handleCloseDialog} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
                   Cancel
                 </Button>
-                <Button type='button' variant='contained' size='large' onClick={handleSubmit} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
+                <Button type='button' variant='contained' size='large' onClick={handleSubmitUpdate} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
                   Update
                 </Button>
               </Grid>
@@ -457,7 +530,7 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         </DialogContent>
       </Dialog>
 
-      
+
 
     </>
   );

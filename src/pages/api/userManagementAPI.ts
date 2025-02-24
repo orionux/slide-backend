@@ -133,7 +133,6 @@ export const updateSubAdminApi = async (data: any, config?: any): Promise<ApiRes
     formData.append('email', data.email);
     
     const userId = data.id
-    console.log(userId);
     
 
     const response = await updateSubAdminService(encryptRequest(formData),config,userId,);

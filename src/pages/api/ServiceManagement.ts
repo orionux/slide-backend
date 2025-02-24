@@ -1,12 +1,12 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { addServicesService, getServicesService } from 'src/services/ServiceManagementService';
+import { addServicesService, getServicesService, updateServiceService } from 'src/services/ServiceManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { GetServicesResponse } from 'src/types/ServiceManagementAPI';
 import { CommonResponse } from 'src/types/UserManagementAPI';
 
 
 
-export const getAllServices = async (config?: any): Promise<ApiResponse<GetServicesResponse>> => {
+  export const getAllServices = async (config?: any): Promise<ApiResponse<GetServicesResponse>> => {
 
     try {
       const response = await getServicesService(config);
@@ -23,8 +23,6 @@ export const getAllServices = async (config?: any): Promise<ApiResponse<GetServi
       return { responseType: 'error', output: error };
     }
   };
-
-
 
   export const addServiceApi = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
     // debugg
@@ -44,6 +42,37 @@ export const getAllServices = async (config?: any): Promise<ApiResponse<GetServi
       
   
       const response = await addServicesService(encryptRequest(formData), config);
+      if (response?.data?.status === 'success') {
+        return {
+          responseType: 'success',
+          output: decryptResponse(response.data),
+        };
+      } else {
+        return { responseType: 'fail', output: response.data };
+      }
+    } catch (error) {
+      return { responseType: 'error', output: error };
+    }
+  };
+
+  export const updateServiceApi = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+    // debugg
+    // console.log(data)
+  
+    try {
+      const formData = new FormData();
+      if(data.featured_image){
+
+        formData.append('featured_image', data.featured_image);
+      }
+      // formData.append('service_id', data.service_id);
+      formData.append('name', data.name);
+      formData.append('description', data.description);   
+      
+      const userId = data.id
+      
+  
+      const response = await updateServiceService(encryptRequest(formData),config,userId,);
       if (response?.data?.status === 'success') {
         return {
           responseType: 'success',

@@ -25,3 +25,18 @@ export async function addServicesService(
     }
   })
 }
+
+
+export async function updateServiceService(
+  data: AddService,
+  config: ApiConfig,
+  userId: string
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/admin-update-service/${userId}`, data, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}
