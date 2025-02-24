@@ -19,7 +19,7 @@ export default async function handler(req: { method: string; body: any; }, res: 
           }
 
           const data = await response.json();
-          console.log('Form data:', data);
+        //   console.log('Form data:', data);
 
           // Send a response back to the client
           res.status(200).json({ message: 'Package created successfully', data: data });

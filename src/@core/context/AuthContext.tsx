@@ -156,7 +156,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   
 
   const login = (token: string, rememberMe: boolean, type: string) => {
-    console.log(type)
+    // console.log(type)
     if (rememberMe) {
       localStorage.setItem('userType', type);
       localStorage.setItem('token', token);

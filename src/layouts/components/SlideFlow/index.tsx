@@ -51,12 +51,12 @@ const OverviewFlow = () => {
   );
 
 
-  console.log("nodes : ", nodes)
+  // console.log("nodes : ", nodes)
 
 
   const addTextNode = () => {
     addNode('comment', setNodes);
-    console.log("added comment")
+    // console.log("added comment")
   };
   
 
