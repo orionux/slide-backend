@@ -11,7 +11,7 @@ import { Checkbox, Dialog, DialogContent, DialogActions, Button, CardContent, Gr
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useAuth } from 'src/@core/context/AuthContext';
 import { enqueueSnackbar } from 'notistack';
-import { addServiceApi, getAllServices, updateServiceApi } from 'src/pages/api/ServiceManagement';
+import { addServiceApi, deleteServiceApi, getAllServices, updateServiceApi } from 'src/pages/api/ServiceManagement';
 
 // interface RowData {
 //   service_id: string;
@@ -78,6 +78,7 @@ const ServiceTable = () => {
   const [addLoading, setAddLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const { apiConfig, isAuthenticated } = useAuth()
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -220,6 +221,10 @@ const ServiceTable = () => {
     // setRows([...rows, newService]);
   };
 
+  const handleDelete = () => {
+    handleDeleteService(selectedRow?.id)
+  }
+
 
   //API Calls
   const fetchServices = async () => {
@@ -286,6 +291,29 @@ const ServiceTable = () => {
       enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
 
+  }
+
+  const handleDeleteService = async (userId: any) => {
+    setDeleteLoading(true)
+
+
+    const result = await deleteServiceApi(userId, apiConfig)
+
+    if (result.responseType === 'success') {
+      // updateRows(result?.output?.data)
+
+      setDeleteLoading(false)
+      setOpenDialog(false)
+      fetchServices()
+      setSelectedRowIndex(null)
+      enqueueSnackbar('Service deleted successful!', { variant: 'success' });
+    } else if (result.responseType === 'fail') {
+      setDeleteLoading(false)
+      // enqueueSnackbar(result.output.message || 'Login failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      setDeleteLoading(false)
+      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
   }
 
   useEffect(() => {
@@ -521,6 +549,27 @@ const ServiceTable = () => {
                 <Button type='button' variant='contained' size='large' onClick={handleCloseDialog} style={{ marginRight: '20px', backgroundColor: '#FFF', color: '#455A64', border: 'solid 1px #455A64' }}>
                   Cancel
                 </Button>
+                <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={handleDelete}
+                    style={{
+                      border: '1px solid',
+                      marginRight: '20px',
+                    }}
+                    sx={{
+                      backgroundColor: 'transparent',
+                      color: 'red',
+                      '&:hover': {
+                        backgroundColor: 'red',
+                        color: '#fff'
+                      }
+                    }}
+                    // disabled={deleteLoading}
+                    // startIcon={deleteLoading ? <CircularProgress size={20} color='inherit' /> : null}
+                  >
+                    Delete Service
+                  </Button>
                 <Button type='button' variant='contained' size='large' onClick={handleSubmitUpdate} style={{ backgroundColor: '#57EBB7', color: '#455A64' }}>
                   Update
                 </Button>

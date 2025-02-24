@@ -1,5 +1,5 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { addServicesService, getServicesService, updateServiceService } from 'src/services/ServiceManagementService';
+import { addServicesService, deleteServiceService, getServicesService, updateServiceService } from 'src/services/ServiceManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { GetServicesResponse } from 'src/types/ServiceManagementAPI';
 import { CommonResponse } from 'src/types/UserManagementAPI';
@@ -73,6 +73,23 @@ import { CommonResponse } from 'src/types/UserManagementAPI';
       
   
       const response = await updateServiceService(encryptRequest(formData),config,userId,);
+      if (response?.data?.status === 'success') {
+        return {
+          responseType: 'success',
+          output: decryptResponse(response.data),
+        };
+      } else {
+        return { responseType: 'fail', output: response.data };
+      }
+    } catch (error) {
+      return { responseType: 'error', output: error };
+    }
+  };
+
+  export const deleteServiceApi = async (userId: string, config?: any): Promise<ApiResponse<CommonResponse>> => {
+
+    try {
+      const response = await deleteServiceService(userId, config);
       if (response?.data?.status === 'success') {
         return {
           responseType: 'success',

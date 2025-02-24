@@ -45,7 +45,7 @@ interface Props {
 const Dashboard: React.FC<Props> = () => {
 
   const router = useRouter();
-  const [userType, setUserType] = useState('');
+  const [userType, setUserType] = useState(localStorage.getItem('userType'));
   const [authChecked, setAuthChecked] = useState(false);
 
 
@@ -58,7 +58,7 @@ const Dashboard: React.FC<Props> = () => {
   //     setUserType(userType);
   //   }
 
-  //   setAuthChecked(true);
+  //   // setAuthChecked(true);
   // }, []);
 
 
@@ -66,19 +66,23 @@ const Dashboard: React.FC<Props> = () => {
     switch (userType) {
       case 'admin':
         return <AdminComponent />;
+        // return <>redda admin</>;  
       case 'sub admin':
         return <SubAdminComponent />;
+        // return <>redda</>; 
       case 'user':
         return <RegularUserComponent />;
+        // return <>redda</>;
       default:
         return null;
+        // return <>redda hehe</>;  
     }
   };
 
 
-  if (!authChecked) {
-    return null;
-  }
+  // if (!authChecked) {
+  //   return null;
+  // }
 
   return (
     <div>

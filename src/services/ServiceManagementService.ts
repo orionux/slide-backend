@@ -40,3 +40,17 @@ export async function updateServiceService(
     }
   })
 }
+
+
+export async function deleteServiceService(
+  userId: string,
+  config: ApiConfig
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.delete(apiURL + `api/delete-service/${userId}`, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}
