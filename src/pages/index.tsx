@@ -45,9 +45,10 @@ interface Props {
 const Dashboard: React.FC<Props> = () => {
 
   const router = useRouter();
-  const [userType, setUserType] = useState(localStorage.getItem('userType'));
   const [authChecked, setAuthChecked] = useState(false);
-
+  
+  // const [userType, setUserType] = useState(localStorage.getItem('userType'));
+  const [userType, setUserType] = useState<string | null>(null);
 
   // useEffect(() => {
   //   const userType = localStorage.getItem('userType');
@@ -61,21 +62,31 @@ const Dashboard: React.FC<Props> = () => {
   //   // setAuthChecked(true);
   // }, []);
 
+  useEffect(() => {
+
+    if (typeof window !== 'undefined') {
+      const userType = localStorage.getItem('userType');
+      if (!userType) {
+        router.replace('/pages/login');
+      } else {
+        setUserType(userType);
+      }
+      setAuthChecked(true);
+    }
+  }, [router]);
+
 
   const renderComponentByUserType = () => {
     switch (userType) {
       case 'admin':
-        return <AdminComponent />;
-        // return <>redda admin</>;  
+        return <AdminComponent />; 
       case 'sub admin':
         return <SubAdminComponent />;
-        // return <>redda</>; 
       case 'user':
         return <RegularUserComponent />;
-        // return <>redda</>;
       default:
         return null;
-        // return <>redda hehe</>;  
+        
     }
   };
 
