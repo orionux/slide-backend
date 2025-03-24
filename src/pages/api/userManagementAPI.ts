@@ -73,7 +73,7 @@ export const deleteCustomerApi = async (userId: string, config?: any): Promise<A
 
 
 //subAdmins 
-export const getAllSubAdmins = async (config?: any): Promise<ApiResponse<GetCustomersResponse>> => {
+export const getAllSubAdmins = async (config?: any): Promise<ApiResponse<GetCustomersResponse> | undefined> => {
 
   try {
     const response = await getSubAdmins(config);
