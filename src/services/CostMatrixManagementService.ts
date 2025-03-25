@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios"
-import { AddParentService, GetParentServicesResponse } from "src/types/CostMatrixManagementService"
+import { AddParentService, AddPriceCardService, GetParentServicesResponse } from "src/types/CostMatrixManagementService"
 import { ApiConfig, ApiResponse } from "src/types/OnboardingApi"
 import { CommonResponse } from "src/types/UserManagementAPI"
 
@@ -47,6 +47,21 @@ export async function deleteParentServiceService(
   config: ApiConfig
 ): Promise<AxiosResponse<CommonResponse>> {
   return await axios.delete(apiURL + `api/delete-price-service/${userId}`, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}
+
+
+
+export async function addPriceCardService(
+  data: AddPriceCardService,
+  config: ApiConfig,
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/admin-add-price-card`, data, {
     ...config,
     headers: {
       'Content-Type': 'multipart/form-data',

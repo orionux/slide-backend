@@ -39,7 +39,7 @@ import {
 import { useAuth } from 'src/@core/context/AuthContext'
 import { getParentServicesServices } from "src/services/CostMatrixManagementService";
 import { enqueueSnackbar } from "notistack";
-import { addService, deleteParentServiceApi, getAllParentServices, updateParentServiceApi } from "../api/CostMatrixManagement";
+import { addPriceCard, addService, deleteParentServiceApi, getAllParentServices, updateParentServiceApi } from "../api/CostMatrixManagement";
 
 //   import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
@@ -496,7 +496,7 @@ export default function PriceCardsManager() {
 
   // Open card dialog for adding
   const openAddCardDialog = (parentId: string, subId: string) => {
-    console.log(parentId, subId)
+    // console.log(parentId, subId)
     const subService = services.find((s) => s.id === parentId)?.sub_services.find((sub) => sub.id === subId)
 
     if (subService && subService.price_cards.length >= 5) {
@@ -504,7 +504,7 @@ export default function PriceCardsManager() {
       return
     }
 
-    console.log(subService)
+    // console.log(subService)
 
     setCurrentParentId(parentId)
     setCurrentSubId(subId)
@@ -516,7 +516,7 @@ export default function PriceCardsManager() {
       package_name: "Basic",
       price: 150,
       slide_count: 10,
-      isPopular: null,
+      isPopular: false,
       description: "description",
       attributes:[
         {
@@ -555,59 +555,78 @@ export default function PriceCardsManager() {
   }
 
   // Save price card
-  const saveCard = () => {
-    console.log(currentCard)
-    if (!currentCard || !currentParentId || !currentSubId) return
+  const saveCard = async() => {
+    // setAddPriceLoading(true)
+    // console.log(currentCard)
 
-    if (!currentCard.package_name.trim()) {
-      setErrorMessage("Card name cannot be empty")
-      return
+    const result = await addPriceCard(currentCard, apiConfig)
+  
+    if (result.responseType === 'success') {
+      enqueueSnackbar('price card saved successfully!', { variant: 'success' });
+    // setCardDialogOpen(false)
+    // setCurrentCard(null)
+    // setCurrentParentId(null)
+    // setErrorMessage(null)
+    // setCurrentSubId(null)
+    } else if (result.responseType === 'fail') {
+      // setAddPriceLoading(false)
+      enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      // setAddPriceLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
 
-    console.log(currentCard)
+    // if (!currentCard || !currentParentId || !currentSubId) return
 
-    setServices(
-      services.map((service) => {
-        if (service.id === currentParentId) {
-          return {
-            ...service,
-            subServices: service.sub_services.map((subService) => {
-              if (subService.id === currentSubId) {
-                const existingCardIndex = subService.price_cards.findIndex((card) => card.id === currentCard.id)
+    // if (!currentCard.package_name.trim()) {
+    //   setErrorMessage("Card name cannot be empty")
+    //   return
+    // }
 
-                if (existingCardIndex >= 0) {
-                  // Update existing card
-                  const updatedCards = [...subService.price_cards]
-                  updatedCards[existingCardIndex] = currentCard
-                  return {
-                    ...subService,
-                    price_cards: updatedCards,
-                  }
-                } else {
-                  // Add new card
-                  return {
-                    ...subService,
-                    price_cards: [...subService.price_cards, currentCard],
-                  }
-                }
-              }
-              return subService
-            }),
-          }
-        }
-        return service
-      }),
-    )
+    // console.log(currentCard)
 
-    setCardDialogOpen(false)
-    setCurrentCard(null)
-    setCurrentParentId(null)
-    setErrorMessage(null)
+    // setServices(
+    //   services.map((service) => {
+    //     if (service.id === currentParentId) {
+    //       return {
+    //         ...service,
+    //         subServices: service.sub_services.map((subService) => {
+    //           if (subService.id === currentSubId) {
+    //             const existingCardIndex = subService.price_cards.findIndex((card) => card.id === currentCard.id)
+
+    //             if (existingCardIndex >= 0) {
+    //               // Update existing card
+    //               const updatedCards = [...subService.price_cards]
+    //               updatedCards[existingCardIndex] = currentCard
+    //               return {
+    //                 ...subService,
+    //                 price_cards: updatedCards,
+    //               }
+    //             } else {
+    //               // Add new card
+    //               return {
+    //                 ...subService,
+    //                 price_cards: [...subService.price_cards, currentCard],
+    //               }
+    //             }
+    //           }
+    //           return subService
+    //         }),
+    //       }
+    //     }
+    //     return service
+    //   }),
+    // )
+
+    // setCardDialogOpen(false)
+    // setCurrentCard(null)
+    // setCurrentParentId(null)
+    // setErrorMessage(null)
     // setCurrentSubId(null)
   }
 
   // Delete price card
-  const deleteCard = (parentId: string, subId: string, cardId: string) => {
+  const deleteCard = (parentId: string, subId: string, cardId: string | undefined) => {
     setServices(
       services.map((service) => {
         if (service.id === parentId) {
@@ -631,7 +650,6 @@ export default function PriceCardsManager() {
 
   // Add feature to card
   const addFeature = () => {
-    console.log(currentCard)
     if (!currentCard) return
     setCurrentCard({
       ...currentCard,

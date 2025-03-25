@@ -17,3 +17,18 @@ export interface AddParentService {
     parent_service: string;
     name: string;
 }
+
+interface Feature {
+    card_id: Number;
+    feature: string;
+}
+
+export interface AddPriceCardService {
+    service_id: string;
+    package_name: string;
+    price: string;
+    slide_count: string;
+    isPopular: boolean;
+    description: string;
+    features: Feature[];
+}

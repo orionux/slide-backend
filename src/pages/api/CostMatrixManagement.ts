@@ -1,13 +1,13 @@
 import { AxiosResponse } from 'axios';
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { addParentServicesService, deleteParentServiceService, getParentServicesServices, updateParentServiceService } from 'src/services/CostMatrixManagementService';
+import { addParentServicesService, addPriceCardService, deleteParentServiceService, getParentServicesServices, updateParentServiceService } from 'src/services/CostMatrixManagementService';
 import { addServicesService, deleteServiceService, getServicesService, updateServiceService } from 'src/services/ServiceManagementService';
 import { AddParentService, GetParentServicesResponse } from 'src/types/CostMatrixManagementService';
 import { ApiConfig, ApiResponse } from 'src/types/OnboardingApi';
 import { GetServicesResponse } from 'src/types/ServiceManagementAPI';
 import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAPI';
 
-
+//services CRUD
 
   export const getAllParentServices = async (config?: any): Promise<ApiResponse<GetParentServicesResponse>> => {
 
@@ -82,6 +82,39 @@ import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAP
 
     try {
       const response = await deleteParentServiceService(userId, config);
+      if (response?.data?.status === 'success') {
+        return {
+          responseType: 'success',
+          output: decryptResponse(response.data),
+        };
+      } else {
+        return { responseType: 'fail', output: response.data };
+      }
+    } catch (error) {
+      return { responseType: 'error', output: error };
+    }
+  };
+
+
+  //price cards CRUD
+  export const addPriceCard = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+    // debugg
+    // console.log(data)
+  
+    try {
+      const formData = new FormData();
+      formData.append('service_id', data.service_id);
+      formData.append('package_name', data.package_name);
+      formData.append('price', data.price);
+      formData.append('slide_count', data.slide_count);
+      formData.append('isPopular', data.isPopular);
+      formData.append('description', data.description);
+      formData.append('features', data.attributes);
+      
+      console.log(formData);
+
+  
+      const response = await addPriceCardService(encryptRequest(formData), config);
       if (response?.data?.status === 'success') {
         return {
           responseType: 'success',
