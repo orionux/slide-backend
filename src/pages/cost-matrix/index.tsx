@@ -39,7 +39,7 @@ import {
 import { useAuth } from 'src/@core/context/AuthContext'
 import { getParentServicesServices } from "src/services/CostMatrixManagementService";
 import { enqueueSnackbar } from "notistack";
-import { addPriceCard, addService, deleteParentServiceApi, getAllParentServices, updateParentServiceApi } from "../api/CostMatrixManagement";
+import { addPriceCard, addService, deleteParentServiceApi, deletePriceCardeApi, getAllParentServices, updateParentServiceApi } from "../api/CostMatrixManagement";
 
 //   import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
@@ -626,26 +626,41 @@ export default function PriceCardsManager() {
   }
 
   // Delete price card
-  const deleteCard = (parentId: string, subId: string, cardId: string | undefined) => {
-    setServices(
-      services.map((service) => {
-        if (service.id === parentId) {
-          return {
-            ...service,
-            subServices: service.sub_services.map((subService) => {
-              if (subService.id === subId) {
-                return {
-                  ...subService,
-                  priceCards: subService.price_cards.filter((card) => card.id !== cardId),
-                }
-              }
-              return subService
-            }),
-          }
-        }
-        return service
-      }),
-    )
+  const deleteCard = async (parentId: string, subId: string, cardId: string) => {
+
+
+    const result = await deletePriceCardeApi(cardId,apiConfig)
+
+    if (result.responseType === 'success') {
+      console.log(result?.output?.data)
+      fetchParentServices()
+    } else if (result.responseType === 'fail') {
+      // setLoading(false)
+      enqueueSnackbar(result.output.message || 'Retrieving services failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      // setLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+
+    // setServices(
+    //   services.map((service) => {
+    //     if (service.id === parentId) {
+    //       return {
+    //         ...service,
+    //         subServices: service.sub_services.map((subService) => {
+    //           if (subService.id === subId) {
+    //             return {
+    //               ...subService,
+    //               priceCards: subService.price_cards.filter((card) => card.id !== cardId),
+    //             }
+    //           }
+    //           return subService
+    //         }),
+    //       }
+    //     }
+    //     return service
+    //   }),
+    // )
   }
 
   // Add feature to card
@@ -980,7 +995,7 @@ updatedFeatures[index] = {
                                     <Button
                                       size="small"
                                       color="error"
-                                      onClick={() => deleteCard(service.id, subService.id, card.id)}
+                                      onClick={() => deleteCard(service.id, subService.id, card?.id)}
                                       startIcon={<DeleteIcon />}
                                     >
                                       Delete

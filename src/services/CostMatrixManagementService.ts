@@ -69,3 +69,16 @@ export async function addPriceCardService(
     }
   })
 }
+
+export async function deletePriceCardService(
+  id: string,
+  config: ApiConfig
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.delete(apiURL + `api/delete-price-card/${id}`, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}

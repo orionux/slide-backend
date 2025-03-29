@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { addParentServicesService, addPriceCardService, deleteParentServiceService, getParentServicesServices, updateParentServiceService } from 'src/services/CostMatrixManagementService';
+import { addParentServicesService, addPriceCardService, deleteParentServiceService, deletePriceCardService, getParentServicesServices, updateParentServiceService } from 'src/services/CostMatrixManagementService';
 import { addServicesService, deleteServiceService, getServicesService, updateServiceService } from 'src/services/ServiceManagementService';
 import { AddParentService, GetParentServicesResponse } from 'src/types/CostMatrixManagementService';
 import { ApiConfig, ApiResponse } from 'src/types/OnboardingApi';
@@ -99,7 +99,7 @@ import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAP
   //price cards CRUD
   export const addPriceCard = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
     // debugg
-    // console.log(data)
+    console.log(data.service_id)  
   
     try {
       const formData = new FormData();
@@ -109,12 +109,31 @@ import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAP
       formData.append('slide_count', data.slide_count);
       formData.append('isPopular', data.isPopular);
       formData.append('description', data.description);
-      formData.append('features', data.attributes);
-      
-      console.log(formData);
+      // formData.append('features', data.attributes);
+      formData.append('features', JSON.stringify(data.attributes));
+
+      console.log(data.attributes)
 
   
       const response = await addPriceCardService(encryptRequest(formData), config);
+      if (response?.data?.status === 'success') {
+        return {
+          responseType: 'success',
+          output: decryptResponse(response.data),
+        };
+      } else {
+        return { responseType: 'fail', output: response.data };
+      }
+    } catch (error) {
+      return { responseType: 'error', output: error };
+    }
+  };
+
+
+  export const deletePriceCardeApi = async (id: string, config?: any): Promise<ApiResponse<GetCustomersResponse>> => {
+
+    try {
+      const response = await deletePriceCardService(id, config);
       if (response?.data?.status === 'success') {
         return {
           responseType: 'success',
