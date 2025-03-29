@@ -70,6 +70,20 @@ export async function addPriceCardService(
   })
 }
 
+export async function updatePriceCardService(
+  id: string,
+  data: AddPriceCardService,
+  config: ApiConfig,
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/admin-update-price-card/${id}`, data, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}
+
 export async function deletePriceCardService(
   id: string,
   config: ApiConfig

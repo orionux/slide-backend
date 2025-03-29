@@ -26,20 +26,21 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import {
-    Delete as DeleteIcon,
-    Pencil as EditIcon,
-    Check as CheckIcon,
-    Close as CloseIcon,
-  } from "mdi-material-ui";
+  Delete as DeleteIcon,
+  Pencil as EditIcon,
+  Check as CheckIcon,
+  Close as CloseIcon,
+} from "mdi-material-ui";
 
-  import { CiSquarePlus as AddIcon } from "react-icons/ci";
-  import { IoIosArrowDown as ExpandMoreIcon,
-    IoIosArrowUp as ExpandLessIcon
-   } from "react-icons/io";
+import { CiSquarePlus as AddIcon } from "react-icons/ci";
+import {
+  IoIosArrowDown as ExpandMoreIcon,
+  IoIosArrowUp as ExpandLessIcon
+} from "react-icons/io";
 import { useAuth } from 'src/@core/context/AuthContext'
 import { getParentServicesServices } from "src/services/CostMatrixManagementService";
 import { enqueueSnackbar } from "notistack";
-import { addPriceCard, addService, deleteParentServiceApi, deletePriceCardeApi, getAllParentServices, updateParentServiceApi } from "../api/CostMatrixManagement";
+import { addPriceCard, addService, deleteParentServiceApi, deletePriceCardeApi, getAllParentServices, updateParentServiceApi, updatePriceCard } from "../api/CostMatrixManagement";
 
 //   import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
@@ -48,25 +49,25 @@ import { addPriceCard, addService, deleteParentServiceApi, deletePriceCardeApi, 
 interface Attributes {
   id?: string
   card_id?: number | null
-  feature : string
+  feature: string
 
 }
 interface PriceCard {
   id?: string
   service_id: string
   package_name: string
-  slide_count : number
+  slide_count: number
   price: number
-  description : string
+  description: string
   attributes: Attributes[]
-  isPopular?: boolean | null
+  isPopular?: any
 }
 
 interface SubService {
   id: string
   name: string
-  parent_service : string 
-  price_cards: PriceCard[] 
+  parent_service: string
+  price_cards: PriceCard[]
 }
 
 interface ParentService {
@@ -79,7 +80,7 @@ interface ParentService {
 
 interface FormData {
   parent_service: string
-  name:string
+  name: string
 }
 
 // Styled components
@@ -145,7 +146,7 @@ const getDefaultPriceCards = (): PriceCard[] => [
 ];
 
 export default function PriceCardsManager() {
-  
+
   // State
   const [services, setServices] = useState<ParentService[]>([
     // {
@@ -163,7 +164,7 @@ export default function PriceCardsManager() {
 
   const [editingService, setEditingService] = useState<string | null>(null)
   const [editingSubService, setEditingSubService] = useState<string | null>(null)
-  const [editingCard, setEditingCard] = useState<string | null>(null)
+  const [editingCard, setEditingCard] = useState<PriceCard | null>(null)
   const [newServiceName, setNewServiceName] = useState("")
   const [newSubServiceName, setNewSubServiceName] = useState("")
   const [expandedServices, setExpandedServices] = useState<Record<string, boolean>>({})
@@ -209,23 +210,23 @@ export default function PriceCardsManager() {
 
     const parentFormData = {
       parent_service: "none",
-      name:"New Service"
+      name: "New Service"
     }
 
     const result = await addService(parentFormData, apiConfig)
-  
+
     if (result.responseType === 'success') {
 
-      console.log(result)
+      // console.log(result)
 
-    // setServices([...services, newService])
-    // setEditingService(newService.id)
-    // setNewServiceName(newService.name)
-    // setExpandedServices((prev) => ({
-    //   ...prev,
-    //   [newService.id]: true,
-    // }))
-  
+      // setServices([...services, newService])
+      // setEditingService(newService.id)
+      // setNewServiceName(newService.name)
+      // setExpandedServices((prev) => ({
+      //   ...prev,
+      //   [newService.id]: true,
+      // }))
+
       // console.log(result?.output?.data);
       // enqueueSnackbar('Sub Admin added successful!', { variant: 'success' });
       fetchParentServices()
@@ -258,7 +259,7 @@ export default function PriceCardsManager() {
   }
 
   // Add new sub service
-  const addSubService = async(parentId: string) => {
+  const addSubService = async (parentId: string) => {
     setSubAddLoading(parentId)
     // const newSubService: SubService = {
     //   id: generateId(),
@@ -288,21 +289,21 @@ export default function PriceCardsManager() {
 
     const parentFormData = {
       parent_service: parentId,
-      name:"New Sub Service"
+      name: "New Sub Service"
     }
 
     const result = await addService(parentFormData, apiConfig)
-  
+
     if (result.responseType === 'success') {
 
-    // setServices([...services, newService])
-    // setEditingService(newService.id)
-    // setNewServiceName(newService.name)
-    // setExpandedServices((prev) => ({
-    //   ...prev,
-    //   [newService.id]: true,
-    // }))
-  
+      // setServices([...services, newService])
+      // setEditingService(newService.id)
+      // setNewServiceName(newService.name)
+      // setExpandedServices((prev) => ({
+      //   ...prev,
+      //   [newService.id]: true,
+      // }))
+
       // console.log(result?.output?.data);
       // enqueueSnackbar('Sub Admin added successful!', { variant: 'success' });
       fetchParentServices()
@@ -318,16 +319,16 @@ export default function PriceCardsManager() {
 
   // Save parent service name
   const saveServiceName = async (serviceId: string) => {
-    
+
     if (!newServiceName.trim()) {
       setErrorMessage("Service name cannot be empty")
       return
     }
 
     const updateData = {
-      id : serviceId,
+      id: serviceId,
       parent_service: "none",
-      name:newServiceName
+      name: newServiceName
     }
 
     // handleUpdateService(updateData)
@@ -338,16 +339,16 @@ export default function PriceCardsManager() {
     if (result.responseType === 'success') {
 
       setServices(
-      services.map((service) => {
-        if (service.id === serviceId) {
-          return {
-            ...service,
-            name: newServiceName,
+        services.map((service) => {
+          if (service.id === serviceId) {
+            return {
+              ...service,
+              name: newServiceName,
+            }
           }
-        }
-        return service
-      }),
-    )
+          return service
+        }),
+      )
       // fetchParentServices()
       // setOpenDialog(false);
       // fetchServices();
@@ -367,52 +368,52 @@ export default function PriceCardsManager() {
   }
 
   // Save sub service name
-  const saveSubServiceName = async(parentId: string, subServiceId: string) => {
+  const saveSubServiceName = async (parentId: string, subServiceId: string) => {
     setSubUpdateLoading(subServiceId)
     if (!newSubServiceName.trim()) {
       setErrorMessage("Sub-service name cannot be empty")
       return
     }
 
-    console.log(parentId,subServiceId)
+    // console.log(parentId, subServiceId)
     const updateData = {
-      id : subServiceId,
+      id: subServiceId,
       parent_service: parentId,
-      name:newSubServiceName
+      name: newSubServiceName
     }
 
-    console.log(updateData)
+    // console.log(updateData)
 
-    
+
     const result = await updateParentServiceApi(updateData, apiConfig)
 
     if (result.responseType === 'success') {
       fetchParentServices()
       enqueueSnackbar('Service updated successful!', { variant: 'success' });
       setServices(
-          services.map((service) => {
-            if (service.id === parentId) {
-              return {
-                ...service,
-                subServices: service.sub_services.map((subService) => {
-                  if (subService.id === subServiceId) {
-                    return {
-                      ...subService,
-                      name: newSubServiceName,
-                    }
+        services.map((service) => {
+          if (service.id === parentId) {
+            return {
+              ...service,
+              subServices: service.sub_services.map((subService) => {
+                if (subService.id === subServiceId) {
+                  return {
+                    ...subService,
+                    name: newSubServiceName,
                   }
-                  return subService
-                }),
-              }
+                }
+                return subService
+              }),
             }
-            return service
-          }),
-        )
+          }
+          return service
+        }),
+      )
 
-        setEditingSubService(null)
-        setErrorMessage(null)
-      
-      
+      setEditingSubService(null)
+      setErrorMessage(null)
+
+
       // setOpenDialog(false);
       // fetchServices();
     } else if (result.responseType === 'fail') {
@@ -425,7 +426,7 @@ export default function PriceCardsManager() {
   }
 
   // Delete parent service
-  const deleteParentService = async(serviceId: string) => {
+  const deleteParentService = async (serviceId: string) => {
 
     setDeleteLoading(true)
     const result = await deleteParentServiceApi(serviceId, apiConfig)
@@ -441,11 +442,11 @@ export default function PriceCardsManager() {
       setDeleteLoading(false)
       enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
-    
+
   }
 
   // Delete sub service
-  const deleteSubService = async(parentId: string, subServiceId: string) => {
+  const deleteSubService = async (parentId: string, subServiceId: string) => {
     // setServices(
     //   services.map((service) => {
     //     if (service.id === parentId) {
@@ -511,70 +512,102 @@ export default function PriceCardsManager() {
     // setCurrentCard(subService)
     setCurrentCard(
       {
-      // id: generateId(),
-      service_id: subId,
-      package_name: "Basic",
-      price: 150,
-      slide_count: 10,
-      isPopular: false,
-      description: "description",
-      attributes:[
-        {
-          // id: "2",
-          card_id: Number(subId),
-          feature: "",
-        },
-      ],
-    }
+        // id: generateId(),
+        service_id: subId,
+        package_name: "Basic",
+        price: 150,
+        slide_count: 10,
+        isPopular: false,
+        description: "description",
+        attributes: [
+          {
+            // id: "2",
+            card_id: Number(subId),
+            feature: "",
+          },
+        ],
+      }
 
-  //   {
-  //     "id": 1,
-  //     "service_id": 1,
-  //     "package_name": "Basic",
-  //     "price": 150,
-  //     "slide_count": "10",
-  //     "description": "Designed for smaller businesses or those with simpler presentation needs. This package offers essential slide design services.",
-  //     "isPopular": null,
-  //     "created_at": "2025-02-06T10:17:30.000000Z",
-  //     "updated_at": "2025-02-06T10:17:30.000000Z",
-  //     "deleted_at": null,
-  //     "attributes": [
-  //         {
-  //             "id": 1,
-  //             "card_id": 1,
-  //             "feature": "Basic formatt..|",
-  //             "created_at": "2025-02-06T10:29:02.000000Z",
-  //             "updated_at": "2025-02-06T10:29:02.000000Z",
-  //             "deleted_at": null
-  //         }
-  //     ]
-  // }
-  )
+      //   {
+      //     "id": 1,
+      //     "service_id": 1,
+      //     "package_name": "Basic",
+      //     "price": 150,
+      //     "slide_count": "10",
+      //     "description": "Designed for smaller businesses or those with simpler presentation needs. This package offers essential slide design services.",
+      //     "isPopular": null,
+      //     "created_at": "2025-02-06T10:17:30.000000Z",
+      //     "updated_at": "2025-02-06T10:17:30.000000Z",
+      //     "deleted_at": null,
+      //     "attributes": [
+      //         {
+      //             "id": 1,
+      //             "card_id": 1,
+      //             "feature": "Basic formatt..|",
+      //             "created_at": "2025-02-06T10:29:02.000000Z",
+      //             "updated_at": "2025-02-06T10:29:02.000000Z",
+      //             "deleted_at": null
+      //         }
+      //     ]
+      // }
+    )
     setCardDialogOpen(true)
     setErrorMessage(null)
   }
 
   // Save price card
-  const saveCard = async() => {
+  const saveCard = async () => {
     // setAddPriceLoading(true)
     // console.log(currentCard)
 
-    const result = await addPriceCard(currentCard, apiConfig)
-  
-    if (result.responseType === 'success') {
-      enqueueSnackbar('price card saved successfully!', { variant: 'success' });
-    // setCardDialogOpen(false)
-    // setCurrentCard(null)
-    // setCurrentParentId(null)
-    // setErrorMessage(null)
-    // setCurrentSubId(null)
-    } else if (result.responseType === 'fail') {
-      // setAddPriceLoading(false)
-      enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
-    } else if (result.responseType === 'error') {
-      // setAddPriceLoading(false)
-      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    if (editingCard !== null) {
+
+
+
+      const result = await updatePriceCard(currentCard, apiConfig)
+      if (result.responseType === 'success') {
+        fetchParentServices()
+        enqueueSnackbar('price card updated successfully!', { variant: 'success' });
+        setCardDialogOpen(false)
+        setCurrentCard(null)
+        setCurrentParentId(null)
+        setErrorMessage(null)
+        setCurrentSubId(null)
+        setEditingCard(null)
+      } else if (result.responseType === 'fail') {
+        // setAddPriceLoading(false)
+        enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
+      } else if (result.responseType === 'error') {
+        // setAddPriceLoading(false)
+        enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+      }
+
+
+
+
+    } else {
+
+      const result = await addPriceCard(currentCard, apiConfig)
+
+      if (result.responseType === 'success') {
+        fetchParentServices()
+        enqueueSnackbar('price card saved successfully!', { variant: 'success' });
+        setCardDialogOpen(false)
+        setCurrentCard(null)
+        setCurrentParentId(null)
+        setErrorMessage(null)
+        setCurrentSubId(null)
+      } else if (result.responseType === 'fail') {
+        // setAddPriceLoading(false)
+        enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' });
+      } else if (result.responseType === 'error') {
+        // setAddPriceLoading(false)
+        enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+      }
+
     }
+
+
 
     // if (!currentCard || !currentParentId || !currentSubId) return
 
@@ -629,10 +662,10 @@ export default function PriceCardsManager() {
   const deleteCard = async (parentId: string, subId: string, cardId: string) => {
 
 
-    const result = await deletePriceCardeApi(cardId,apiConfig)
+    const result = await deletePriceCardeApi(cardId, apiConfig)
 
     if (result.responseType === 'success') {
-      console.log(result?.output?.data)
+      // console.log(result?.output?.data)
       fetchParentServices()
     } else if (result.responseType === 'fail') {
       // setLoading(false)
@@ -679,11 +712,11 @@ export default function PriceCardsManager() {
   const updateFeature = (index: number, value: string) => {
     if (!currentCard) return
     const updatedFeatures = [...currentCard.attributes]
-updatedFeatures[index] = {
-  id: currentCard.attributes[index].id,
-  card_id: currentCard.attributes[index].card_id,
-  feature: value
-}
+    updatedFeatures[index] = {
+      id: currentCard.attributes[index].id,
+      card_id: currentCard.attributes[index].card_id,
+      feature: value
+    }
     setCurrentCard({
       ...currentCard,
       attributes: updatedFeatures,
@@ -703,7 +736,7 @@ updatedFeatures[index] = {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchParentServices()   
+      fetchParentServices()
     }
   }, [apiConfig])
 
@@ -711,15 +744,15 @@ updatedFeatures[index] = {
   //api handling 
 
   const handleAddParentService = async (formData: FormData) => {
-    console.log(formData)
+    // console.log(formData)
     setAddLoading(true)
-  
+
     const result = await addService(formData, apiConfig)
-  
+
     if (result.responseType === 'success') {
 
-      console.log(result)
-  
+      // console.log(result)
+
       // console.log(result?.output?.data);
       // enqueueSnackbar('Sub Admin added successful!', { variant: 'success' });
       fetchParentServices()
@@ -733,7 +766,7 @@ updatedFeatures[index] = {
       setAddLoading(false)
       enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
     }
-  
+
   }
 
 
@@ -744,8 +777,8 @@ updatedFeatures[index] = {
     const result = await getAllParentServices(apiConfig)
 
     if (result.responseType === 'success') {
-      console.log(result?.output?.data)
       setServices(result?.output?.data)
+      // console.log(result?.output?.data)
       // setParentServices(result?.output?.data)
       // updateRows(result?.output?.data)
       // setRows(result?.output?.data)
@@ -777,7 +810,7 @@ updatedFeatures[index] = {
     }
 
   }
-  
+
 
   return (
     <Box sx={{ p: 3 }}>
@@ -785,9 +818,9 @@ updatedFeatures[index] = {
         <Typography variant="h4" component="h1">
           Service & Pricing Management
         </Typography>
-        <Button variant="contained"  onClick={addParentService}
-        disabled={addLoading}
-        startIcon={addLoading? <CircularProgress size={20} color='inherit' /> : <AddIcon />}
+        <Button variant="contained" onClick={addParentService}
+          disabled={addLoading}
+          startIcon={addLoading ? <CircularProgress size={20} color='inherit' /> : <AddIcon />}
         >
           Add Service
         </Button>
@@ -822,13 +855,13 @@ updatedFeatures[index] = {
                 />
                 <IconButton onClick={() => saveServiceName(service.id)} color="primary">
 
-                {
-                    updateLoading === service.id ? 
-                    <CircularProgress size={20} color='inherit' />
-                    :
+                  {
+                    updateLoading === service.id ?
+                      <CircularProgress size={20} color='inherit' />
+                      :
 
-                  // <EditIcon />
-                  <CheckIcon />
+                      // <EditIcon />
+                      <CheckIcon />
                   }
                 </IconButton>
                 <IconButton
@@ -895,14 +928,14 @@ updatedFeatures[index] = {
                         />
                         <IconButton onClick={() => saveSubServiceName(service.id, subService.id)} color="primary">
 
-                        {
-                    subUpdateLoading === subService.id ? 
-                    <CircularProgress size={20} color='inherit' />
-                    :
+                          {
+                            subUpdateLoading === subService.id ?
+                              <CircularProgress size={20} color='inherit' />
+                              :
 
-                  // <EditIcon />
-                          <CheckIcon />
-                  }
+                              // <EditIcon />
+                              <CheckIcon />
+                          }
                         </IconButton>
                         <IconButton
                           onClick={() => {
@@ -960,9 +993,9 @@ updatedFeatures[index] = {
                       </Box>
 
                       <Grid container spacing={3}>
-                        {subService.price_cards.map((card) => (
+                        {subService.price_cards.map((card: PriceCard) => (
                           <Grid item xs={12} sm={6} md={4} key={card.id}>
-                            {card.isPopular ? (
+                            {card.isPopular === "true" ?(
                               <PopularCard>
                                 <PopularBadge>
                                   <Typography variant="caption" fontWeight="bold">
@@ -987,7 +1020,12 @@ updatedFeatures[index] = {
                                   <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Button
                                       size="small"
-                                      onClick={() => openCardDialog(service.id, subService.id, card)}
+                                      onClick={() => {
+                                        setEditingCard(card)
+                                        // console.log(card)
+                                        openCardDialog(service.id, subService.id, card)
+
+                                      }}
                                       startIcon={<EditIcon />}
                                     >
                                       Edit
@@ -995,7 +1033,7 @@ updatedFeatures[index] = {
                                     <Button
                                       size="small"
                                       color="error"
-                                      onClick={() => deleteCard(service.id, subService.id, card?.id)}
+                                      onClick={() => deleteCard(service.id, subService.id, card.id || '')}
                                       startIcon={<DeleteIcon />}
                                     >
                                       Delete
@@ -1023,7 +1061,10 @@ updatedFeatures[index] = {
                                   <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Button
                                       size="small"
-                                      onClick={() => openCardDialog(service.id, subService.id, card)}
+                                      onClick={() => {
+                                        setEditingCard(card)
+                                        openCardDialog(service.id, subService.id, card)
+                                      }}
                                       startIcon={<EditIcon />}
                                     >
                                       Edit
@@ -1031,7 +1072,7 @@ updatedFeatures[index] = {
                                     <Button
                                       size="small"
                                       color="error"
-                                      onClick={() => deleteCard(service.id, subService.id, card.id)}
+                                      onClick={() => deleteCard(service.id, subService.id, card.id || '')}
                                       startIcon={<DeleteIcon />}
                                     >
                                       Delete
@@ -1096,16 +1137,16 @@ updatedFeatures[index] = {
               onChange={(e) =>
                 setCurrentCard((prev) => (prev ? { ...prev, slide_count: Number(e.target.value) || 0 } : null))
               }
-              // InputProps={{
-              //   startAdornment: "$",
-              // }}
+            // InputProps={{
+            //   startAdornment: "$",
+            // }}
             />
 
             <FormControl fullWidth>
               <InputLabel id="popular-label">Popular</InputLabel>
               <Select
                 labelId="popular-label"
-                value={currentCard?.isPopular ? "yes" : "no"}
+                value={currentCard?.isPopular !== "false" ? "yes" : "no"}
                 label="Popular"
                 onChange={(e) =>
                   setCurrentCard((prev) => (prev ? { ...prev, isPopular: e.target.value === "yes" } : null))
