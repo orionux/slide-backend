@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import { styled } from '@mui/material/styles';
@@ -21,7 +21,7 @@ import { addServiceApi, deleteServiceApi, getAllServices, updateServiceApi } fro
 // }
 interface Row {
   id: string;
-  service_id: string;
+  service_id: string | null;
   featured_image: string;
   name: string;
   description: string;
@@ -67,7 +67,7 @@ const initialRows = [
 
 const ServiceTable = () => {
   // const [rows, setRows] = useState<RowData[]>(initialRows);
-  const [rows, setRows] = useState<Row[]>([]);
+const rows = useRef<Row[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [addReqBody, setAddReqBody] = useState<Row | null>(null);
@@ -234,8 +234,10 @@ const ServiceTable = () => {
     const result = await getAllServices(apiConfig)
 
     if (result.responseType === 'success') {
+      // setRows(result?.output?.data)
+      rows.current = result?.output?.data
+      // console.log(result?.output?.data)
       // updateRows(result?.output?.data)
-      setRows(result?.output?.data)
       setLoading(false)
     } else if (result.responseType === 'fail') {
       setLoading(false)
@@ -320,6 +322,7 @@ const ServiceTable = () => {
     if (isAuthenticated) {
       fetchServices();
     }
+    // fetchServices();
   }, [apiConfig])
 
 
@@ -364,20 +367,33 @@ const ServiceTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
-              <StyledTableRow key={row.id} onClick={() => handleCheckboxClick(row, index)}>
-                <StyledTableCell component='th' scope='row'>
-                  <span style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <Checkbox checked={selectedRowIndex === index} readOnly /> {row.id}
-                  </span>
-                </StyledTableCell>
-                <StyledTableCell align='left'><b>{row.name}</b></StyledTableCell>
-                <StyledTableCell align='left'>{row.description}</StyledTableCell>
-                <StyledTableCell align='left'>
-                  <img src={row.featured_image} width={100} height={100} alt='' />
-                </StyledTableCell>
+            {
+              // rows.current
+              console.log(rows.current)
+            }
+
+           
+           {rows.current && rows.current.length > 0 ? (
+              rows.current.map((row, index) => (
+                <StyledTableRow key={row.id} onClick={() => handleCheckboxClick(row, index)}>
+                  <StyledTableCell component='th' scope='row'>
+                    <span style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                      <Checkbox checked={selectedRowIndex === index} readOnly /> {row?.id}
+                    </span>
+                  </StyledTableCell>
+                  <StyledTableCell align='left'><b>{row.name}</b></StyledTableCell>
+                  <StyledTableCell align='left'>{row.description}</StyledTableCell>
+                  <StyledTableCell align='left'>
+                    <img src={row.featured_image} width={100} height={100} alt='' />
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow>
+                <StyledTableCell colSpan={4} align="center">No services found</StyledTableCell>
               </StyledTableRow>
-            ))}
+            )}
+            
           </TableBody>
         </Table>
       </TableContainer>

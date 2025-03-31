@@ -14,7 +14,7 @@ import { CommonResponse } from 'src/types/UserManagementAPI';
       if (response) {
         return {
           responseType: 'success',
-          output: decryptResponse(response),
+          output: decryptResponse(response?.data),
         };
       } else {
         return { responseType: 'fail', output: response };

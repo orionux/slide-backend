@@ -1146,14 +1146,15 @@ export default function PriceCardsManager() {
               <InputLabel id="popular-label">Popular</InputLabel>
               <Select
                 labelId="popular-label"
-                value={currentCard?.isPopular !== "false" ? "yes" : "no"}
+                defaultValue="No"
+                value={currentCard?.isPopular !== "false" ? "No" : "No"}
                 label="Popular"
                 onChange={(e) =>
-                  setCurrentCard((prev) => (prev ? { ...prev, isPopular: e.target.value === "yes" } : null))
+                  setCurrentCard((prev) => (prev ? { ...prev, isPopular: e.target.value === "Yes" } : null))
                 }
               >
-                <MenuItem value="yes">Yes</MenuItem>
-                <MenuItem value="no">No</MenuItem>
+                <MenuItem value="Yes">Yes</MenuItem>
+                <MenuItem value="No">No</MenuItem>
               </Select>
             </FormControl>
 
