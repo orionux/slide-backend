@@ -70,6 +70,8 @@ import { CommonResponse } from 'src/types/UserManagementAPI';
       formData.append('description', data.description);   
       
       const userId = data.id
+
+      // console.log(userId)
       
   
       const response = await updateServiceService(encryptRequest(formData),config,userId,);

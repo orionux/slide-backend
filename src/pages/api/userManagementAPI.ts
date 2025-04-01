@@ -1,5 +1,5 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { addSubAdminService, deleteCustomerService, deleteSubAdminService, getCustomers, getSubAdmins, updateCustomerService, updateSubAdminService } from 'src/services/userManagementService';
+import { addSubAdminService, deleteCustomerService, deleteSubAdminService, getAdminInfoService, getCustomers, getSubAdmins, updateCustomerService, updateSubAdminService } from 'src/services/userManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAPI';
 
@@ -161,6 +161,32 @@ export const deleteSubAdminApi = async (userId: string, config?: any): Promise<A
     } else {
       return { responseType: 'fail', output: response.data };
     }
+  } catch (error) {
+    return { responseType: 'error', output: error };
+  }
+};
+
+//Admin(self)
+export const getbAdminInfo = async (id: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+  // debugg
+  // console.log(data)
+
+  try {
+    
+    const response = await getAdminInfoService(id,config);
+    // console.log(response)
+    // if (response?.data?.status === 'success') {
+    //   return {
+    //     responseType: 'success',
+    //     output: decryptResponse(response.data),
+    //   };
+    // } else {
+    //   return { responseType: 'fail', output: response.data };
+    // }
+       return {
+        responseType: 'success',
+        output: decryptResponse(response.data),
+      };
   } catch (error) {
     return { responseType: 'error', output: error };
   }

@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles'
 
 
 // ** React Imports
-import { useState, ElementType, ChangeEvent } from 'react'
+import { useState, ElementType, ChangeEvent, useEffect } from 'react'
 import { MouseEvent } from 'react';
 
 
@@ -26,6 +26,8 @@ import Button, { ButtonProps } from '@mui/material/Button'
 import 'react-datepicker/dist/react-datepicker.css'
 import { OutlinedInput, InputAdornment } from '@mui/material'
 import { EyeOutline, EyeOffOutline } from 'mdi-material-ui'
+import { useAuth } from 'src/@core/context/AuthContext';
+import { getbAdminInfo } from '../api/userManagementAPI';
 
 
 interface State {
@@ -75,7 +77,7 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
 }))
 
 const AccountSettings = () => {
-
+  const { apiConfig, isAuthenticated } = useAuth()
 
   // const [openAlert, setOpenAlert] = useState<boolean>(true)
   const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
@@ -160,11 +162,45 @@ const AccountSettings = () => {
     });
   }
 
-  const handleAddSubAdmin = () => {
-    setSubAdminData([...subAdminData, formData]);
-    console.log([...subAdminData, formData]);
+  const handleSaveAdmin = () => {
+
+    console.log(formData)
+
   }
 
+  const getAdminInfo = async () => {
+    // setLoading(true)
+    // console.log(apiConfig);
+
+    const id = localStorage.getItem('userId');
+
+    // console.log(id)
+
+    const result = await getbAdminInfo(id, apiConfig)
+
+    // console.log(result)
+    if (result.responseType === 'success') {
+          setFormData({
+            ...formData,
+            email: result?.output?.email,      
+            username: result?.output?.user_details?.name,
+            phoneNumber: result?.output?.user_details?.mobile_no,
+            status: result?.output?.status,
+          });
+          setImgSrc(result?.output?.user_details?.picture || '/images/avatars/1.png')   
+    } else if (result.responseType === 'fail') {
+      // setLoading(false)
+      // enqueueSnackbar(result.output.message || 'Retrieving services failed', { variant: 'error' });
+    } else if (result.responseType === 'error') {
+      // setLoading(false)
+      // enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' });
+    }
+  }
+
+  useEffect(() => {
+  getAdminInfo();     
+  }, [apiConfig])
+  
 
 
   return (
@@ -174,7 +210,7 @@ const AccountSettings = () => {
           <Grid container spacing={7}>
             <Grid item xs={12} sm={6}>
               <Typography style={{ fontWeight: 600, marginBottom: '20px' }}>User Details</Typography>
-              <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' style={{ marginBottom: '20px' }} />
+              <TextField fullWidth label='Username' value={formData.username} onChange={handleInputChangeSub} placeholder='johnDoe' defaultValue='johnDoe' name='username' style={{ marginBottom: '20px' }} />
               <Grid container spacing={4}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -185,17 +221,17 @@ const AccountSettings = () => {
                     defaultValue='johnDoe@example.com'
                     name='email'
                     value={formData.email}
-                    onChange={handleInputChangeSub}
+                    onChange={handleInputChangeSub} 
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
+                  {/* <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select label='Gender' defaultValue='male' name='gender' value={formData.gender} onChange={handleInputChangeSub}>
                       <MenuItem value='male'>Male</MenuItem>
                       <MenuItem value='female'>Female</MenuItem>
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
                 </Grid>
               </Grid>
               <Grid container spacing={4} style={{ marginTop: '20px' }}>
@@ -215,12 +251,12 @@ const AccountSettings = () => {
                     <Select label='Status' defaultValue='active' name='status' value={formData.status} onChange={handleInputChangeSub}>
                       <MenuItem value='active'>Active</MenuItem>
                       <MenuItem value='inactive'>Inactive</MenuItem>
-                      <MenuItem value='pending'>Pending</MenuItem>
+                      {/* <MenuItem value='pending'>Pending</MenuItem> */}
                     </Select>
                   </FormControl>
                 </Grid>
               </Grid>
-              <Grid container spacing={4} style={{ marginTop: '20px' }}>
+              {/* <Grid container spacing={4} style={{ marginTop: '20px' }}>
                 <Grid item xs={12} sm={6}>
                   <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' name='company' value={formData.company} onChange={handleInputChangeSub} />
                 </Grid>
@@ -235,9 +271,9 @@ const AccountSettings = () => {
                 <Grid item xs={12} sm={6}>
                   <TextField fullWidth label='Location' placeholder='Location' defaultValue='ABC' name='location' value={formData.location} onChange={handleInputChangeSub} />
                 </Grid>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} style={{ marginTop: '40px' }}>
-                <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={handleAddSubAdmin}>
+                <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={handleSaveAdmin}>
                   Save Changes
                 </Button>
                 <Button type='reset' variant='outlined' color='secondary'>

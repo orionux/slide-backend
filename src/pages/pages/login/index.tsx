@@ -125,6 +125,7 @@ const LoginPage = () => {
       const token = result?.output?.data?.token;
       const type = result?.output?.data?.user?.role;
       login(token, rememberMe,type);
+      localStorage.setItem('userId', result?.output?.data?.user.id);
       
       // if (token) {
       //   if (rememberMe) {

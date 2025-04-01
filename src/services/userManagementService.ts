@@ -83,3 +83,17 @@ export async function deleteSubAdminService(
     }
   })
 }
+
+//admin stuff
+export async function getAdminInfoService(
+  userId: string,   
+  config: ApiConfig,
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.get(apiURL + `api/admin-update-basic-details/${userId}`, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',  
+      ...config?.headers
+    }
+  })
+}
