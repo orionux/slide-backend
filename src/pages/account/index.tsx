@@ -1,14 +1,11 @@
-
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import { styled } from '@mui/material/styles'
 
-
 // ** React Imports
 import { useState, ElementType, ChangeEvent, useEffect } from 'react'
-import { MouseEvent } from 'react';
-
+import { MouseEvent } from 'react'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -24,11 +21,11 @@ import Button, { ButtonProps } from '@mui/material/Button'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
-import { OutlinedInput, InputAdornment } from '@mui/material'
+import { OutlinedInput, InputAdornment, FormHelperText } from '@mui/material'
 import { EyeOutline, EyeOffOutline } from 'mdi-material-ui'
-import { useAuth } from 'src/@core/context/AuthContext';
-import { getbAdminInfo } from '../api/userManagementAPI';
-
+import { useAuth } from 'src/@core/context/AuthContext'
+import { getbAdminInfo, updateAdminApi, updateAdminPassword } from '../api/userManagementAPI'
+import { enqueueSnackbar } from 'notistack'
 
 interface State {
   newPassword: string
@@ -40,16 +37,16 @@ interface State {
 }
 
 interface UserAccount {
-  username: string;
-  gender: string;
-  email: string;
-  phoneNumber: string;
-  status: string;
-  profileImage: string;
-  company: string;
-  vatNumber: string;
-  billingAddress: string;
-  location: string;
+  username: string
+  gender: string
+  email: string
+  phoneNumber: string
+  status: string
+  profileImage: string
+  company: string
+  vatNumber: string
+  billingAddress: string
+  location: string
 }
 
 const ImgStyled = styled('img')(({ theme }) => ({
@@ -78,6 +75,7 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
 
 const AccountSettings = () => {
   const { apiConfig, isAuthenticated } = useAuth()
+  const [savLoading, setSaveLoading] = useState<boolean>(false)
 
   // const [openAlert, setOpenAlert] = useState<boolean>(true)
   const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
@@ -92,18 +90,38 @@ const AccountSettings = () => {
     }
   }
 
-
-
-
   // ** States
-  const [values, setValues] = useState<State>({
-    newPassword: '',
+  const [values, setValues] = useState({
     currentPassword: '',
-    showNewPassword: false,
+    newPassword: '',
     confirmNewPassword: '',
     showCurrentPassword: false,
-    showConfirmNewPassword: false
-  })
+    showNewPassword: false,
+    showConfirmNewPassword: false,
+    errors: {
+      currentPassword: false,
+      newPassword: {
+        empty: false,
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        symbol: false
+      },
+      confirmNewPassword: false,
+      passwordMismatch: false
+    }
+  });
+
+  const validatePassword = (password : string) => { 
+    return {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      symbol: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
+  };
 
   // Handle Current Password
   const handleCurrentPasswordChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -138,41 +156,128 @@ const AccountSettings = () => {
     event.preventDefault()
   }
 
-
-
-  const [subAdminData, setSubAdminData] = useState<UserAccount[]>([]);
+  const [subAdminData, setSubAdminData] = useState<UserAccount[]>([])
   const [formData, setFormData] = useState<UserAccount>({
     username: '',
     gender: '',
     email: '',
     phoneNumber: '',
     status: '',
-    profileImage: '' ,
-    company: '' ,
-    vatNumber: '' ,
-    billingAddress: '' ,
-    location: '' ,
-  });
+    profileImage: '',
+    company: '',
+    vatNumber: '',
+    billingAddress: '',
+    location: ''
+  })
 
   const handleInputChangeSub = (e: { target: { name: any; value: any } }) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value
-    });
+    })
   }
 
-  const handleSaveAdmin = () => {
-
+  const handleSaveAdmin = async () => {
     console.log(formData)
 
+    setSaveLoading(true)
+
+    const updatedFormData = {
+      ...formData,
+      id: localStorage.getItem('userId')
+    }
+
+    // console.log(updatedFormData)
+
+    const result = await updateAdminApi(updatedFormData, apiConfig)
+
+    if (result.responseType === 'success') {
+      enqueueSnackbar('Admin Updated successful!', { variant: 'success' })
+      getAdminInfo()
+      setSaveLoading(false)
+    } else if (result.responseType === 'fail') {
+      setSaveLoading(false)
+      enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' })
+    } else if (result.responseType === 'error') {
+      setSaveLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' })
+    }
   }
+
+  const handleUpdatePassword = async() => {
+    const passwordValidations = validatePassword(values.newPassword);
+    const passwordMismatch = values.newPassword !== values.confirmNewPassword;
+    
+    const newErrors = {
+      currentPassword: !values.currentPassword,
+      newPassword: {
+        empty: !values.newPassword,
+        ...(!values.newPassword ? {
+          length: false,
+          uppercase: false,
+          lowercase: false,
+          number: false,
+          symbol: false
+        } : {
+          length: !passwordValidations.length,
+          uppercase: !passwordValidations.uppercase,
+          lowercase: !passwordValidations.lowercase,
+          number: !passwordValidations.number,
+          symbol: !passwordValidations.symbol
+        })
+      },
+      confirmNewPassword: !values.confirmNewPassword,
+      passwordMismatch: passwordMismatch
+    };
+  
+    setValues({
+      ...values,
+      errors: newErrors
+    });
+  
+    // Check if any validation fails
+    if (newErrors.currentPassword || 
+        newErrors.newPassword.empty || 
+        Object.values(newErrors.newPassword).slice(1).some(error => error) ||
+        newErrors.confirmNewPassword || 
+        newErrors.passwordMismatch) {
+      return;
+    }
+
+    setSaveLoading(true)
+
+    const updatedValues = {
+      ...values,
+      id: localStorage.getItem('userId')
+    }
+
+    console.log(updatedValues)
+
+    // console.log(updatedValues)
+
+    const result = await updateAdminPassword(updatedValues, apiConfig)
+
+    if (result.responseType === 'success') {
+      enqueueSnackbar('password updated successful!', { variant: 'success' })
+      getAdminInfo()
+      setSaveLoading(false)
+    } else if (result.responseType === 'fail') {
+      setSaveLoading(false)
+      enqueueSnackbar(result.output.message || 'something went wrong', { variant: 'error' })
+    } else if (result.responseType === 'error') {
+      setSaveLoading(false)
+      enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' })
+    }
+  
+
+  };
 
   const getAdminInfo = async () => {
     // setLoading(true)
     // console.log(apiConfig);
 
-    const id = localStorage.getItem('userId');
+    const id = localStorage.getItem('userId')
 
     // console.log(id)
 
@@ -180,14 +285,14 @@ const AccountSettings = () => {
 
     // console.log(result)
     if (result.responseType === 'success') {
-          setFormData({
-            ...formData,
-            email: result?.output?.email,      
-            username: result?.output?.user_details?.name,
-            phoneNumber: result?.output?.user_details?.mobile_no,
-            status: result?.output?.status,
-          });
-          setImgSrc(result?.output?.user_details?.picture || '/images/avatars/1.png')   
+      setFormData({
+        ...formData,
+        email: result?.output?.email,
+        username: result?.output?.user_details?.name,
+        phoneNumber: result?.output?.user_details?.mobile_no,
+        status: result?.output?.status
+      })
+      setImgSrc(result?.output?.user_details?.picture || '/images/avatars/1.png')
     } else if (result.responseType === 'fail') {
       // setLoading(false)
       // enqueueSnackbar(result.output.message || 'Retrieving services failed', { variant: 'error' });
@@ -198,10 +303,8 @@ const AccountSettings = () => {
   }
 
   useEffect(() => {
-  getAdminInfo();     
+    getAdminInfo()
   }, [apiConfig])
-  
-
 
   return (
     <Card>
@@ -210,7 +313,16 @@ const AccountSettings = () => {
           <Grid container spacing={7}>
             <Grid item xs={12} sm={6}>
               <Typography style={{ fontWeight: 600, marginBottom: '20px' }}>User Details</Typography>
-              <TextField fullWidth label='Username' value={formData.username} onChange={handleInputChangeSub} placeholder='johnDoe' defaultValue='johnDoe' name='username' style={{ marginBottom: '20px' }} />
+              <TextField
+                fullWidth
+                label='Username'
+                value={formData.username}
+                onChange={handleInputChangeSub}
+                placeholder='johnDoe'
+                defaultValue='johnDoe'
+                name='username'
+                style={{ marginBottom: '20px' }}
+              />
               <Grid container spacing={4}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -221,7 +333,7 @@ const AccountSettings = () => {
                     defaultValue='johnDoe@example.com'
                     name='email'
                     value={formData.email}
-                    onChange={handleInputChangeSub} 
+                    onChange={handleInputChangeSub}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -242,13 +354,21 @@ const AccountSettings = () => {
                     label='Contact Number'
                     placeholder='123456789'
                     defaultValue='123456789'
-                    name='phoneNumber' value={formData.phoneNumber} onChange={handleInputChangeSub}
+                    name='phoneNumber'
+                    value={formData.phoneNumber}
+                    onChange={handleInputChangeSub}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
                     <InputLabel>Status</InputLabel>
-                    <Select label='Status' defaultValue='active' name='status' value={formData.status} onChange={handleInputChangeSub}>
+                    <Select
+                      label='Status'
+                      defaultValue='active'
+                      name='status'
+                      value={formData.status}
+                      onChange={handleInputChangeSub}
+                    >
                       <MenuItem value='active'>Active</MenuItem>
                       <MenuItem value='inactive'>Inactive</MenuItem>
                       {/* <MenuItem value='pending'>Pending</MenuItem> */}
@@ -276,110 +396,139 @@ const AccountSettings = () => {
                 <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={handleSaveAdmin}>
                   Save Changes
                 </Button>
-                <Button type='reset' variant='outlined' color='secondary'>
+                {/* <Button type='reset' variant='outlined' color='secondary'>
                   Reset
-                </Button>
+                </Button> */}
               </Grid>
 
-              <Typography style={{ fontWeight: 600, marginBottom: '20px', marginTop: '40px' }}>Change Password</Typography>
+              <Typography style={{ fontWeight: 600, marginBottom: '20px', marginTop: '40px' }}>
+                Change Password
+              </Typography>
               <CardContent sx={{ paddingBottom: 0 }}>
-                <Grid container spacing={5}>
-                  <Grid item xs={12} sm={12}>
-                    <Grid container spacing={5}>
-                      <Grid item xs={12} sx={{ marginTop: 4.75 }}>
-                        <FormControl fullWidth>
-                          <InputLabel htmlFor='account-settings-current-password'>Current Password</InputLabel>
-                          <OutlinedInput
-                            label='Current Password'
-                            value={values.currentPassword}
-                            id='account-settings-current-password'
-                            type={values.showCurrentPassword ? 'text' : 'password'}
-                            onChange={handleCurrentPasswordChange('currentPassword')}
-                            endAdornment={
-                              <InputAdornment position='end'>
-                                <IconButton
-                                  edge='end'
-                                  aria-label='toggle password visibility'
-                                  onClick={handleClickShowCurrentPassword}
-                                  onMouseDown={handleMouseDownCurrentPassword}
-                                >
-                                  {values.showCurrentPassword ? <EyeOutline /> : <EyeOffOutline />}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                        </FormControl>
-                      </Grid>
+  <Grid container spacing={5}>
+    <Grid item xs={12} sm={12}>
+      <Grid container spacing={5}>
+        <Grid item xs={12} sx={{ marginTop: 4.75 }}>
+          <FormControl fullWidth error={values.errors.currentPassword}>
+            <InputLabel htmlFor='account-settings-current-password'>Current Password</InputLabel>
+            <OutlinedInput
+              label='Current Password'
+              value={values.currentPassword}
+              id='account-settings-current-password'
+              type={values.showCurrentPassword ? 'text' : 'password'}
+              onChange={handleCurrentPasswordChange('currentPassword')}
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton
+                    edge='end'
+                    aria-label='toggle password visibility'
+                    onClick={handleClickShowCurrentPassword}
+                    onMouseDown={handleMouseDownCurrentPassword}
+                  >
+                    {values.showCurrentPassword ? <EyeOutline /> : <EyeOffOutline />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            {values.errors.currentPassword && (
+              <FormHelperText error>Current Password is required</FormHelperText>
+            )}
+          </FormControl>
+        </Grid>
 
-                      <Grid item xs={12} sx={{ marginTop: 6 }}>
-                        <FormControl fullWidth>
-                          <InputLabel htmlFor='account-settings-new-password'>New Password</InputLabel>
-                          <OutlinedInput
-                            label='New Password'
-                            value={values.newPassword}
-                            id='account-settings-new-password'
-                            onChange={handleNewPasswordChange('newPassword')}
-                            type={values.showNewPassword ? 'text' : 'password'}
-                            endAdornment={
-                              <InputAdornment position='end'>
-                                <IconButton
-                                  edge='end'
-                                  onClick={handleClickShowNewPassword}
-                                  aria-label='toggle password visibility'
-                                  onMouseDown={handleMouseDownNewPassword}
-                                >
-                                  {values.showNewPassword ? <EyeOutline /> : <EyeOffOutline />}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                        </FormControl>
-                      </Grid>
+        <Grid item xs={12} sx={{ marginTop: 6 }}>
+  <FormControl fullWidth error={
+    values.errors.newPassword.empty || 
+    values.errors.newPassword.length ||
+    values.errors.newPassword.uppercase ||
+    values.errors.newPassword.lowercase ||
+    values.errors.newPassword.number ||
+    values.errors.newPassword.symbol
+  }>
+    <InputLabel htmlFor='account-settings-new-password'>New Password</InputLabel>
+    <OutlinedInput
+      label='New Password'
+      value={values.newPassword}
+      id='account-settings-new-password'
+      onChange={handleNewPasswordChange('newPassword')}
+      type={values.showNewPassword ? 'text' : 'password'}
+      endAdornment={
+        <InputAdornment position='end'>
+          <IconButton
+            edge='end'
+            onClick={handleClickShowNewPassword}
+            aria-label='toggle password visibility'
+            onMouseDown={handleMouseDownNewPassword}
+          >
+            {values.showNewPassword ? <EyeOutline /> : <EyeOffOutline />}
+          </IconButton>
+        </InputAdornment>
+      }
+    />
+    {values.errors.newPassword.empty && (
+      <FormHelperText error>New Password is required</FormHelperText>
+    )}
+    {!values.errors.newPassword.empty && (
+      <>
+        {values.errors.newPassword.length && (
+          <FormHelperText error>The password field must be at least 8 characters.</FormHelperText>
+        )}
+        {values.errors.newPassword.uppercase && (
+          <FormHelperText error>The password field must contain at least one uppercase letter.</FormHelperText>
+        )}
+        {values.errors.newPassword.lowercase && (
+          <FormHelperText error>The password field must contain at least one lowercase letter.</FormHelperText>
+        )}
+        {values.errors.newPassword.number && (
+          <FormHelperText error>The password field must contain at least one number.</FormHelperText>
+        )}
+        {values.errors.newPassword.symbol && (
+          <FormHelperText error>The password field must contain at least one symbol.</FormHelperText>
+        )}
+      </>
+    )}
+  </FormControl>
+</Grid>
 
-                      <Grid item xs={12}>
-                        <FormControl fullWidth>
-                          <InputLabel htmlFor='account-settings-confirm-new-password'>Confirm New Password</InputLabel>
-                          <OutlinedInput
-                            label='Confirm New Password'
-                            value={values.confirmNewPassword}
-                            id='account-settings-confirm-new-password'
-                            type={values.showConfirmNewPassword ? 'text' : 'password'}
-                            onChange={handleConfirmNewPasswordChange('confirmNewPassword')}
-                            endAdornment={
-                              <InputAdornment position='end'>
-                                <IconButton
-                                  edge='end'
-                                  aria-label='toggle password visibility'
-                                  onClick={handleClickShowConfirmNewPassword}
-                                  onMouseDown={handleMouseDownConfirmNewPassword}
-                                >
-                                  {values.showConfirmNewPassword ? <EyeOutline /> : <EyeOffOutline />}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                        </FormControl>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-
-                </Grid>
-              </CardContent>
+        <Grid item xs={12}>
+        <FormControl fullWidth error={values.errors.confirmNewPassword || values.errors.passwordMismatch}>
+            <InputLabel htmlFor='account-settings-confirm-new-password'>Confirm New Password</InputLabel>
+            <OutlinedInput
+              label='Confirm New Password'
+              value={values.confirmNewPassword}
+              id='account-settings-confirm-new-password'
+              type={values.showConfirmNewPassword ? 'text' : 'password'}
+              onChange={handleConfirmNewPasswordChange('confirmNewPassword')}
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton
+                    edge='end'
+                    aria-label='toggle password visibility'
+                    onClick={handleClickShowConfirmNewPassword}
+                    onMouseDown={handleMouseDownConfirmNewPassword}
+                  >
+                    {values.showConfirmNewPassword ? <EyeOutline /> : <EyeOffOutline />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            {values.errors.confirmNewPassword && (
+              <FormHelperText error>Please confirm your new password</FormHelperText>
+            )}
+            {values.errors.passwordMismatch && !values.errors.confirmNewPassword && (
+      <FormHelperText error>Passwords do not match</FormHelperText>
+    )}
+          </FormControl>
+        </Grid>
+      </Grid>
+    </Grid>
+  </Grid>
+</CardContent>
               <Box sx={{ mt: 11 }}>
-                <Button variant='contained' sx={{ marginRight: 3.5 }}>
+                <Button variant='contained' sx={{ marginLeft: 5  }} onClick={handleUpdatePassword}>
                   Save Changes
                 </Button>
-                <Button
-                  type='reset'
-                  variant='outlined'
-                  color='secondary'
-                  onClick={() => setValues({ ...values, currentPassword: '', newPassword: '', confirmNewPassword: '' })}
-                >
-                  Reset
-                </Button>
               </Box>
-
-              
             </Grid>
             <Grid item xs={12} sm={6} sx={{ marginTop: 4.8, marginBottom: 3 }}>
               <Typography style={{ fontWeight: 600, marginBottom: '20px' }}>Profile Photo</Typography>
@@ -396,7 +545,11 @@ const AccountSettings = () => {
                       id='account-settings-upload-image'
                     />
                   </ButtonStyled>
-                  <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
+                  <ResetButtonStyled
+                    color='error'
+                    variant='outlined'
+                    onClick={() => setImgSrc('/images/avatars/1.png')}
+                  >
                     Reset
                   </ResetButtonStyled>
                   <Typography variant='body2' sx={{ marginTop: 5 }}>
@@ -424,8 +577,6 @@ const AccountSettings = () => {
                 </Alert>
               </Grid>
             ) : null} */}
-
-
           </Grid>
         </form>
       </CardContent>

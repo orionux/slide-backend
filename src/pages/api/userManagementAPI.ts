@@ -1,5 +1,5 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { addSubAdminService, deleteCustomerService, deleteSubAdminService, getAdminInfoService, getCustomers, getSubAdmins, updateCustomerService, updateSubAdminService } from 'src/services/userManagementService';
+import { addSubAdminService, deleteCustomerService, deleteSubAdminService, getAdminInfoService, getCustomers, getSubAdmins, updateAdminPasswordService, updateAdminService, updateCustomerService, updateSubAdminService } from 'src/services/userManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAPI';
 
@@ -175,19 +175,76 @@ export const getbAdminInfo = async (id: any, config?: any): Promise<ApiResponse<
     
     const response = await getAdminInfoService(id,config);
     // console.log(response)
-    // if (response?.data?.status === 'success') {
-    //   return {
-    //     responseType: 'success',
-    //     output: decryptResponse(response.data),
-    //   };
-    // } else {
-    //   return { responseType: 'fail', output: response.data };
-    // }
-       return {
+    if (response?.data?.status === 'success') {
+      return {
         responseType: 'success',
-        output: decryptResponse(response.data),
+        output: decryptResponse(response?.data?.data),
       };
+    } else {
+      return { responseType: 'fail', output: response.data };
+    }
+      //  return {
+      //   responseType: 'success',
+      //   output: decryptResponse(response.data),
+      // };
   } catch (error) {
     return { responseType: 'error', output: error };
   }
 };
+
+export const updateAdminApi = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+  // debugg
+  // console.log(data)
+
+  try {
+    const formData = new FormData();
+    formData.append('name', data.username);
+    formData.append('mobile_no', data.phoneNumber);
+    // formData.append('gender', data.gender);
+    formData.append('status', data.status);
+    formData.append('email', data.email);
+    
+    const userId = data.id
+    
+
+    const response = await updateAdminService(encryptRequest(formData),config,userId,);
+    if (response?.data?.status === 'success') {
+      return {
+        responseType: 'success',
+        output: decryptResponse(response.data),
+      };
+    } else {
+      return { responseType: 'fail', output: response.data };
+    }
+  } catch (error) {
+    return { responseType: 'error', output: error };
+  }
+};
+
+export const updateAdminPassword = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+  // debugg
+  // console.log(data)
+
+  try {
+    const formData = new FormData();
+    formData.append('current_password', data.currentPassword);
+    formData.append('password', data.newPassword);
+    formData.append('password_confirmation', data.confirmNewPassword);
+    
+    const userId = data.id
+    
+
+    const response = await updateAdminPasswordService(encryptRequest(formData),config,userId,);
+    if (response?.data?.status === 'success') {
+      return {
+        responseType: 'success',
+        output: decryptResponse(response.data),
+      };
+    } else {
+      return { responseType: 'fail', output: response.data };
+    }
+  } catch (error) {
+    return { responseType: 'error', output: error };
+  }
+};
+

@@ -97,3 +97,31 @@ export async function getAdminInfoService(
     }
   })
 }
+
+export async function updateAdminService(
+  data: UpdateCustomer,
+  config: ApiConfig,
+  userId: string
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/admin-update-basic-details/${userId}`, data, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}
+
+export async function updateAdminPasswordService(
+  data: UpdateCustomer,
+  config: ApiConfig,
+  userId: string
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/admin-update-password/${userId}`, data, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}

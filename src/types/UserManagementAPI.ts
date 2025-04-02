@@ -24,6 +24,7 @@ export interface GetCustomersResponse {
 export interface CommonResponse {
     message: number;
     status: string;
+    data?: any;
 }
 
 export interface UpdateCustomer {
