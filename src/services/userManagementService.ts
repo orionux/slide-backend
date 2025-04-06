@@ -125,3 +125,18 @@ export async function updateAdminPasswordService(
     }
   })
 }
+
+
+export async function addAdminPictureService(
+  data: UpdateCustomer,
+  config: ApiConfig,
+  userId: string
+): Promise<AxiosResponse<CommonResponse>> {
+  return await axios.post(apiURL + `api/update-admin-picture/${userId}`, data, {
+    ...config,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config?.headers
+    }
+  })
+}

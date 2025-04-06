@@ -35,7 +35,8 @@ export interface UpdateCustomer {
     company_name?: string;
     vat_number?: string;
     billing_address?: string;
-    location?: string; 
+    location?: string;
+    picture? : File; 
 }
 export interface AddSubAdmin {
     name?: string;

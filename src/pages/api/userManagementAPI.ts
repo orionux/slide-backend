@@ -1,5 +1,5 @@
 import { decryptResponse, encryptRequest } from 'src/helpers/encryptData';
-import { addSubAdminService, deleteCustomerService, deleteSubAdminService, getAdminInfoService, getCustomers, getSubAdmins, updateAdminPasswordService, updateAdminService, updateCustomerService, updateSubAdminService } from 'src/services/userManagementService';
+import { addAdminPictureService, addSubAdminService, deleteCustomerService, deleteSubAdminService, getAdminInfoService, getCustomers, getSubAdmins, updateAdminPasswordService, updateAdminService, updateCustomerService, updateSubAdminService } from 'src/services/userManagementService';
 import { ApiResponse } from 'src/types/OnboardingApi';
 import { CommonResponse, GetCustomersResponse } from 'src/types/UserManagementAPI';
 
@@ -247,4 +247,42 @@ export const updateAdminPassword = async (data: any, config?: any): Promise<ApiR
     return { responseType: 'error', output: error };
   }
 };
+
+// Updated to properly handle the Base64 string
+export const addAdminPicture = async (data: any, config?: any): Promise<ApiResponse<CommonResponse>> => {
+  try {
+      const formData = new FormData();
+      // Convert Base64 to Blob if needed
+      const blob = dataURItoBlob(data.picture);
+      formData.append('picture', blob);
+      formData.append('id', data.id);
+
+      const response = await addAdminPictureService(encryptRequest(formData), config, data.id);
+      
+      if (response?.data?.status === 'success') {
+          return {
+              responseType: 'success',
+              output: decryptResponse(response.data),
+          };
+      } else {
+          return { responseType: 'fail', output: response.data };
+      }
+  } catch (error) {
+      return { responseType: 'error', output: error };
+  }
+};
+
+// Helper function to convert Data URL to Blob
+function dataURItoBlob(dataURI: string) {
+  const byteString = atob(dataURI.split(',')[1]);
+  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  
+  for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+  }
+  
+  return new Blob([ab], { type: mimeString });
+}
 

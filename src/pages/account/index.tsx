@@ -24,7 +24,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { OutlinedInput, InputAdornment, FormHelperText } from '@mui/material'
 import { EyeOutline, EyeOffOutline } from 'mdi-material-ui'
 import { useAuth } from 'src/@core/context/AuthContext'
-import { getbAdminInfo, updateAdminApi, updateAdminPassword } from '../api/userManagementAPI'
+import { addAdminPicture, getbAdminInfo, updateAdminApi, updateAdminPassword } from '../api/userManagementAPI'
 import { enqueueSnackbar } from 'notistack'
 
 interface State {
@@ -80,15 +80,27 @@ const AccountSettings = () => {
   // const [openAlert, setOpenAlert] = useState<boolean>(true)
   const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
 
-  const onChange = (file: ChangeEvent) => {
-    const reader = new FileReader()
-    const { files } = file.target as HTMLInputElement
-    if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result as string)
+  const onChange = async (file: ChangeEvent<HTMLInputElement>) => {
+    const { files } = file.target;
+    if (!files || files.length === 0) return;
 
-      reader.readAsDataURL(files[0])
+    try {
+        const imgSrc = await readFileAsDataURL(files[0]);
+        await handleAddPicture(imgSrc);
+    } catch (error) {
+        enqueueSnackbar('Failed to process image', { variant: 'error' });
     }
-  }
+};
+
+const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+    });
+};
+
 
   // ** States
   const [values, setValues] = useState({
@@ -179,7 +191,7 @@ const AccountSettings = () => {
   }
 
   const handleSaveAdmin = async () => {
-    console.log(formData)
+    // console.log(formData)
 
     setSaveLoading(true)
 
@@ -204,6 +216,28 @@ const AccountSettings = () => {
       enqueueSnackbar(result.output.message || 'An error occurred', { variant: 'error' })
     }
   }
+
+  const handleAddPicture = async (imgSrc: string) => {
+    try {
+        const updatedFormData = {
+            picture: imgSrc,
+            id: localStorage.getItem('userId')
+        };
+
+        const result = await addAdminPicture(updatedFormData, apiConfig);
+
+        if (result.responseType === 'success') {
+            enqueueSnackbar('Picture Updated successfully!', { variant: 'success' });
+            getAdminInfo();
+        } else {
+            enqueueSnackbar(result.output.message || 'Something went wrong', { 
+                variant: result.responseType === 'fail' ? 'error' : 'warning' 
+            });
+        }
+    } catch (error) {
+        enqueueSnackbar('An error occurred while updating picture', { variant: 'error' });
+    }
+};
 
   const handleUpdatePassword = async() => {
     const passwordValidations = validatePassword(values.newPassword);
